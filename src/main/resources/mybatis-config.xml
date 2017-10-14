@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE configuration PUBLIC '-//mybatis.org//DTD Config 3.0//EN' 
+'http://mybatis.org/dtd/mybatis-3-config.dtd'>
+
+<configuration>
+	<properties resource='jdbc.properties' />
+	<!-- POJO aliase Name -->
+	<typeAliases>
+		<typeAlias type='leamon.erp.model.StockItem' alias='StockItem'></typeAlias>
+		<typeAlias type='leamon.erp.model.AccountInfo' alias='AccountInfo'></typeAlias>
+	</typeAliases>
+	
+	<environments default='development'>
+		<environment id='development'>
+			<transactionManager type='JDBC' />
+			<dataSource type='POOLED'>
+				<property name='driver' value='${jdbc.driverClassName}' />
+				<property name='url' value='${jdbc.url}' />
+				<property name='username' value='${jdbc.username}' />
+				<property name='password' value='${jdbc.password}' />
+			</dataSource>
+		</environment>
+	</environments>
+	<mappers>
+		<!-- <mapper resource='com/sivalabs/mybatisdemo/mappers/UserMapper.xml' /> -->
+		<mapper class="leamon.erp.db.mapper.StockMapper"/>
+		<mapper class="leamon.erp.db.mapper.AccountMapper"/>
+		<mapper class="leamon.erp.db.mapper.InvoiceItemMapper"/>
+		<mapper class="leamon.erp.db.mapper.InvoiceMapper"/>
+		<mapper class="leamon.erp.db.mapper.StateCityInfoMapper"/>
+		<mapper class="leamon.erp.db.mapper.CompanyInfoMapper"/>
+		<mapper class="leamon.erp.db.mapper.UserInfoMapper"/>
+	</mappers>
+</configuration>
