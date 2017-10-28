@@ -71,6 +71,7 @@ public class LeamonERP extends JFrame {
 	public static CompanyUI companyUI;
 	public static InvoiceSearchUI invoiceSearchUI;
 	public static PaymentUI paymentUI;
+	public static StockItemQuantityUI stockItemQuantityUI;
 
 	public static  List<String> cityCache;
 	public static  List<String> countryCache;
@@ -107,16 +108,6 @@ public class LeamonERP extends JFrame {
 			return;
 		}
 		
-		/*EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					frame = new LeamonERP();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});*/
 	}
 
 	/**
@@ -332,7 +323,7 @@ public class LeamonERP extends JFrame {
 		hprlnkPaymentRegister.setText("Payment Register");
 		hprlnkPaymentRegister.setHorizontalAlignment(SwingConstants.CENTER);
 		hprlnkPaymentRegister.setForeground(Color.BLACK);
-		hprlnkPaymentRegister.setFont(new Font("Courier New", Font.BOLD, 20));
+		hprlnkPaymentRegister.setFont(new Font("Courier New", Font.BOLD, 18));
 		hprlnkPaymentRegister.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
 		hprlnkPaymentRegister.setBounds(21, 11, 193, 23);
 		taskPaneReport.getContentPane().add(hprlnkPaymentRegister);
@@ -389,27 +380,12 @@ public class LeamonERP extends JFrame {
 		companyUI = new CompanyUI();
 		
 		invoiceSearchUI = new InvoiceSearchUI();
-		
-		/*JInternalFrame internalFrame = new JInternalFrame("New JInternalFrame");
-		internalFrame.setBounds(48, 55, 279, 236);
-		desktopPane.add(internalFrame);
-		internalFrame.setVisible(true);*/
-
-
-		/*Stock Items IntelliSense  ready*/
-		/*StockDaoImpl.getInstance().prepareStockIntelliSense();
-		loadAddressData();*/
 
 		accountInfoUI = new AccountInfoUI();
 		invoiceUI = new InvoiceUI();
 		invoiceUILegal =new InvoiceUILegal();
 		paymentUI = new PaymentUI();
-		
-		/*accountInfoUI = new AccountInfoUI();
-		desktopPane.add(accountInfoUI);
-		accountInfoUI.setVisible(true);*/
-		/*framCreator();*/
-	//	this.setVisible(true);
+		stockItemQuantityUI = new StockItemQuantityUI();
 	
 		}
 	
@@ -637,24 +613,11 @@ public class LeamonERP extends JFrame {
 		companyUI = new CompanyUI();
 		
 		invoiceSearchUI = new InvoiceSearchUI();
-		
-		/*JInternalFrame internalFrame = new JInternalFrame("New JInternalFrame");
-		internalFrame.setBounds(48, 55, 279, 236);
-		desktopPane.add(internalFrame);
-		internalFrame.setVisible(true);*/
 
 
-		/*Stock Items IntelliSense  ready*/
-		/*StockDaoImpl.getInstance().prepareStockIntelliSense();
-		loadAddressData();*/
 
 		accountInfoUI = new AccountInfoUI();
 		invoiceUI = new InvoiceUI();
-		/*accountInfoUI = new AccountInfoUI();
-		desktopPane.add(accountInfoUI);
-		accountInfoUI.setVisible(true);*/
-		/*framCreator();*/
-	//	this.setVisible(true);
 	
 	}
 
@@ -869,6 +832,7 @@ public class LeamonERP extends JFrame {
 		}
 		SwingUtilities.updateComponentTreeUI(paymentUI);
 	}
+	
 	
 	private void loadAddressData(){
 		

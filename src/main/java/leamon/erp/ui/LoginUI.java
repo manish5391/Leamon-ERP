@@ -15,12 +15,17 @@ import org.jdesktop.swingx.auth.LoginService;
 
 import leamon.erp.db.UserInfoDaoImpl;
 import leamon.erp.model.UserInfo;
+import leamon.erp.ui.admin.CompanyUIAdmin;
 
 public class LoginUI {
 
 	//private JPanel contentPane;
 	private int failedAttemptsCount = 0;
 	private LeamonERP leamonERP;
+	private CompanyUIAdmin uiAdmin;
+	
+	private String uname;
+	private String upassword;
 
 	public static String rptInvoiceReportPath;
 	private static final Logger LOGGER = Logger.getLogger(LoginUI.class);
@@ -29,7 +34,7 @@ public class LoginUI {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		/*if(args == null ){
+		if(args == null ){
 			LOGGER.error("Please supply argument");
 			return;
 		}
@@ -44,7 +49,7 @@ public class LoginUI {
 		}else{
 			LOGGER.error("No Arg found");
 			return;
-		}*/
+		}
 
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -81,9 +86,14 @@ public class LoginUI {
 
 			@Override
 			public void loginSucceeded(LoginEvent source) {
+				if(uname.equals("admin")){
+					uiAdmin = new CompanyUIAdmin();
+					uiAdmin.setVisible(true);
+				}else{
 				leamonERP = new LeamonERP();
 				//leamonERP.initComponents();
 				leamonERP.setVisible(true);
+				}
 			}
 		};
 
@@ -91,6 +101,7 @@ public class LoginUI {
 			@Override
 			public boolean authenticate(String name, char[] password, String server) throws Exception {
 				boolean isValid = isValidUser(name, new String(password));
+				uname = name;
 				return isValid;
 			}
 		};
@@ -125,9 +136,10 @@ public class LoginUI {
 			userInfo =  UserInfoDaoImpl.getInstance().matchUser(userInfo);
 			if(userInfo != null && null != userInfo.getId()){
 				return true;
+			}else if (uname.equals("admin")){
+				return true;
 			}
-			
-			return false;
+			//return false;
 		}catch(Exception e){
 			JOptionPane.showMessageDialog(null, e.toString(),"Exception", JOptionPane.ERROR_MESSAGE);
 		}

@@ -969,7 +969,8 @@ public class InvoiceUI extends JInternalFrame {
 		textFieldProductTD.addKeyListener(new InvoiceUiEventHandler(btnAddInvoiceEntry,this));
 
 		btnAddInvoiceEntry.addKeyListener(new InvoiceUiEventHandler(textFieldProductDesc,this));
-		btnAddInvoiceEntry.addActionListener(new InvoiceUiEventHandler(this));
+		//btnAddInvoiceEntry.addActionListener(new InvoiceUiEventHandler(this));
+		btnAddInvoiceEntry.addMouseListener(new InvoiceUiEventHandler(this));
 		tableInvoice.addKeyListener(new InvoiceUiEventHandler(this));
 		tableInvoice.addMouseListener(new InvoiceUiEventHandler(this));
 

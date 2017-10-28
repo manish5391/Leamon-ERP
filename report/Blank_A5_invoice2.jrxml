@@ -247,35 +247,35 @@
 		<band height="31" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<staticText>
-				<reportElement mode="Transparent" x="8" y="3" width="39" height="21" uuid="93d75c65-c6ee-4b86-b937-03fed4c6dc0c"/>
+				<reportElement x="8" y="3" width="39" height="21" uuid="93d75c65-c6ee-4b86-b937-03fed4c6dc0c"/>
 				<textElement>
 					<font fontName="Courier New" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[S No.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Transparent" x="48" y="3" width="182" height="21" backcolor="#A1A8AB" uuid="b5ef5f51-73f5-40c8-ad84-ea798e953344"/>
+				<reportElement x="48" y="3" width="182" height="21" backcolor="#A1A8AB" uuid="b5ef5f51-73f5-40c8-ad84-ea798e953344"/>
 				<textElement>
 					<font fontName="Courier New" size="13" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Particulars]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Transparent" x="236" y="3" width="60" height="21" uuid="4a711c8c-815e-4fbb-83f0-8fca9ddbffbc"/>
+				<reportElement x="236" y="3" width="60" height="21" uuid="4a711c8c-815e-4fbb-83f0-8fca9ddbffbc"/>
 				<textElement>
 					<font fontName="Courier New" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Size]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Transparent" x="304" y="3" width="30" height="21" uuid="481e8b0c-82a4-4b3e-9a0b-7bfd8adc0fc7"/>
+				<reportElement x="304" y="3" width="30" height="21" uuid="481e8b0c-82a4-4b3e-9a0b-7bfd8adc0fc7"/>
 				<textElement>
 					<font fontName="Courier New" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Qty.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Transparent" x="379" y="3" width="50" height="21" uuid="60afcccb-0c16-4bbb-9fd5-423ebf3e1644"/>
+				<reportElement x="379" y="3" width="50" height="21" uuid="60afcccb-0c16-4bbb-9fd5-423ebf3e1644"/>
 				<textElement>
 					<font fontName="Courier New" size="12" isBold="true"/>
 				</textElement>
@@ -289,9 +289,7 @@
 				<text><![CDATA[Amount]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Transparent" x="520" y="3" width="30" height="21" uuid="75a5a6ee-677e-485b-aeb3-1446d26730e6">
-					<printWhenExpression><![CDATA[NOT($P{td}.equals( ".00" ) )]]></printWhenExpression>
-				</reportElement>
+				<reportElement x="520" y="3" width="30" height="21" uuid="75a5a6ee-677e-485b-aeb3-1446d26730e6"/>
 				<textElement>
 					<font fontName="Courier New" size="12" isBold="true"/>
 				</textElement>
@@ -331,7 +329,7 @@
 				</reportElement>
 			</line>
 			<staticText>
-				<reportElement mode="Transparent" x="340" y="4" width="30" height="21" uuid="51f175f5-f87f-449d-8a09-0aa9139c0a01"/>
+				<reportElement x="340" y="4" width="30" height="21" uuid="51f175f5-f87f-449d-8a09-0aa9139c0a01"/>
 				<textElement>
 					<font fontName="Courier New" size="12" isBold="true"/>
 				</textElement>
@@ -462,7 +460,7 @@
 			<staticText>
 				<reportElement x="541" y="3" width="8" height="21" isRemoveLineWhenBlank="true" uuid="acafafbc-398e-420b-85a8-776a256ae096">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-					<printWhenExpression><![CDATA[NOT($F{td}.isEmpty())]]></printWhenExpression>
+					<printWhenExpression><![CDATA[new Boolean($F{td} != null)]]></printWhenExpression>
 				</reportElement>
 				<textElement>
 					<font size="10" isBold="true"/>
@@ -563,18 +561,16 @@
 				<reportElement x="395" y="30" width="30" height="15" uuid="4da3665b-622f-4b58-8595-7fcc50ff3e9a">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-					<printWhenExpression><![CDATA[NOT($P{td}.equals( ".00" ) )]]></printWhenExpression>
 				</reportElement>
 				<textElement>
 					<font fontName="Courier New" size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[TD]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
+			<textField>
 				<reportElement x="439" y="30" width="73" height="19" uuid="9e4e64e8-d71d-4505-9892-51ef968582bb">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-					<printWhenExpression><![CDATA[NOT($P{td}.equals( ".00" ) )]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Top"/>
 				<textFieldExpression><![CDATA[$P{td}]]></textFieldExpression>

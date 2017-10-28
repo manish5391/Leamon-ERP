@@ -42,6 +42,7 @@ import leamon.erp.ui.event.MouseClickHandler;
 import leamon.erp.ui.model.TableStockListItemModel;
 import leamon.erp.util.LeamonERPConstants;
 import lombok.Getter;
+import org.jdesktop.swingx.JXHyperlink;
 /**
  * @author Manish Kumar Mishra
  * @date 3 May, 2017
@@ -168,6 +169,11 @@ public class StockItemListManager extends JInternalFrame implements ActionListen
 		textSearchField.addFocusListener(new FocusEventHandler(tblStockList));
 		textSearchField.addKeyListener(new KeyListenerHandler());
 		
+		JXHyperlink hprlnkAddStockQuantity = new JXHyperlink();
+		hprlnkAddStockQuantity.addActionListener(e -> hprlnkAddStockQuantityClick(e) );
+		hprlnkAddStockQuantity.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		hprlnkAddStockQuantity.setText("add stock quantity");
+		
 		GroupLayout gl_panel = new GroupLayout(panel);
 		gl_panel.setHorizontalGroup(
 			gl_panel.createParallelGroup(Alignment.LEADING)
@@ -182,7 +188,9 @@ public class StockItemListManager extends JInternalFrame implements ActionListen
 					.addComponent(btnDelete)
 					.addGap(36)
 					.addComponent(textSearchField, GroupLayout.PREFERRED_SIZE, 243, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(290, Short.MAX_VALUE))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(hprlnkAddStockQuantity, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 		);
 		gl_panel.setVerticalGroup(
 			gl_panel.createParallelGroup(Alignment.LEADING)
@@ -192,7 +200,10 @@ public class StockItemListManager extends JInternalFrame implements ActionListen
 						.addComponent(btnedit)
 						.addComponent(btnView)
 						.addComponent(btnDelete)
-						.addComponent(textSearchField, GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE))
+						.addComponent(textSearchField, GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)
+						.addGroup(gl_panel.createSequentialGroup()
+							.addContainerGap()
+							.addComponent(hprlnkAddStockQuantity, GroupLayout.PREFERRED_SIZE, 17, GroupLayout.PREFERRED_SIZE)))
 					.addContainerGap())
 		);
 		panel.setLayout(gl_panel);
@@ -420,5 +431,42 @@ public class StockItemListManager extends JInternalFrame implements ActionListen
 		tblStockList.getColumnModel().getColumn(6).setPreferredWidth(27);
 		tblStockList.getColumnModel().getColumn(7).setPreferredWidth(50);
 		tblStockList.getColumnModel().getColumn(8).setPreferredWidth(127);*/
+	}
+	
+	private void hprlnkAddStockQuantityClick(ActionEvent e){
+		LOGGER.info("StockItemList[hprlnkAddStockQuantityClick] inside");
+		int selectedRow = tblStockList.getSelectedRow();
+		
+		if(selectedRow == LeamonERPConstants.NO_ROW_SELECTED){
+			JOptionPane.showMessageDialog(this, "Please select atleast one item", "Warning", JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+		
+		/*Get accurate selected row after filtering records*/
+		if(tblStockList.getRowSorter() != null){
+			selectedRow = tblStockList.getRowSorter().convertRowIndexToModel(selectedRow);
+		}
+		
+		TableStockListItemModel model  = (TableStockListItemModel)tblStockList.getModel();
+		List<StockItem> stockItems =  model.getStockItems();
+		StockItem si = stockItems.get(selectedRow);
+		
+		if(!LeamonERP.stockItemQuantityUI.isVisible()){
+			LeamonERP.desktopPane.add(LeamonERP.stockItemQuantityUI);
+		}
+		LeamonERP.stockItemQuantityUI.requestFocus();
+		try {
+			LeamonERP.stockItemQuantityUI.setSelected(true);
+		} catch (PropertyVetoException e1) {
+			LOGGER.error("StockItemList[actionPerformed] "+e1);
+		}
+		LeamonERP.stockItemQuantityUI.setStockItem(si);
+		/*if(actionCommand.equals(LeamonERPConstants.BUTTON_ACTION_EDIT_STOCK_ITEM)){
+			LeamonERP.stockItemQuantityUI.getBtnSave().setEnabled(false);
+		}*/
+		LeamonERP.stockItemQuantityUI.setVisible(true);
+		LeamonERP.stockItemQuantityUI.moveToFront();
+		SwingUtilities.updateComponentTreeUI(this);
+		LOGGER.info("StockItemList[viewStockItem] end");
 	}
 }

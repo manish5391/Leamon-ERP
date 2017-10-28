@@ -8,6 +8,8 @@ import javax.swing.JTextField;
 import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXDatePicker;
 
+import com.google.common.base.Strings;
+
 
 public class PaymentUIKeyHndler implements KeyListener {
 	
@@ -52,6 +54,10 @@ public class PaymentUIKeyHndler implements KeyListener {
 			JTextField textField = (JTextField) e.getSource();
 			if(nextComponent != null ){
 				nextComponent.requestFocus();
+				if(!Strings.isNullOrEmpty(nextComponent.getName()) && nextComponent.getName().equals("txtFieldWRemark")){
+					nextComponent.setText(textField.getText());
+				}
+				
 			}
 		}
 	}//end

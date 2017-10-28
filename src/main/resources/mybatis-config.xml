@@ -30,5 +30,7 @@
 		<mapper class="leamon.erp.db.mapper.StateCityInfoMapper"/>
 		<mapper class="leamon.erp.db.mapper.CompanyInfoMapper"/>
 		<mapper class="leamon.erp.db.mapper.UserInfoMapper"/>
+		<mapper class="leamon.erp.db.mapper.PaymentReceivedMapper"/>
+		<mapper class="leamon.erp.db.mapper.StockQuantityMapper"/>
 	</mappers>
 </configuration>

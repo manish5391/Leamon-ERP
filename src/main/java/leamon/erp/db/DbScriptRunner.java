@@ -1,5 +1,7 @@
 package leamon.erp.db;
 
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 
 import org.apache.ibatis.io.Resources;
@@ -23,11 +25,11 @@ public class DbScriptRunner {
 	
 	public static void main(String[] args) {
 		LOGGER.info("DbScriptRunner[main] inside.");
-		scriptRunner();
+		scriptRunner(args);
 		LOGGER.info("DbScriptRunner[main] end.");
 	}
 	
-	static void scriptRunner(){
+	static void scriptRunner(String [] args){
 		LOGGER.info("DbScriptRunner[scriptRunner] inside.");
 		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
 		ScriptRunner runner = new ScriptRunner(session.getConnection());
@@ -37,7 +39,9 @@ public class DbScriptRunner {
 			
 			//runner.runScript(Resources.getResourceAsReader("sql/create_stock_item.sql"));
 			//LOGGER.debug("DbScriptRunner[scriptRunner] : sql/create_stock_item.sql executed.");
-			runner.runScript(Resources.getResourceAsReader("sql/insert_stock_item.sql"));
+			//runner.runScript(Resources.getResourceAsReader("sql/insert_stock_item.sql"));
+			//runner.runScript(Resources.getResourceAsReader("sql/insert_stock_item.sql"));
+			runner.runScript(new FileReader(new File(args[0])));
 			LOGGER.debug("DbScriptRunner[scriptRunner] : sql/insert_stock_item.sql executed.");
 		} catch (IOException e) {
 			LOGGER.error("DbScriptRunner[scriptRunner] : "+e);

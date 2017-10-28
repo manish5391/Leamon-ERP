@@ -110,7 +110,15 @@ public class InvoiceUiEventHandler implements KeyListener, ActionListener, Mouse
 				setTaxableValue(invoiceUI);
 				calcGrandTotal(invoiceUI);
 			}
-		}
+		}else if(e.getSource() instanceof JButton){
+			JButton btn   = (JButton) e.getSource();
+			
+			if( null != btn.getName() && btn.getName().equals(LeamonERPConstants.BUTTON_INVOICE_ACTION_ADD)){
+				if(validateData()){
+					invoiceItemTableRocrding();
+				}
+			}
+		}//jbutton event
 		
 		
 	}//end mouse click
@@ -288,7 +296,7 @@ public class InvoiceUiEventHandler implements KeyListener, ActionListener, Mouse
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource() instanceof JButton){
+		/*if(e.getSource() instanceof JButton){
 			JButton btn   = (JButton) e.getSource();
 			
 			if( null != btn.getName() && btn.getName().equals(LeamonERPConstants.BUTTON_INVOICE_ACTION_ADD)){
@@ -297,7 +305,7 @@ public class InvoiceUiEventHandler implements KeyListener, ActionListener, Mouse
 				}
 			}
 		}//jbutton event
-	}//end
+*/	}//end
 	
 	public void invoiceItemTableRocrding(){
 		

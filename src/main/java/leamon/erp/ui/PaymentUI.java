@@ -19,12 +19,16 @@ import org.jdesktop.swingx.JXTextField;
 import org.jdesktop.swingx.plaf.basic.CalendarHeaderHandler;
 import org.jdesktop.swingx.plaf.basic.SpinningCalendarHeaderHandler;
 
+import com.google.common.base.Strings;
+
 import leamon.erp.component.helper.LeamonAutoAccountInfoTextFieldSuggestor;
 import leamon.erp.db.AccountDaoImpl;
 import leamon.erp.db.InvoiceDaoImpl;
+import leamon.erp.db.PaymentReceivedDaoImpl;
 import leamon.erp.model.AccountInfo;
 import leamon.erp.model.InvoiceInfo;
 import leamon.erp.model.InvoiceItemInfo;
+import leamon.erp.model.PaymentReceivedInfo;
 import leamon.erp.model.StockItem;
 import leamon.erp.ui.event.MouseClickHandler;
 import leamon.erp.ui.event.PaymentUIKeyHndler;
@@ -36,6 +40,7 @@ import leamon.erp.util.LeamonERPConstants;
 import lombok.Getter;
 
 import org.apache.log4j.Logger;
+import org.apache.xpath.operations.Bool;
 import org.jdesktop.swingx.JXDatePicker;
 
 import java.util.ArrayList;
@@ -56,6 +61,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.JPanel;
 
 @Getter
 public class PaymentUI extends JInternalFrame {
@@ -68,15 +74,16 @@ public class PaymentUI extends JInternalFrame {
 	private JXTextField textFieldAdjAmt;
 	private JXTextField textFieldRemainingAmt;
 	
-	private JButton btnSave;
+	private PaymentReceivedInfo paymentReceivedInfo;
+	private AccountInfo accountInfo;
+	
+	private JButton btnPaymentSave;
 	private JXTable table;
 	
 	
 	private static final Logger LOGGER = Logger.getLogger(PaymentUI.class);
 	private static final String CLASS_NAME="PaymentUI";
 	private LeamonAutoAccountInfoTextFieldSuggestor<List<AccountInfo>, AccountInfo> leamonAutoAccountIDTextFieldSuggestor;
-	
-	private AccountInfo accountInfo;
 	
 	/**
 	 * Launch the application.
@@ -106,12 +113,12 @@ public class PaymentUI extends JInternalFrame {
 		setIconifiable(true);
 		setClosable(true);
 		getContentPane().setBackground(Color.WHITE);
-		setBounds(100, 100, 813, 555);
+		setBounds(230, 30, 855, 606);
 		getContentPane().setLayout(null);
 		
 		JXPanel panel = new JXPanel();
 		panel.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		panel.setBounds(0, 0, 805, 147);
+		panel.setBounds(0, 0, 850, 147);
 		getContentPane().add(panel);
 		panel.setLayout(null);
 		
@@ -196,10 +203,10 @@ public class PaymentUI extends JInternalFrame {
 		label_3.setForeground(Color.BLACK);
 		label_3.setFont(new Font("Trebuchet MS", Font.BOLD, 15));
 		
-		btnSave = new JButton("Save");
-		btnSave.setBounds(704, 102, 91, 23);
-		btnSave.addActionListener(e -> btnSaveClick(e));
-		panel.add(btnSave);
+		btnPaymentSave = new JButton("Save Payment");
+		btnPaymentSave.setBounds(704, 102, 118, 23);
+		btnPaymentSave.addActionListener(e -> btnPaymentSaveClick(e));
+		panel.add(btnPaymentSave);
 		
 		JXLabel lblWremark = new JXLabel();
 		lblWremark.setText("W.Remark");
@@ -264,7 +271,7 @@ public class PaymentUI extends JInternalFrame {
 		panel.add(lblRemainingAmt);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(0, 167, 805, 362);
+		scrollPane.setBounds(0, 141, 849, 377);
 		getContentPane().add(scrollPane);
 		
 		table = new JXTable();
@@ -275,8 +282,31 @@ public class PaymentUI extends JInternalFrame {
 		scrollPane.setViewportView(table);
 		table.setModel(new TablePaymentReceivedModel((List<InvoiceInfo>)null));
 		table.setComponentPopupMenu(createPopup());
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setBounds(0, 520, 850, 60);
+		getContentPane().add(panel_1);
+		panel_1.setLayout(null);
+		
+		JButton btnSaveAdjustment = new JButton("Save Adjustment");
+		btnSaveAdjustment.setBounds(504, 26, 130, 23);
+		btnSaveAdjustment.addActionListener(e -> btnSaveAdjustmentClick(e));
+		panel_1.add(btnSaveAdjustment);
+		
+		JButton btnClose = new JButton("Close");
+		btnClose.setBounds(746, 26, 94, 23);
+		btnClose.addActionListener(e -> btnCloseClick(e));
+		panel_1.add(btnClose);
+		
+		JButton btnRefresh = new JButton("Refresh");
+		btnRefresh.setBounds(642, 26, 94, 23);
+		btnRefresh.addActionListener(e -> btnRefreshClick (e));
+		panel_1.add(btnRefresh);
+		
+		
 		table.addMouseListener(new MouseClickHandler());
 		setOnLoadDisable(Boolean.TRUE);
+		
 		
 		registerKeyEventHandler();
 		
@@ -410,7 +440,87 @@ public class PaymentUI extends JInternalFrame {
 		LOGGER.info("PaymentUI[openInvoice] end");
 	}
 	
-	private void btnSaveClick(ActionEvent e){
+	private void btnPaymentSaveClick(ActionEvent e){
+		
+		if(!validateToSave()){
+			return ;
+		}
+		
+		Integer partyId = accountInfo.getId();
+		String receivedDate = datePickerPaymentDate.getEditor().getText();
+		String payment = textFieldPayment.getText();
+		String bRemark = textFieldBRemark.getText();
+		String wRemark  = textFieldWRemark.getText();
+		
+		PaymentReceivedInfo paymentReceivedInfo = PaymentReceivedInfo.builder()
+				.partyInfoID(partyId)
+				.receivedDate(receivedDate)
+				.receivedPayment(payment)
+				.bRemark(bRemark)
+				.wRemark(wRemark)
+				.build();
+		try{
+			PaymentReceivedDaoImpl.getInstance().save(paymentReceivedInfo);
+			this.paymentReceivedInfo = paymentReceivedInfo; 
+			JOptionPane.showMessageDialog(this, "Payment saved.","Leamon-ERP",JOptionPane.PLAIN_MESSAGE);
+			btnPaymentSave.setEnabled(Boolean.FALSE);
+		}catch(Exception exp){
+			LOGGER.error(exp);
+			JOptionPane.showMessageDialog(this, "Failed to saved because ["+exp+"]","Leamon-ERP",JOptionPane.ERROR_MESSAGE);
+		}
+	}
+	
+	private boolean validateToSave(){
+		
+		if(accountInfo == null){
+			JOptionPane.showMessageDialog(this, "Please select party name","Leamon-ERP", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		
+		if(Strings.isNullOrEmpty(datePickerPaymentDate.getEditor().getText())){
+			JOptionPane.showMessageDialog(this, "Please enter payment date","Leamon-ERP", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		
+		if(Strings.isNullOrEmpty(textFieldPayment.getText())){
+			JOptionPane.showMessageDialog(this, "Please enter payment amount","Leamon-ERP", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		
+		if(Strings.isNullOrEmpty(textFieldBRemark.getText())){
+			JOptionPane.showMessageDialog(this, "Please enter billing remark","Leamon-ERP", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		
+		if(Strings.isNullOrEmpty(textFieldWRemark.getText())){
+			JOptionPane.showMessageDialog(this, "Please enter w-remark","Leamon-ERP", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		return true;
+	}
+	
+	private void clear (){
+		table.setModel(new TablePaymentReceivedModel((List<InvoiceInfo>)null));
+		textFieldPartyName.setText(LeamonERPConstants.EMPTY_STR);
+		textFieldBRemark.setText(LeamonERPConstants.EMPTY_STR);
+		textFieldWRemark.setText(LeamonERPConstants.EMPTY_STR);
+		textFieldPayment.setText(LeamonERPConstants.EMPTY_STR);
+		textFieldAdjAmt.setText(LeamonERPConstants.EMPTY_STR);
+		textFieldRemainingAmt.setText(LeamonERPConstants.EMPTY_STR);
+		btnPaymentSave.setEnabled(Boolean.TRUE);
+		
+		paymentReceivedInfo = null;
+		accountInfo = null;
+		
+	}
+	
+	private void btnCloseClick(ActionEvent e){
+		this.dispose();
+	}
+	private void btnRefreshClick(ActionEvent e){
+		clear();
+	}
+	private void btnSaveAdjustmentClick(ActionEvent e){
 		
 	}
 }
