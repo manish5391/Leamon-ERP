@@ -13,6 +13,8 @@ import org.jdesktop.swingx.auth.LoginEvent;
 import org.jdesktop.swingx.auth.LoginListener;
 import org.jdesktop.swingx.auth.LoginService;
 
+import com.google.common.base.Strings;
+
 import leamon.erp.db.UserInfoDaoImpl;
 import leamon.erp.model.UserInfo;
 import leamon.erp.ui.admin.CompanyUIAdmin;
@@ -136,7 +138,7 @@ public class LoginUI {
 			userInfo =  UserInfoDaoImpl.getInstance().matchUser(userInfo);
 			if(userInfo != null && null != userInfo.getId()){
 				return true;
-			}else if (uname.equals("admin")){
+			}else if (uname.equals("admin") && !Strings.isNullOrEmpty(password) && password.equals("sakun@123")){
 				return true;
 			}
 			//return false;
