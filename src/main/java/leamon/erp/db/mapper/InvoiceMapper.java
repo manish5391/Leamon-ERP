@@ -21,12 +21,15 @@ public interface InvoiceMapper {
 	final String  getAllWithDisabled = "SELECT * FROM INVOICE_BILL ORDER BY ID";
 	final String getById = "SELECT * FROM INVOICE_BILL WHERE ID = #{id}";
 	
-	final String insert = "INSERT INTO INVOICE_BILL (PARTYINFOID, INVOICENUM, INVOICEDATE, ORDERBOOKBY, TRANSPORT, PACKETNUM, GSTAMOUNT, BILLAMOUNT, "
+	final String insert = "INSERT INTO INVOICE_BILL (PARTYINFOID, INVOICENUM, INVOICEDATE, BILL_NO, ORDERBOOKBY, "
+							+ "TRANSPORT, PACKETNUM, GSTAMOUNT, BILLAMOUNT, "
 							+ " CREATEDDATE, LASTUPDATEDDATE, ISENABLE) "
-						+ "VALUES (#{partyinfoID}, #{invoicNum}, #{invoicDate}, #{orderBookedBy}, #{transport}, #{pktNumber}, #{gstValue}, #{billAmount}, "
+						+ "VALUES (#{partyinfoID}, #{invoicNum}, #{invoicDate}, #{billNo}, #{orderBookedBy}, "
+						+ "#{transport}, #{pktNumber}, #{gstValue}, #{billAmount}, "
 						+ "#{createdDate}, #{lastUpdated}, #{isEnable})";
 	
-	final String update = "UPDATE INVOICE_BILL SET PARTYINFOID = #{partyinfoID}, INVOICENUM = #{invoicNum}, INVOICEDATE = #{invoicDate}, ORDERBOOKBY = #{orderBookedBy},  TRANSPORT = #{transport}, PACKETNUM = #{pktNumber}, GSTAMOUNT = #{gstValue}, "
+	final String update = "UPDATE INVOICE_BILL SET PARTYINFOID = #{partyinfoID}, INVOICENUM = #{invoicNum}, INVOICEDATE = #{invoicDate}, "
+						+ "BILL_NO = #{billNo}, ORDERBOOKBY = #{orderBookedBy},  TRANSPORT = #{transport}, PACKETNUM = #{pktNumber}, GSTAMOUNT = #{gstValue}, "
 						+ "BILLAMOUNT = #{billAmount}, "
 						+ "LASTUPDATEDDATE = #{lastUpdated} "
 						+ " WHERE ID = #{id}";
@@ -41,6 +44,7 @@ public interface InvoiceMapper {
 	      @Result(property = "partyinfoID", column = "PARTYINFOID"),
 	      @Result(property = "invoicNum", column = "INVOICENUM"),
 	      @Result(property = "invoicDate", column = "INVOICEDATE"),
+	      @Result(property = "billNo", column = "BILL_NO"),
 	      @Result(property = "orderBookedBy", column = "ORDERBOOKBY"),
 	      @Result(property = "transport", column = "TRANSPORT"),
 	      @Result(property = "pktNumber", column = "PACKETNUM"),
@@ -58,6 +62,7 @@ public interface InvoiceMapper {
 	      @Result(property = "partyinfoID", column = "PARTYINFOID"),
 	      @Result(property = "invoicNum", column = "INVOICENUM"),
 	      @Result(property = "invoicDate", column = "INVOICEDATE"),
+	      @Result(property = "billNo", column = "BILL_NO"),
 	      @Result(property = "orderBookedBy", column = "ORDERBOOKBY"),
 	      @Result(property = "transport", column = "TRANSPORT"),
 	      @Result(property = "pktNumber", column = "PACKETNUM"),
@@ -89,6 +94,7 @@ public interface InvoiceMapper {
 	      @Result(property = "partyinfoID", column = "PARTYINFOID"),
 	      @Result(property = "invoicNum", column = "INVOICENUM"),
 	      @Result(property = "invoicDate", column = "INVOICEDATE"),
+	      @Result(property = "billNo", column = "BILL_NO"),
 	      @Result(property = "orderBookedBy", column = "ORDERBOOKBY"),
 	      @Result(property = "transport", column = "TRANSPORT"),
 	      @Result(property = "pktNumber", column = "PACKETNUM"),
