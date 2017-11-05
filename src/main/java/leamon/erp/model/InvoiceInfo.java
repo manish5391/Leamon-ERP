@@ -26,6 +26,8 @@ public class InvoiceInfo implements Serializable, Comparable<InvoiceInfo>{
 	private String orderBookedBy;;
 	private String transport;
 	private String pktNumber;
+	/*bill number : release 3.1*/
+	private String billNo;
 	
 	private String billAmount;
 	private String packingAmount;

@@ -13,7 +13,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -60,11 +63,15 @@ import leamon.erp.db.AccountDaoImpl;
 import leamon.erp.db.InvoiceDaoImpl;
 import leamon.erp.db.InvoiceItemDaoImpl;
 import leamon.erp.db.StockDaoImpl;
+import leamon.erp.db.StockQuantityDaoImpl;
+import leamon.erp.db.StockQuantityOrderHistoyDaoImpl;
 import leamon.erp.model.AccountInfo;
 import leamon.erp.model.InvoiceInfo;
 import leamon.erp.model.InvoiceItemInfo;
 import leamon.erp.model.StateCityInfo;
 import leamon.erp.model.StockItem;
+import leamon.erp.model.StockItemQuantity;
+import leamon.erp.model.StockItemQuantityOrderHistory;
 import leamon.erp.report.factory.InvoicePrintFactory;
 import leamon.erp.ui.event.FocusListenerHandler;
 import leamon.erp.ui.event.InvoiceUiEventHandler;
@@ -115,6 +122,7 @@ public class InvoiceUI extends JInternalFrame {
 	private JXTextField textFieldTaxableValue;
 	private JXTextField textFieldGtotal2;
 	private JXTextField textFieldStateAbbr;
+	private JXTextField textFieldBillNo;
 
 	private JComboBox comboBoxPrintCopiess;
 	private JScrollPane scrollPane_1;
@@ -139,6 +147,9 @@ public class InvoiceUI extends JInternalFrame {
 	private LeamonAutoInvoiceIDTextFieldSuggestor<List<InvoiceInfo>, InvoiceInfo> leamonAutoInvoiceIDTextFieldSuggestor;
 	private LeamonAutoStockItemTextFieldSuggestor<List<StockItem>, StockItem> leamonAutoStockItemTextFieldSuggestor;
 	private LeamonAutoAccountInfoTextFieldSuggestor<List<AccountInfo>, AccountInfo> leamonAutoAccountIDTextFieldSuggestor;
+	
+	/*Added fro Release 3.1*/
+	private JLabel hiddenLabelStockId;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -222,7 +233,7 @@ public class InvoiceUI extends JInternalFrame {
 		btnSave.setMnemonic(KeyEvent.VK_S);
 		btnSave.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK), "Save");
 		btnSave.getActionMap().put("Save", getSaveAction());
-		
+
 
 		btnRefresh = new JXButton();
 		btnRefresh.setBounds(813, 13, 98, 27);
@@ -278,7 +289,7 @@ public class InvoiceUI extends JInternalFrame {
 		textFieldPackingAmount.setName((String) null);
 		textFieldPackingAmount.setFont(new Font("DialogInput", Font.PLAIN, 16));
 		textFieldPackingAmount.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
-		
+
 
 		JXPanel panel_3 = new JXPanel();
 		panel_3.setBounds(0, 0, 1050, 36);
@@ -358,7 +369,7 @@ public class InvoiceUI extends JInternalFrame {
 		textFieldStateCode.setName("txtInventoryAccountName");
 		textFieldStateCode.setFont(new Font("DialogInput", Font.PLAIN, 16));
 		textFieldStateCode.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
-		
+
 		textFieldStateAbbr = new JXTextField();
 		textFieldStateAbbr.setPrompt("Abbr");
 		textFieldStateAbbr.setName("txtInventoryAccountName");
@@ -446,7 +457,7 @@ public class InvoiceUI extends JInternalFrame {
 		textAreaPartyAddress.setName(LeamonERPConstants.TEXTFIELD_INVOICE_ADDRESS);
 		scrollPane_1.setViewportView(textAreaPartyAddress);
 		autoCitySuggestor(textAreaPartyAddress);
-		
+
 		textFieldInvoicenumList = new JXTextField();
 		textFieldInvoicenumList.setBounds(78, 8, 121, 23);
 		textFieldInvoicenumList.setPrompt("Invoice No.");
@@ -579,7 +590,7 @@ public class InvoiceUI extends JInternalFrame {
 		tableInvoice.setName(LeamonERPConstants.TABLE_INVOICE);
 		tableInvoice.setModel(new TableInvoiceModel(null));
 		scrollPane.setViewportView(tableInvoice);
-		
+
 		setColumnWidth(tableInvoice);
 
 		getContentPane().add(panel_3);
@@ -648,48 +659,63 @@ public class InvoiceUI extends JInternalFrame {
 		lblAbbr.setFont(new Font("Trebuchet MS", Font.BOLD, 13));
 		lblAbbr.setBounds(623, 110, 39, 25);
 		panel_4.add(lblAbbr);
-		
-				JPanel panel_1 = new JPanel();
-				panel_1.setBounds(757, 44, 277, 65);
-				panel_4.add(panel_1);
-				panel_1.setBackground(new Color(255, 255, 255));
-				
-						textFieldPartynickName = new JXTextField();
-						textFieldPartynickName.setBounds(10, 34, 180, 23);
-						textFieldPartynickName.setPrompt("Marka");
-						textFieldPartynickName.setName("txtInventoryAccountMarka");
-						textFieldPartynickName.setFont(new Font("DialogInput", Font.PLAIN, 16));
-						textFieldPartynickName.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
-						
-								JXLabel label = new JXLabel();
-								label.setBounds(194, 35, 9, 20);
-								label.setText("/");
-								label.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-								
-										textFieldGoodsPackets2 = new JXTextField();
-										textFieldGoodsPackets2.setBounds(207, 34, 60, 23);
-										textFieldGoodsPackets2.setPrompt("Cartun");
-										textFieldGoodsPackets2.setName(LeamonERPConstants.TEXTFIELD_INVOICE_PACKET2);
-										textFieldGoodsPackets2.setFont(new Font("DialogInput", Font.PLAIN, 16));
-										textFieldGoodsPackets2.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
-										
-												JXLabel lblMarka = new JXLabel();
-												lblMarka.setBounds(10, 0, 68, 16);
-												lblMarka.setText("Marka");
-												lblMarka.setForeground(Color.GRAY);
-												lblMarka.setFont(new Font("Trebuchet MS", Font.BOLD, 13));
-												
-														JXLabel label_1 = new JXLabel();
-														label_1.setBounds(209, 0, 68, 16);
-														label_1.setText("No. of Pkt.");
-														label_1.setForeground(Color.GRAY);
-														label_1.setFont(new Font("Trebuchet MS", Font.BOLD, 13));
-														panel_1.setLayout(null);
-														panel_1.add(textFieldPartynickName);
-														panel_1.add(label);
-														panel_1.add(textFieldGoodsPackets2);
-														panel_1.add(lblMarka);
-														panel_1.add(label_1);
+
+		JPanel panel_1 = new JPanel();
+		panel_1.setBounds(757, 44, 277, 65);
+		panel_4.add(panel_1);
+		panel_1.setBackground(new Color(255, 255, 255));
+
+		textFieldPartynickName = new JXTextField();
+		textFieldPartynickName.setBounds(10, 34, 180, 23);
+		textFieldPartynickName.setPrompt("Marka");
+		textFieldPartynickName.setName("txtInventoryAccountMarka");
+		textFieldPartynickName.setFont(new Font("DialogInput", Font.PLAIN, 16));
+		textFieldPartynickName.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
+
+		JXLabel label = new JXLabel();
+		label.setBounds(194, 35, 9, 20);
+		label.setText("/");
+		label.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
+
+		textFieldGoodsPackets2 = new JXTextField();
+		textFieldGoodsPackets2.setBounds(207, 34, 60, 23);
+		textFieldGoodsPackets2.setPrompt("Cartun");
+		textFieldGoodsPackets2.setName(LeamonERPConstants.TEXTFIELD_INVOICE_PACKET2);
+		textFieldGoodsPackets2.setFont(new Font("DialogInput", Font.PLAIN, 16));
+		textFieldGoodsPackets2.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
+
+		JXLabel lblMarka = new JXLabel();
+		lblMarka.setBounds(10, 0, 68, 16);
+		lblMarka.setText("Marka");
+		lblMarka.setForeground(Color.GRAY);
+		lblMarka.setFont(new Font("Trebuchet MS", Font.BOLD, 13));
+
+		JXLabel label_1 = new JXLabel();
+		label_1.setBounds(209, 0, 68, 16);
+		label_1.setText("No. of Pkt.");
+		label_1.setForeground(Color.GRAY);
+		label_1.setFont(new Font("Trebuchet MS", Font.BOLD, 13));
+		panel_1.setLayout(null);
+		panel_1.add(textFieldPartynickName);
+		panel_1.add(label);
+		panel_1.add(textFieldGoodsPackets2);
+		panel_1.add(lblMarka);
+		panel_1.add(label_1);
+
+		JXLabel lblBillNodate = new JXLabel();
+		lblBillNodate.setText("Bill No.");
+		lblBillNodate.setForeground(Color.BLACK);
+		lblBillNodate.setFont(new Font("Trebuchet MS", Font.BOLD, 15));
+		lblBillNodate.setBounds(11, 84, 59, 25);
+		panel_4.add(lblBillNodate);
+
+		textFieldBillNo = new JXTextField();
+		textFieldBillNo.setPrompt("Bill No.");
+		textFieldBillNo.setName("txtInventoryBillNumber");
+		textFieldBillNo.setFont(new Font("DialogInput", Font.PLAIN, 16));
+		textFieldBillNo.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
+		textFieldBillNo.setBounds(11, 110, 110, 23);
+		panel_4.add(textFieldBillNo);
 
 		JXPanel panel_5 = new JXPanel();
 		panel_5.setBounds(0, 218, 1050, 49);
@@ -821,6 +847,11 @@ public class InvoiceUI extends JInternalFrame {
 		panel_5.add(textFieldProductTD);
 		panel_5.add(btnAddInvoiceEntry);
 
+		hiddenLabelStockId = new JLabel("");
+		hiddenLabelStockId.setFont(new Font("Tahoma", Font.BOLD, 11));
+		hiddenLabelStockId.setBounds(195, 6, 67, 14);
+		panel_5.add(hiddenLabelStockId);
+
 		setEnableOnLoad(Boolean.FALSE);
 		registerKeyEvent();
 		btnUpdate.setEnabled(Boolean.FALSE);
@@ -875,6 +906,8 @@ public class InvoiceUI extends JInternalFrame {
 		btnAddInvoiceEntry.setEnabled(isTurnOn);
 		btnSave.setEnabled(isTurnOn);
 		tableInvoice.setEnabled(isTurnOn);
+		
+		textFieldBillNo.setEnabled(isTurnOn);
 	}
 
 	public void cleanAll(String text){
@@ -900,6 +933,7 @@ public class InvoiceUI extends JInternalFrame {
 		textFieldProductAmount.setText(text);
 		textFieldProductTD.setText(text);
 		textFieldPartynickName.setText(text);
+		hiddenLabelStockId.setText(text);
 	}
 
 	public void getTextFromField(){
@@ -962,7 +996,7 @@ public class InvoiceUI extends JInternalFrame {
 		/*invoice item fields */
 		//textFieldProductDesc.addKeyListener(new InvoiceUiEventHandler(textFieldProductSize));
 		textFieldProductSize.addKeyListener(new InvoiceUiEventHandler(textFieldProductQty));
-		textFieldProductQty.addKeyListener(new InvoiceUiEventHandler(textFieldProductUnit));
+		textFieldProductQty.addKeyListener(new InvoiceUiEventHandler(textFieldProductUnit,this));
 		textFieldProductUnit.addKeyListener(new InvoiceUiEventHandler(textFieldProductRate,this));
 		textFieldProductRate.addKeyListener(new InvoiceUiEventHandler(textFieldProductAmount,this));
 		textFieldProductAmount.addKeyListener(new InvoiceUiEventHandler(textFieldProductTD,this));
@@ -1130,7 +1164,8 @@ public class InvoiceUI extends JInternalFrame {
 		}
 		
 		String invoiceNum			=	textFieldInvoiceNum.getText();
-		String invoiceDate =  datePickerInvoiceDate.getEditor().getText();
+		String invoiceDate 			=  datePickerInvoiceDate.getEditor().getText();
+		String billNo 				= textFieldBillNo.getText();
 
 		/*PartyData*/
 		String partyName			=	textFieldPartyName.getText();
@@ -1226,10 +1261,16 @@ public class InvoiceUI extends JInternalFrame {
 
 		for(int i=0; i< invoiceItemInfos.size(); i++){
 			InvoiceItemInfo invoiceItemInfo = invoiceItemInfos.get(i);
+			if(null != invoiceItemInfo.getStockItemId() && invoiceItemInfo.getStockItemId() > 0){
+				continue;
+			}
 			boolean isStockItemFound =  false;
 			for(int j=0;j < stockItems.size(); j++){
 				StockItem stockItem = stockItems.get(j);
-				if(null != stockItem.getName() && stockItem.getName().equals(invoiceItemInfo.getDescription())){
+				if(null != stockItem.getName() && stockItem.getName().equals(invoiceItemInfo.getDescription())
+						&& (!Strings.isNullOrEmpty(stockItem.getSize()) && stockItem.getSize().equals(invoiceItemInfo.getSize()) )
+						&& (!Strings.isNullOrEmpty(stockItem.getSaleunit()) && stockItem.getSaleunit().equals(invoiceItemInfo.getUnit()) )
+						){
 					invoiceItemInfo.setStockItemId(stockItem.getId());
 					isStockItemFound = true;
 					break;
@@ -1287,7 +1328,70 @@ public class InvoiceUI extends JInternalFrame {
 				e.printStackTrace();
 			}
 		}
-
+		
+		LinkedHashSet<Integer> uniqueStockIds = new LinkedHashSet<Integer>(); 
+		/*Update stock storage*/
+		for(int i=0; i < invoiceItemInfos.size(); i++){
+			uniqueStockIds.add(invoiceItemInfos.get(i).getStockItemId());
+		}
+		
+		for (Integer si : uniqueStockIds){
+			int totalOrderedQuantity = invoiceItemInfos.stream().filter(e -> (null !=e.getStockItemId())
+					&& e.getStockItemId() == si).map(InvoiceItemInfo::getQty)
+					.mapToInt(Integer::parseInt).sum();
+			
+			/*fetch quantity from DB to update*/
+			List<StockItemQuantity> stockItemQuantities =new ArrayList<StockItemQuantity>();
+			try {
+				stockItemQuantities = StockQuantityDaoImpl.getInstance().getItemList();
+			} catch (Exception exp) {
+				LOGGER.error(exp);
+			}
+			StockItemQuantity matchedItemQuantity = stockItemQuantities.stream()
+					.filter(s -> s.getStokItemid() == si)
+					.findFirst().orElse(null);
+			if(matchedItemQuantity != null){
+				int fetchedQuantity = 0;
+				try{
+					fetchedQuantity = Integer.valueOf(matchedItemQuantity.getQuantity());
+					if(fetchedQuantity >= totalOrderedQuantity){
+						fetchedQuantity = fetchedQuantity - totalOrderedQuantity;
+						matchedItemQuantity.setQuantity(String.valueOf(fetchedQuantity));
+						//update matchedItemQuantity in DB
+						matchedItemQuantity.setLastUpdatedDate(new Timestamp(System.currentTimeMillis()));
+						try{
+							StockQuantityDaoImpl.getInstance().update(matchedItemQuantity);
+							/*saving order history for ordered quantity*/
+							List<InvoiceItemInfo> invoiceItemInfos2 = invoiceItemInfos.stream().filter(e -> e.getStockItemId() == si).collect(Collectors.toList());
+							for(InvoiceItemInfo invoiceItemInfoToOrderHistory : invoiceItemInfos2){
+								StockItemQuantityOrderHistory stockItemQuantityOrderHistory = StockItemQuantityOrderHistory.builder()
+										.invoiceid(invoiceId)
+										.invoiceItemId(invoiceItemInfoToOrderHistory.getId())
+										.stokItemid(si)
+										.quantity(invoiceItemInfoToOrderHistory.getQty())
+										.description("")
+										.createdDate(new Timestamp(System.currentTimeMillis()))
+										.lastUpdatedDate(new Timestamp(System.currentTimeMillis()))
+										.build();
+								try{
+									StockQuantityOrderHistoyDaoImpl.getInstance().save(stockItemQuantityOrderHistory);
+								}catch(Exception exp){
+									LOGGER.error(exp);
+								}
+							}
+						}catch(Exception exp){
+							LOGGER.error(exp);
+						}
+					}else{
+						JOptionPane.showMessageDialog(this, "Stock quantity is greater than fetched stock storage.","Leamon-Erp:Stock Error",JOptionPane.ERROR_MESSAGE);
+						return ;
+					}
+				}catch(Exception exp){
+					LOGGER.error(exp);
+				}
+			}
+		}//end unique id loop
+		
 		//JOptionPane.showMessageDialog(this, "Saved successfully.","Message",JOptionPane.PLAIN_MESSAGE);
 		int option = JOptionPane.showConfirmDialog(this, "Saved successfully.\n Do you want to print ?");
 		if(option == JOptionPane.OK_OPTION){
@@ -1340,6 +1444,7 @@ public class InvoiceUI extends JInternalFrame {
 		Integer partyInfoId = info.getPartyinfoID();
 		String packtNumber = info.getPktNumber();
 		String transportName = info.getTransport();
+		String billNo = info.getBillNo();
 
 		List<AccountInfo>  accountInfos  =  new ArrayList<AccountInfo>();
 		try {
@@ -1360,11 +1465,7 @@ public class InvoiceUI extends JInternalFrame {
 		textFieldGoodsPackets1.setText(packtNumber);
 		textFieldGoodsPackets2.setText(packtNumber);
 		textFieldPartyTransportList.setText(transportName);
-
-		/*textFieldPartyName.setText(accountinfo.getName());
-		textFieldPartyGST.setText(accountinfo.getGstNumber());
-		textFieldPartynickName.setText(accountinfo.getNickName());
-		textFieldPartyCode.setText(String.valueOf(accountinfo.getPinCode()));*/
+		textFieldBillNo.setText(billNo);
 
 		TableInvoiceModel model = (TableInvoiceModel) tableInvoice.getModel();
 		model.setInvoiceItemInfos(invoiceItemInfos);
@@ -1433,7 +1534,9 @@ public class InvoiceUI extends JInternalFrame {
 		textFieldProductAmount.setText(LeamonERPConstants.EMPTY_STR);
 		textFieldProductTD.setText(LeamonERPConstants.EMPTY_STR);
 		textFieldDiscount.setText(LeamonERPConstants.EMPTY_STR);
-
+		hiddenLabelStockId.setText(LeamonERPConstants.EMPTY_STR);
+		textFieldBillNo.setText(LeamonERPConstants.EMPTY_STR);
+		
 		btnPrint.setEnabled(false);
 		btnUpdate.setEnabled(false);
 		btnDelete.setEnabled(false);
@@ -1595,6 +1698,7 @@ public class InvoiceUI extends JInternalFrame {
 				//.concat(Strings.isNullOrEmpty(info.getProductCode())? "" : " ".concat(info.getProductCode()))
 				);
 		textFieldProductSize.setText(info.getSize());
+		hiddenLabelStockId.setText(String.valueOf(info.getId()));
 		textFieldProductUnit.setText(info.getSaleunit());
 
 		InvoiceUiEventHandler invoiceiHandler = new InvoiceUiEventHandler(textFieldProductSize,this);
@@ -1701,6 +1805,7 @@ public class InvoiceUI extends JInternalFrame {
 		}
 		
 		String invoiceDate =  datePickerInvoiceDate.getEditor().getText();
+		String billNo 				= textFieldBillNo.getText();
 
 		/*PartyData*/
 		String partyName			=	textFieldPartyName.getText();
@@ -1836,6 +1941,7 @@ public class InvoiceUI extends JInternalFrame {
 				.id(actionObjectInvoiceInfo.getId())
 				.invoicNum(actionObjectInvoiceInfo.getInvoicNum())
 				.invoicDate(invoiceDate)
+				.billNo(billNo)
 				.orderBookedBy(orderBookedBy)
 				.transport(partyTransportList)
 				.pktNumber(goodsPackets2)

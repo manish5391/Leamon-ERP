@@ -63,10 +63,12 @@ public class InvoicePrintFactory {
 		
 		String invoiceNum = invoiceUI.getTextFieldInvoiceNum().getText();
 		String invoiceDate = invoiceUI.getDatePickerInvoiceDate().getEditor().getText();
+		String billNo = invoiceUI.getTextFieldBillNo().getText();
 		String partyName =   invoiceUI.getTextFieldPartyName().getText();
 		String partynickName =   invoiceUI.getTextFieldPartynickName().getText();
 		String partyCity = invoiceUI.getTextAreaPartyAddress().getText();
 		String partyState = invoiceUI.getTextFieldPartyState().getText();
+		
 		
 		String partyTransport = invoiceUI.getTextFieldPartyTransportList().getText();
 		String packets = invoiceUI.getTextFieldGoodsPackets1().getText();
@@ -99,6 +101,8 @@ public class InvoicePrintFactory {
 		parameters.put("partynickName", partynickName);
 		parameters.put("partyCity", partyCity);
 		parameters.put("partyTransport", partyTransport);
+		parameters.put("billNo", billNo);
+		parameters.put("invoiceDate", invoiceDate);
 		
 		parameters.put("invoiceNum", invoiceNum);
 		parameters.put("billAmount", billAmt);
