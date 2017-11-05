@@ -108,8 +108,5 @@ public class StockQuantityDaoImpl implements  LeamonERPDao<StockItemQuantity> {
 		}
 		LOGGER.info("StockQuantityDaoImpl[update] end.");
 	}
-
-	
-	
 	
 }
