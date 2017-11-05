@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.SelectKey;
 import org.apache.ibatis.annotations.Update;
 
 import leamon.erp.model.StockItem;
@@ -30,7 +31,7 @@ public interface StockQuantityMapper {
 	final String insert = "INSERT INTO STOCK_ITEM_QUANTITY (STOCK_ITEM_ID, QUANTITY, DESCRIPTION, CREATEDDATE, LASTUPDATEDDATE, ISENABLE) "
 						+ "VALUES (#{stokItemid}, #{quantity}, #{description}, #{createdDate}, #{lastUpdatedDate}, #{isEnable} )";
 	
-	final String update = "UPDATE STOCK_ITEM_QUANTITY SET STOCK_ITEM_ID = #{name}, QUANTITY = #{productCode},  "
+	final String update = "UPDATE STOCK_ITEM_QUANTITY SET STOCK_ITEM_ID = #{stokItemid}, QUANTITY = #{quantity},  "
 						+ "DESCRIPTION = #{description}, LASTUPDATEDDATE = #{lastUpdatedDate}  WHERE ID = #{id}";
 	
 	final String deleteById = "DELETE from STOCK_ITEM_QUANTITY WHERE ID = #{id}";
