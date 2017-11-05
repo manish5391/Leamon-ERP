@@ -9,9 +9,12 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
+import leamon.erp.component.helper.LeamonAutoStockItemTextFieldSuggestor;
+import leamon.erp.db.StockDaoImpl;
 import leamon.erp.db.StockQuantityDaoImpl;
 import leamon.erp.model.StockItem;
 import leamon.erp.model.StockItemQuantity;
+import leamon.erp.ui.event.InvoiceUiEventHandler;
 import leamon.erp.util.LeamonERPConstants;
 import lombok.Getter;
 
@@ -33,8 +36,11 @@ import javax.swing.JComponent;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JSeparator;
 import javax.swing.JScrollPane;
@@ -51,7 +57,7 @@ import javax.swing.UIManager;
  */
 
 @Getter
-public class StockItemQuantityUI extends JInternalFrame {
+public class StockItemQuantityUI extends JInternalFrame implements KeyListener{
 	private JTextField textSaleUnit;
 	private JTextField textShape;
 	private JTextField textDescription;
@@ -65,6 +71,9 @@ public class StockItemQuantityUI extends JInternalFrame {
 	private JSpinner spinnerQuanitity;
 	
 	static final Logger LOGGER = Logger.getLogger(StockItemQuantityUI.class);
+	private static final String CLASS_NAME="StockItemQuantityUI";
+	
+	private LeamonAutoStockItemTextFieldSuggestor<List<StockItem>, StockItem> leamonAutoStockItemTextFieldSuggestor;
 	
 	/**
 	 * Launch the application.
@@ -183,6 +192,7 @@ public class StockItemQuantityUI extends JInternalFrame {
 		btnClear.setMnemonic(KeyEvent.VK_R);
 		btnClear.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK), "Clear");
 		btnClear.getActionMap().put("Clear", getClearAction());
+		btnClear.addActionListener(e -> btnClearClick(e));
 		panel_1.add(btnClear);
 		
 		JButton btnEdit = new JButton("Edit");
@@ -196,6 +206,7 @@ public class StockItemQuantityUI extends JInternalFrame {
 		btnEdit.setMnemonic(KeyEvent.VK_E);
 		btnEdit.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.CTRL_DOWN_MASK), "Edit");
 		btnEdit.getActionMap().put("Edit", getEditAction());
+		btnEdit.addActionListener(e -> btnEditClick(e));
 		panel_1.add(btnEdit);
 		
 		JButton btnSave = new JButton("Save");
@@ -207,6 +218,7 @@ public class StockItemQuantityUI extends JInternalFrame {
 		btnSave.setMnemonic(KeyEvent.VK_S);
 		btnSave.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK), "Save");
 		btnSave.getActionMap().put("Save", getSaveAction());
+		btnSave.addActionListener(e -> btnSaveClick(e));
 		panel_1.add(btnSave);
 		
 		JButton btnDelete = new JButton("Delete");
@@ -220,6 +232,7 @@ public class StockItemQuantityUI extends JInternalFrame {
 		btnDelete.setMnemonic(KeyEvent.VK_D);
 		btnDelete.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_DOWN_MASK), "Delete");
 		btnDelete.getActionMap().put("Delete", getDeleteAction());
+		btnDelete.addActionListener(e -> btnDeleteClick(e));
 		panel_1.add(btnDelete);
 		
 		JSeparator separator_1 = new JSeparator();
@@ -265,7 +278,9 @@ public class StockItemQuantityUI extends JInternalFrame {
 		txtName.setColumns(10);
 		txtName.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
 		txtName.setBounds(194, 21, 233, 23);
+		//txtName.addKeyListener(this);
 		panel_1.add(txtName);
+		autoStockItemDescSuggestor(txtName);
 		
 		txtSize = new JTextField();
 		txtSize.setName("txtSize");
@@ -331,6 +346,27 @@ public class StockItemQuantityUI extends JInternalFrame {
 		txtSize.setText(item.getSize());
 		lblID.setText(""+item.getId());
 		labMsg.setText(LeamonERPConstants.EMPTY_STR);
+		
+		List<StockItemQuantity> stockItemQuantities =new ArrayList<StockItemQuantity>();
+	 	try {
+	 		stockItemQuantities = StockQuantityDaoImpl.getInstance().getItemList();
+		} catch (Exception exp) {
+			LOGGER.error(exp);
+		}
+	 	 
+	 	StockItemQuantity matchedItemQuantity = stockItemQuantities.stream()
+	 			.filter(s -> s.getStokItemid().equals(item.getId())).findFirst().orElse(null);
+	 	if(matchedItemQuantity != null){
+	 		try{
+	 		int quantity = Integer.parseInt(matchedItemQuantity.getQuantity());
+	 		((SpinnerNumberModel)spinnerQuanitity.getModel()).setValue(quantity);
+	 		}catch (Exception exp) {
+	 			LOGGER.error(exp);
+			}
+	 	}else{
+	 		((SpinnerNumberModel)spinnerQuanitity.getModel()).setValue(0);
+	 	}
+	 	
 		//btnSave.setEnabled(false);
 		if(item.getImagePath() != null && !item.getImagePath().isEmpty()){
 			File f = new File(item.getImagePath());
@@ -414,7 +450,8 @@ public class StockItemQuantityUI extends JInternalFrame {
 		txtName.requestFocus();
 		lblStockItemImage.setText(LeamonERPConstants.EMPTY_STR);
 		lblStockItemImage.setIcon(new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.NO_IMAGE)));
-		txtName.requestFocus();
+		//txtName.requestFocus();
+		((SpinnerNumberModel)spinnerQuanitity.getModel()).setValue("0");
 		LOGGER.info("StockItemQuantityUI[clear] btnClear end");
 	}
 	private boolean validateToSave(){
@@ -450,14 +487,92 @@ public class StockItemQuantityUI extends JInternalFrame {
 				.quantity(String.valueOf(quantity))
 				.createdDate(new Timestamp(System.currentTimeMillis()))
 				.lastUpdatedDate(new Timestamp(System.currentTimeMillis()))
+				.isEnable(Boolean.TRUE)
 				.build();
-		try{
-			StockQuantityDaoImpl.getInstance().save(stockItemQuantity);
-		}catch(Exception exp){
-			JOptionPane.showMessageDialog(this, exp, "Leamon-ERP : ERROR", JOptionPane.ERROR_MESSAGE);
-			return;
+		
+		/*check if already exist */
+		List<StockItemQuantity> stockItemQuantities =new ArrayList<StockItemQuantity>();
+	 	try {
+	 		stockItemQuantities = StockQuantityDaoImpl.getInstance().getItemList();
+		} catch (Exception exp) {
+			LOGGER.error(exp);
 		}
-		JOptionPane.showMessageDialog(this, "Saved Successfully.", "Leamon-ERP : Message", JOptionPane.PLAIN_MESSAGE);
+	 	 
+	 	StockItemQuantity matchedItemQuantity = stockItemQuantities.stream()
+	 			.filter(s -> s.getStokItemid().equals(stockItemQuantity.getStokItemid())).findFirst().orElse(null);
+	 	if(matchedItemQuantity==null){
+	 		/*save logic*/
+	 		try{
+				StockQuantityDaoImpl.getInstance().save(stockItemQuantity);
+				JOptionPane.showMessageDialog(this, "Saved Successfully.", "Leamon-ERP : Message", JOptionPane.PLAIN_MESSAGE);
+			}catch(Exception exp){
+				JOptionPane.showMessageDialog(this, exp, "Leamon-ERP : ERROR", JOptionPane.ERROR_MESSAGE);
+				LOGGER.error(exp);
+				return;
+			}
+	 	}else{
+	 		//Update it.
+	 		try{
+	 			stockItemQuantity.setId(matchedItemQuantity.getId());
+				StockQuantityDaoImpl.getInstance().update(stockItemQuantity);
+				JOptionPane.showMessageDialog(this, "updated Successfully.", "Leamon-ERP : Message", JOptionPane.PLAIN_MESSAGE);
+			}catch(Exception exp){
+				JOptionPane.showMessageDialog(this, exp, "Leamon-ERP : ERROR", JOptionPane.ERROR_MESSAGE);
+				LOGGER.error(exp);
+				return;
+			}
+	 	}
 		LOGGER.info("StockItemQuantityUI[saveStockItemQuantity] End.");
+	}
+	
+	private void btnClearClick(ActionEvent e){
+		clear();
+	}
+	private void btnDeleteClick(ActionEvent e){
+		//dele
+	}
+	private void btnEditClick(ActionEvent e){
+		
+	}
+	private void btnSaveClick(ActionEvent e){
+		saveStockItemQuantity();
+	}
+	
+	public void autoStockItemDescSuggestor(JTextField textField){
+		final String methodName="autoItemDescSuggestor";
+		LOGGER.info(CLASS_NAME+"["+methodName+"] inside");
+
+		List<StockItem> stockItemList = new ArrayList<>();
+		try {
+			stockItemList = StockDaoImpl.getInstance().getItemList();
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		leamonAutoStockItemTextFieldSuggestor 
+		= new LeamonAutoStockItemTextFieldSuggestor<List<StockItem>, StockItem>(textField, this);
+		leamonAutoStockItemTextFieldSuggestor.setItems(stockItemList);
+		LOGGER.info(CLASS_NAME+"["+methodName+"] end");
+	}
+	
+	public void setStockItemInfo(StockItem info){
+		setStockItem(info);
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		final int KEY_CODE = e.getKeyCode();
+		if(KEY_CODE == KeyEvent.VK_ENTER){
+			
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		
 	}
 }

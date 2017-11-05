@@ -10,7 +10,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -23,9 +25,14 @@ import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXTextField;
 
+import com.google.common.base.Strings;
+
+import leamon.erp.db.StockQuantityDaoImpl;
 import leamon.erp.model.InvoiceItemInfo;
 import leamon.erp.model.StockItem;
+import leamon.erp.model.StockItemQuantity;
 import leamon.erp.ui.InvoiceUI;
+import leamon.erp.ui.LeamonERP;
 import leamon.erp.ui.model.TableInvoiceModel;
 import leamon.erp.ui.model.TableStockListItemModel;
 import leamon.erp.util.LeamonERPConstants;
@@ -157,6 +164,7 @@ public class InvoiceUiEventHandler implements KeyListener, ActionListener, Mouse
 				}else if(textField.getName().equals(LeamonERPConstants.TEXTFIELD_INVOICE_SIZE)){
 					nextComponent.requestFocus();
 				}else if(textField.getName().equals(LeamonERPConstants.TEXTFIELD_INVOICE_QTY)){
+					invoiceProductQtyHandler(textField);
 					nextComponent.requestFocus();
 				}else if(textField.getName().equals(LeamonERPConstants.TEXTFIELD_INVOICE_UNIT)){
 					nextComponent.requestFocus();
@@ -203,9 +211,9 @@ public class InvoiceUiEventHandler implements KeyListener, ActionListener, Mouse
 				if(btn.getName().equals(LeamonERPConstants.BUTTON_INVOICE_ACTION_ADD)){
 					if(validateData()){
 						invoiceItemTableRocrding();
+						clearProductFields();
+						nextComponent.requestFocus();
 					}
-					clearProductFields();
-					nextComponent.requestFocus();
 				}
 			}
 		}//end jbutton
@@ -236,20 +244,30 @@ public class InvoiceUiEventHandler implements KeyListener, ActionListener, Mouse
 		
 		if(null == invoiceUI.getTextFieldProductDesc().getText() || invoiceUI.getTextFieldProductDesc().getText().isEmpty()){
 			JOptionPane.showMessageDialog(invoiceUI, "Product description can't be blank","Leamon-ERP",JOptionPane.ERROR_MESSAGE);
+			invoiceUI.getTextFieldProductDesc().requestFocusInWindow();
 			return false;
 		}
 		
 		if(null == invoiceUI.getTextFieldProductQty().getText() || invoiceUI.getTextFieldProductQty().getText().isEmpty()){
 			JOptionPane.showMessageDialog(invoiceUI, "Product quantity can't be blank","Leamon-ERP",JOptionPane.ERROR_MESSAGE);
+			invoiceUI.getTextFieldProductQty().requestFocusInWindow();
 			return false;
+		}else{
+			boolean isPassed = invoiceProductQtyHandler(invoiceUI.getTextFieldProductQty());
+			if(!isPassed){
+				invoiceUI.getTextFieldProductQty().requestFocusInWindow();
+				return false;
+			}
 		}
 		
 		if(null == invoiceUI.getTextFieldProductUnit().getText() || invoiceUI.getTextFieldProductUnit().getText().isEmpty()){
 			JOptionPane.showMessageDialog(invoiceUI, "Product unit can't be blank","Leamon-ERP",JOptionPane.ERROR_MESSAGE);
+			invoiceUI.getTextFieldProductUnit().requestFocusInWindow();
 			return false;
 		}
 		if(null == invoiceUI.getTextFieldProductRate().getText() || invoiceUI.getTextFieldProductRate().getText().isEmpty()){
 			JOptionPane.showMessageDialog(invoiceUI, "Product rate can't be blank","Leamon-ERP",JOptionPane.ERROR_MESSAGE);
+			invoiceUI.getTextFieldProductRate().requestFocusInWindow();
 			return false;
 		}
 		
@@ -316,7 +334,8 @@ public class InvoiceUiEventHandler implements KeyListener, ActionListener, Mouse
 		String productRate			=	invoiceUI.getTextFieldProductRate().getText();
 		String productAmount		=	invoiceUI.getTextFieldProductAmount().getText();
 		String productTD			=	invoiceUI.getTextFieldProductTD().getText();
-		
+		String stockId 				=	invoiceUI.getHiddenLabelStockId().getText();
+		invoiceUI.getHiddenLabelStockId().setText(LeamonERPConstants.EMPTY_STR);
 		try{
 			BigDecimal bd = new BigDecimal(productAmount);
 			bd = bd.setScale(2,RoundingMode.HALF_UP);
@@ -324,6 +343,15 @@ public class InvoiceUiEventHandler implements KeyListener, ActionListener, Mouse
 			DecimalFormat df = new DecimalFormat("#.00");
 			productAmount = df.format(bd.doubleValue());
 		}catch(Exception e){ LOGGER.error(e); }
+		
+		Integer stockIdValue = 0;
+		if(!Strings.isNullOrEmpty(stockId)){
+			try{
+				stockIdValue = Integer.valueOf(stockId);
+			}catch(Exception e){
+				LOGGER.error(e);
+			}
+		}
 		
 		InvoiceItemInfo info = InvoiceItemInfo.builder()
 				.description(productDescValue)
@@ -333,6 +361,7 @@ public class InvoiceUiEventHandler implements KeyListener, ActionListener, Mouse
 				.rate(productRate)
 				.amount(productAmount)
 				.td(productTD)
+				.stockItemId(stockIdValue)
 				.isEnable(Boolean.TRUE)
 				.createdDate(new Timestamp(System.currentTimeMillis()))
 				.lastUpdated(new Timestamp(System.currentTimeMillis()))
@@ -340,14 +369,6 @@ public class InvoiceUiEventHandler implements KeyListener, ActionListener, Mouse
 		if(invoiceUI == null){
 			return ;
 		}
-		
-		/*invoiceUI.getTextFieldProductDesc().setText(LeamonERPConstants.EMPTY_STR);
-		invoiceUI.getTextFieldProductSize().setText(LeamonERPConstants.EMPTY_STR);
-		invoiceUI.getTextFieldProductQty().setText(LeamonERPConstants.EMPTY_STR);
-		invoiceUI.getTextFieldProductUnit().setText(LeamonERPConstants.EMPTY_STR);
-		invoiceUI.getTextFieldProductRate().setText(LeamonERPConstants.EMPTY_STR);
-		invoiceUI.getTextFieldProductAmount().setText(LeamonERPConstants.EMPTY_STR);
-		invoiceUI.getTextFieldProductTD().setText(LeamonERPConstants.EMPTY_STR);*/
 
 		clearProductFields();
 		
@@ -671,5 +692,70 @@ public class InvoiceUiEventHandler implements KeyListener, ActionListener, Mouse
 		
 		invoiceUI.getTextFieldProductTD().setText(LeamonERPConstants.EMPTY_STR);
 		//invoiceUI.getTextFieldProductTD().repaint();
+	}
+	
+	private boolean invoiceProductQtyHandler(JTextField textField){
+		String qty = textField.getText();
+		int qtyVal = 0;
+		try{
+			qtyVal =Integer.parseInt(qty);
+		}catch(Exception exp){
+			LOGGER.equals(exp);
+		}
+
+		List<StockItemQuantity> stockItemQuantities =new ArrayList<StockItemQuantity>();
+		try {
+			stockItemQuantities = StockQuantityDaoImpl.getInstance().getItemList();
+		} catch (Exception exp) {
+			LOGGER.error(exp);
+		}
+		if(Strings.isNullOrEmpty(invoiceUI.getHiddenLabelStockId().getText())){
+			return false;
+		}
+
+		StockItemQuantity matchedItemQuantity = stockItemQuantities.stream()
+				.filter(s -> s.getStokItemid() == (Integer.parseInt(invoiceUI.getHiddenLabelStockId().getText())))
+				.findFirst().orElse(null);
+
+		if(matchedItemQuantity != null){
+			int fetchedQuantity = 0;
+			try{
+				fetchedQuantity = Integer.valueOf(matchedItemQuantity.getQuantity());
+
+				TableInvoiceModel model = (TableInvoiceModel) invoiceUI.getTableInvoice().getModel();
+				List<InvoiceItemInfo> invoiceItemInfos =  model.getInvoiceItemInfos();
+				int totalOrderedQuantity = 0;
+				totalOrderedQuantity = invoiceItemInfos.stream().filter(e -> (null !=e.getStockItemId())
+						&& e.getStockItemId() == matchedItemQuantity.getStokItemid()).map(InvoiceItemInfo::getQty)
+						.mapToInt(Integer::parseInt).sum();
+
+				
+				int maxTotalQty = totalOrderedQuantity + qtyVal;
+				if(maxTotalQty > fetchedQuantity){
+					//JOptionPane.showMessageDialog(invoiceUI, "insufficient storage. Please add stock","Leamon-ERP : Stock",JOptionPane.ERROR_MESSAGE);
+					int option  = JOptionPane.showConfirmDialog(invoiceUI, "insufficient storage. \nDo you want to add stock?",
+							"Leamon-ERP : Stock", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
+					if(option == JOptionPane.OK_OPTION){
+						LeamonERP.stockItemList.hprlnkAddStockQuantityClick(null);
+					}
+					return false;
+				}else{
+					return true;
+				}
+				
+			}catch(Exception e){
+				LOGGER.error(e);
+				return false;
+			}
+		}else{
+			//int option = JOptionPane.showConfirmDialog(invoiceUI, "insufficient storage. \nDo you want to add stock?");
+			int option  = JOptionPane.showConfirmDialog(invoiceUI, "insufficient storage. \nDo you want to add stock?",
+					"Leamon-ERP : Stock", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
+			if(option == JOptionPane.OK_OPTION){
+				LeamonERP.stockItemList.hprlnkAddStockQuantityClick(null);
+			}
+			return false;
+		}
+		
 	}
 }

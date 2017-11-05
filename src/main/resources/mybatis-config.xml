@@ -32,5 +32,6 @@
 		<mapper class="leamon.erp.db.mapper.UserInfoMapper"/>
 		<mapper class="leamon.erp.db.mapper.PaymentReceivedMapper"/>
 		<mapper class="leamon.erp.db.mapper.StockQuantityMapper"/>
+		<mapper class="leamon.erp.db.mapper.StockQuantityOrderHistoryMapper"/>
 	</mappers>
 </configuration>

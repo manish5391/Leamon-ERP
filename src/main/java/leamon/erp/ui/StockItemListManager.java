@@ -433,12 +433,25 @@ public class StockItemListManager extends JInternalFrame implements ActionListen
 		tblStockList.getColumnModel().getColumn(8).setPreferredWidth(127);*/
 	}
 	
-	private void hprlnkAddStockQuantityClick(ActionEvent e){
+	public void hprlnkAddStockQuantityClick(ActionEvent e){
 		LOGGER.info("StockItemList[hprlnkAddStockQuantityClick] inside");
 		int selectedRow = tblStockList.getSelectedRow();
 		
 		if(selectedRow == LeamonERPConstants.NO_ROW_SELECTED){
-			JOptionPane.showMessageDialog(this, "Please select atleast one item", "Warning", JOptionPane.WARNING_MESSAGE);
+			//JOptionPane.showMessageDialog(this, "Please select atleast one item", "Warning", JOptionPane.WARNING_MESSAGE);
+			if(!LeamonERP.stockItemQuantityUI.isVisible()){
+				LeamonERP.desktopPane.add(LeamonERP.stockItemQuantityUI);
+			}
+			LeamonERP.stockItemQuantityUI.requestFocus();
+			try {
+				LeamonERP.stockItemQuantityUI.setSelected(true);
+			} catch (PropertyVetoException e1) {
+				LOGGER.error("StockItemList[actionPerformed] "+e1);
+			}
+			
+			LeamonERP.stockItemQuantityUI.setVisible(true);
+			LeamonERP.stockItemQuantityUI.moveToFront();
+			SwingUtilities.updateComponentTreeUI(this);
 			return;
 		}
 		
