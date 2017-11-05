@@ -20,6 +20,7 @@ import java.util.regex.PatternSyntaxException;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -34,6 +35,7 @@ import com.google.common.base.Strings;
 import leamon.erp.model.AccountInfo;
 import leamon.erp.model.StockItem;
 import leamon.erp.ui.InvoiceUI;
+import leamon.erp.ui.StockItemQuantityUI;
 import leamon.erp.ui.model.AccountInfoInvoiceListCellRender;
 import leamon.erp.ui.model.StockItemsInvoiceListCellRender;
 
@@ -42,7 +44,9 @@ public class LeamonAutoStockItemTextFieldSuggestor  <T extends List<E>, E> exten
 	JXList lst = null;
 	java.util.TreeSet<E> val = new java.util.TreeSet<E>();
 	java.util.Vector<E> tempVector = new java.util.Vector<E>(1, 1);
-	InvoiceUI ui;
+	//InvoiceUI ui;
+	//StockItemQuantityUI stockItemQuantityUI;
+	JInternalFrame ui;
 	String txt;
 	
 	StringBuffer typed = new StringBuffer();
@@ -58,9 +62,22 @@ public class LeamonAutoStockItemTextFieldSuggestor  <T extends List<E>, E> exten
 		((JPanel)this.getContentPane()).setBorder(BorderFactory.createLineBorder(Color.YELLOW, 3));
 		lst.setToolTipText("Press F5, F6 to navigate, F7 to select");
 	}
-	public LeamonAutoStockItemTextFieldSuggestor(JComponent jc, InvoiceUI ui) {
+	/*public LeamonAutoStockItemTextFieldSuggestor(JComponent jc, InvoiceUI ui) {
 		this();
 		this.ui  = ui;
+		parent = (JTextComponent) jc;
+		jc.addFocusListener(this);
+		jc.addKeyListener(this);
+	}*/
+
+	public LeamonAutoStockItemTextFieldSuggestor(JComponent jc, JInternalFrame frameui) {
+		this();
+		/*if(frameui instanceof InvoiceUI){
+			this.ui  = (InvoiceUI)frameui;
+		}else if(frameui instanceof StockItemQuantityUI){
+			this.stockItemQuantityUI = (StockItemQuantityUI)frameui;
+		}*/
+		this.ui = frameui;
 		parent = (JTextComponent) jc;
 		jc.addFocusListener(this);
 		jc.addKeyListener(this);
@@ -109,10 +126,17 @@ public class LeamonAutoStockItemTextFieldSuggestor  <T extends List<E>, E> exten
 	private void select(boolean enterPressed) {
 		if(!this.isVisible()) 
 		{
-			if(!Strings.isNullOrEmpty(ui.getTextFieldProductDesc().getText())){
-				ui.getTextFieldProductSize().requestFocus();
+			if(ui instanceof InvoiceUI){
+				if(!Strings.isNullOrEmpty(((InvoiceUI)ui).getTextFieldProductDesc().getText())){
+					((InvoiceUI)ui).getTextFieldProductSize().requestFocus();
+				}
 			}
 			
+			if(ui instanceof StockItemQuantityUI){
+				if(!Strings.isNullOrEmpty(((StockItemQuantityUI)ui).getTxtName().getText())){
+					((StockItemQuantityUI)ui).getTxtSize().requestFocus();
+				}
+			}
 			return;
 		}
 		if(parent == null) {
@@ -121,7 +145,12 @@ public class LeamonAutoStockItemTextFieldSuggestor  <T extends List<E>, E> exten
 		
 		StockItem info = (StockItem) lst.getSelectedValue();
 		parent.setText(info.getName());
-		setItemInfoData(ui,info);
+		if(ui instanceof InvoiceUI){
+			setItemInfoData(((InvoiceUI)ui),info);
+		}
+		if(ui instanceof StockItemQuantityUI){
+			setItemInfoData(((StockItemQuantityUI)ui),info);
+		}
 		this.setVisible(false);
 	}
 
@@ -244,5 +273,8 @@ public class LeamonAutoStockItemTextFieldSuggestor  <T extends List<E>, E> exten
 	
 	private void setItemInfoData(InvoiceUI invoiceUI ,StockItem info){
 		invoiceUI.setStockItemInfo(info);
+	}
+	private void setItemInfoData(StockItemQuantityUI stockItemQuantityUI ,StockItem info){
+		stockItemQuantityUI.setStockItemInfo(info);
 	}
 }
