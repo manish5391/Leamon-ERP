@@ -27,6 +27,7 @@ import org.jdesktop.swingx.JXTextField;
 
 import com.google.common.base.Strings;
 
+import leamon.erp.db.StockDaoImpl;
 import leamon.erp.db.StockQuantityDaoImpl;
 import leamon.erp.model.InvoiceItemInfo;
 import leamon.erp.model.StockItem;
@@ -737,6 +738,7 @@ public class InvoiceUiEventHandler implements KeyListener, ActionListener, Mouse
 							"Leamon-ERP : Stock", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
 					if(option == JOptionPane.OK_OPTION){
 						LeamonERP.stockItemList.hprlnkAddStockQuantityClick(null);
+						LeamonERP.stockItemQuantityUI.setStockItemQuantity(matchedItemQuantity);
 					}
 					return false;
 				}else{
@@ -752,7 +754,15 @@ public class InvoiceUiEventHandler implements KeyListener, ActionListener, Mouse
 			int option  = JOptionPane.showConfirmDialog(invoiceUI, "insufficient storage. \nDo you want to add stock?",
 					"Leamon-ERP : Stock", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
 			if(option == JOptionPane.OK_OPTION){
+				StockItem stockItemPresent =null;
+				try{
+					List<StockItem> stockItems = StockDaoImpl.getInstance().getItemList();
+					stockItemPresent = stockItems.stream().filter(e -> e.getId() == Integer.parseInt(invoiceUI.getHiddenLabelStockId().getText())).findAny().orElse(null);
+				}catch(Exception exp){
+					LOGGER.error(exp);
+				}
 				LeamonERP.stockItemList.hprlnkAddStockQuantityClick(null);
+				LeamonERP.stockItemQuantityUI.setStockItemInfo(stockItemPresent);
 			}
 			return false;
 		}

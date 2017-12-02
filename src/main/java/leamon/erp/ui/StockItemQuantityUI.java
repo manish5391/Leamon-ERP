@@ -555,7 +555,25 @@ public class StockItemQuantityUI extends JInternalFrame implements KeyListener{
 	}
 	
 	public void setStockItemInfo(StockItem info){
+		if(info ==null){
+			return ;
+		}
 		setStockItem(info);
+	}
+	
+	public void setStockItemQuantity(StockItemQuantity stockItemQuantity){
+		if(stockItemQuantity == null){
+			return ;
+		}
+		StockItem stockItemPresent =null;
+		try{
+			List<StockItem> stockItems = StockDaoImpl.getInstance().getItemList();
+			stockItemPresent = stockItems.stream().filter(e -> e.getId() == stockItemQuantity.getStokItemid()).findAny().orElse(null);
+		}catch(Exception exp){
+			LOGGER.error(exp);
+		}
+		
+		setStockItemInfo(stockItemPresent);
 	}
 
 	@Override

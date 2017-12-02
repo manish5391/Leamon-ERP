@@ -181,9 +181,13 @@ public interface LeamonERPConstants {
 	
 	/* Table Header - Payment Received */
 	String TABLE_HEADER_INVOICE_NO="Invoice No";
-	String TABLE_HEADER_BILLING_AMOUNT="Bill. Amt.";
-	String TABLE_HEADER_PACKING_AMOUNT="W. Amt.";
+	String TABLE_HEADER_AMOUNT="Amount";
+	String TABLE_HEADER_ADJUST="Adjust";
 	String TABLE_HEADER_STATUS="STATUS";
+	String TABLE_HEADER_RECEIVED_PAYMENT="Received";
+	String TABLE_HEADER_REMAINING_PAYMENT="Remaining";
+	String TYPE_BILL_AMOUNT_ADJUSTMENT="BA"; //Billing Amount
+	String TYPE_AMOUNT_WITHOUT_BILL_ADJUSTMENT="WA"; //without billing amount
 	
 	String ACTION_COMMAND_="DESCRIPTIONS";
 	
@@ -215,4 +219,6 @@ public interface LeamonERPConstants {
 	String TEXTFIELD_INVOICE_ADDRESS = "textFieldADDRESS";
 	
 	String TABLE_PAYMENT = "TablePayment";
+	
+	
 }

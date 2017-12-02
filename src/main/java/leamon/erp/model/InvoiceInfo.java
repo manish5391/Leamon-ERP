@@ -30,25 +30,30 @@ public class InvoiceInfo implements Serializable, Comparable<InvoiceInfo>{
 	private String billNo;
 	
 	private String billAmount;
-	private String packingAmount;
+	//private String packingAmount;
 	private String gstValue;
 	
 	private List<InvoiceItemInfo> items;
-	
-	/*added for handling payment @ 11 OCT,2017*/
-	
-	/*isBillingAmountPaidClear : this amount is fully paid nothing is remaining.*/
-	private boolean isBillingAmountPaidClear;
-	/*isPackingAmountPaidClear : this amount is fully paid nothing is remaining.*/
-	private boolean isPackingAmountPaidClear;
-	
-	/*billAmountPaid : how much billing amount has been paid. It is used to calculate remaining payment*/
-	private String billAmountPaid;
-	private String packingAmountPaid;
-	
+
 	private Timestamp createdDate;
 	private Timestamp lastUpdated;
 	private boolean isEnable;
+	
+	/*---Release 3.2--- Nov 15,2017-*/
+	private String grBiltyNumber; //bilty nuber
+	private String col1Name;
+	private String col2Name;
+	private String col1Val;
+	private String col2Val;
+	private String col1Operator;
+	private String col2Operator;
+	private String withoutBillAmount; //packing amount
+	private String remainingBillAmount; //how much is left to paid
+	private String remainingWithoutBillAmount; //how much is left to paid in packing amount
+	private String paidBillAmount; //how much is paid
+	private String paidWithoutBillAmount; //how much is paid in packing amount
+	private String paidStatus; //CLEAR, REMAINING, NOTHING PAID
+	private String remainingStatus; //clear, remaining, Nothing Paid
 	
 	@Override
 	public int compareTo(InvoiceInfo o) {

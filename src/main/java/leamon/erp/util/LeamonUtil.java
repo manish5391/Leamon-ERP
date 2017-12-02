@@ -10,6 +10,7 @@ import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
+import org.apache.log4j.Logger;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import org.jdesktop.swingx.combobox.ListComboBoxModel;
 
@@ -19,8 +20,12 @@ import leamon.erp.model.InvoiceInfo;
 import leamon.erp.model.InvoiceItemInfo;
 import leamon.erp.ui.InvoiceUI;
 import leamon.erp.ui.model.TableInvoiceModel;
+import leamon.erp.ui.model.TablePaymentReceivedModel;
 
 public class LeamonUtil {
+	
+	private static final Logger LOGGER = Logger.getLogger(LeamonUtil.class);
+	private static final String CLASS_NAME = "LeamonUtil";
 	
 	public static void prepareAutoCompleterCombo(JComboBox combo, List<String> data){
 		combo.setEditable(Boolean.TRUE);
@@ -42,16 +47,24 @@ public class LeamonUtil {
 	}
 	
 	public static String calcPackingAmount(InvoiceInfo invoiceInfo) throws Exception{
-
+		final String METHOD_NAME = "calcPackingAmount";
 		String billAmtVal = invoiceInfo.getBillAmount();
 		String grandTotal= calcGrandTotal(invoiceInfo);
 
 		double billAmt = 0;
 		double grandTotalAmt = 0;
 
-		grandTotalAmt = Double.parseDouble(grandTotal);
+		try{
+			grandTotalAmt = Double.parseDouble(grandTotal);
+		}catch(Exception exp){
+			LOGGER.error(CLASS_NAME+"["+METHOD_NAME+"] Error : "+exp);
+		}
 
-		billAmt = Double.parseDouble(billAmtVal);
+		try{
+			billAmt = Double.parseDouble(billAmtVal);
+		}catch(Exception exp){
+			LOGGER.error(CLASS_NAME+"["+METHOD_NAME+"] Error : "+exp);
+		}
 
 		double packingAmt = grandTotalAmt - billAmt;
 		return getRoundff(packingAmt);
@@ -69,6 +82,8 @@ public class LeamonUtil {
 	}
 	
 	public static String calcInvoiceItemsDiscount(InvoiceInfo invoiceInfo) throws Exception{
+		final String METHOD_NAME = "calcInvoiceItemsDiscount";
+		
 		List<InvoiceItemInfo> invoiceItemInfos = invoiceInfo.getItems();
 		double totalDiscount = 0;
 		
@@ -79,10 +94,16 @@ public class LeamonUtil {
 			double amount = 0;
 			try{
 				td = Double.parseDouble(tdValue);
-			}catch(Exception e){
-				
+			}catch(Exception exp){
+				LOGGER.error(CLASS_NAME+"["+METHOD_NAME+"] Error : "+exp);
 			}
-			amount = Double.parseDouble(amountValue);
+			
+			try{
+				amount = Double.parseDouble(amountValue);
+			}catch(Exception exp){
+				LOGGER.error(CLASS_NAME+"["+METHOD_NAME+"] Error : "+exp);
+			}
+			
 			double dis = (amount * td)/100;
 			totalDiscount = totalDiscount + dis; 
 		}
@@ -91,13 +112,23 @@ public class LeamonUtil {
 	
 	/**Calculates Taxable Amount  ( TextFieldTotal - TextFieldDiscount = TaxableValue )*/
 	public static  String calcTaxableValue(InvoiceInfo invoiceInfo) throws Exception{
+		final String METHOD_NAME = "calcInvoiceItemsDiscount";
+		
 		double totalAmt = 0;
 		String totalVal = calcInvoiceItemsTotal(invoiceInfo);
+		try{
 		totalAmt = Double.parseDouble(totalVal);
+		}catch(Exception exp){
+			LOGGER.error(CLASS_NAME+"["+METHOD_NAME+"] Error : "+exp);
+		}
 		
 		double disAmt = 0;
 		String disAmtVal = calcInvoiceItemsDiscount(invoiceInfo);
+		try{
 		disAmt = Double.parseDouble(disAmtVal);
+		}catch(Exception exp){
+			LOGGER.error(CLASS_NAME+"["+METHOD_NAME+"] Error : "+exp);
+		}
 		
 		double taxableValue = totalAmt - disAmt;
 		return (getRoundff(taxableValue));
@@ -105,13 +136,21 @@ public class LeamonUtil {
 	
 	/** Calculates Grand Total ( ((TextFieldTaxableValue * TextFieldTAX)/100) + TextFieldTaxableValue = TextFieldGtotal2,TextFieldGtotal1 )*/
 	public static String calcGrandTotal(InvoiceInfo invoiceInfo) throws Exception{
+		final String METHOD_NAME = "calcGrandTotal";
 		String taxValue  = invoiceInfo.getGstValue();
 		double taxVal = 0;
+		try{
 			taxVal = Double.parseDouble(taxValue);
-		 
+		}catch(Exception exp){
+			LOGGER.error(exp);
+		}
 		String taxableval = calcTaxableValue(invoiceInfo);
 		double taxableAmt = 0;
+		try{
 		taxableAmt = Double.parseDouble(taxableval);
+		}catch(Exception exp){
+			LOGGER.error(CLASS_NAME+"["+METHOD_NAME+"] Error : "+exp);
+		}
 		
 		double grandTotal = taxableAmt+taxVal;
 		

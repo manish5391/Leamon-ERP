@@ -21,11 +21,17 @@ public interface InvoiceMapper {
 	final String  getAllWithDisabled = "SELECT * FROM INVOICE_BILL ORDER BY ID";
 	final String getById = "SELECT * FROM INVOICE_BILL WHERE ID = #{id}";
 	
-	final String insert = "INSERT INTO INVOICE_BILL (PARTYINFOID, INVOICENUM, INVOICEDATE, BILL_NO, ORDERBOOKBY, "
-							+ "TRANSPORT, PACKETNUM, GSTAMOUNT, BILLAMOUNT, "
-							+ " CREATEDDATE, LASTUPDATEDDATE, ISENABLE) "
-						+ "VALUES (#{partyinfoID}, #{invoicNum}, #{invoicDate}, #{billNo}, #{orderBookedBy}, "
-						+ "#{transport}, #{pktNumber}, #{gstValue}, #{billAmount}, "
+	final String insert = "INSERT INTO INVOICE_BILL (PARTYINFOID, INVOICENUM, INVOICEDATE, BILL_NO, GRNUMBER, ORDERBOOKBY, "
+							+ "TRANSPORT, PACKETNUM, GSTAMOUNT, "
+							+ "BILLAMOUNT, PAIDBILLAMOUNT, REMAININGBILLAMOUNT, PAIDSTATUS, "
+							+ "WITHOUTBILLAMOUNT, PAIDWITHOUTBILLAMOUNT, REMAININGWITHOUTBILLAMOUNT, REMAININGSTATUS, "
+							+ "COL1NAME, COL1VAL, COL2NAME, COL2VAL, COL1OPERATOR, COL2OPERATOR, "
+							+ "CREATEDDATE, LASTUPDATEDDATE, ISENABLE) "
+						+ "VALUES ( #{partyinfoID}, #{invoicNum}, #{invoicDate}, #{billNo}, #{grBiltyNumber},  #{orderBookedBy}, "
+						+ "#{transport}, #{pktNumber}, #{gstValue}, "
+						+ "#{billAmount}, #{paidBillAmount}, #{remainingBillAmount}, #{paidStatus}, "
+						+ "#{withoutBillAmount}, #{paidWithoutBillAmount}, #{remainingWithoutBillAmount}, #{remainingStatus}, "
+						+ "#{col1Name}, #{col1Val}, #{col2Name}, #{col2Val}, #{col1Operator}, #{col2Operator},"
 						+ "#{createdDate}, #{lastUpdated}, #{isEnable})";
 	
 	final String update = "UPDATE INVOICE_BILL SET PARTYINFOID = #{partyinfoID}, INVOICENUM = #{invoicNum}, INVOICEDATE = #{invoicDate}, "

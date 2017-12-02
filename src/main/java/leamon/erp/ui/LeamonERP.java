@@ -325,7 +325,7 @@ public class LeamonERP extends JFrame {
 		hprlnkPaymentRegister.setForeground(Color.BLACK);
 		hprlnkPaymentRegister.setFont(new Font("Courier New", Font.BOLD, 18));
 		hprlnkPaymentRegister.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
-		hprlnkPaymentRegister.setBounds(21, 11, 193, 23);
+		hprlnkPaymentRegister.setBounds(4, 11, 193, 23);
 		taskPaneReport.getContentPane().add(hprlnkPaymentRegister);
 		hprlnkPaymentRegister.addActionListener(e -> hprlnkPaymentRegisterClick(e));
 

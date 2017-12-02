@@ -3,6 +3,7 @@ package leamon.erp.ui.event;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import javax.swing.JCheckBox;
 import javax.swing.JTextField;
 
 import org.apache.log4j.Logger;
@@ -15,11 +16,15 @@ public class PaymentUIKeyHndler implements KeyListener {
 	
 	private static final Logger LOGGER = Logger.getLogger(InvoiceUiEventHandler.class);
 	private JTextField nextComponent;
-
+	private JCheckBox nextComponentCheckBox;
+	
 	public PaymentUIKeyHndler(JTextField nextComponent){
 		this.nextComponent = nextComponent;
 	}
 	
+	public PaymentUIKeyHndler(JCheckBox nextComponent){
+		this.nextComponentCheckBox = nextComponent;
+	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {
@@ -58,6 +63,14 @@ public class PaymentUIKeyHndler implements KeyListener {
 					nextComponent.setText(textField.getText());
 				}
 				
+			}else if(nextComponentCheckBox != null){
+				nextComponentCheckBox.requestFocus();
+			}
+		}else if(e.getSource() instanceof JCheckBox){
+			if(nextComponentCheckBox != null){
+				nextComponentCheckBox.requestFocus();
+			}else if (nextComponent != null ){
+				nextComponent.requestFocus();
 			}
 		}
 	}//end

@@ -62,12 +62,14 @@ import leamon.erp.component.helper.LeamonAutoStockItemTextFieldSuggestor;
 import leamon.erp.db.AccountDaoImpl;
 import leamon.erp.db.InvoiceDaoImpl;
 import leamon.erp.db.InvoiceItemDaoImpl;
+import leamon.erp.db.OperationInfoDaoImpl;
 import leamon.erp.db.StockDaoImpl;
 import leamon.erp.db.StockQuantityDaoImpl;
 import leamon.erp.db.StockQuantityOrderHistoyDaoImpl;
 import leamon.erp.model.AccountInfo;
 import leamon.erp.model.InvoiceInfo;
 import leamon.erp.model.InvoiceItemInfo;
+import leamon.erp.model.OperationInfo;
 import leamon.erp.model.StateCityInfo;
 import leamon.erp.model.StockItem;
 import leamon.erp.model.StockItemQuantity;
@@ -76,6 +78,7 @@ import leamon.erp.report.factory.InvoicePrintFactory;
 import leamon.erp.ui.event.FocusListenerHandler;
 import leamon.erp.ui.event.InvoiceUiEventHandler;
 import leamon.erp.ui.model.TableInvoiceModel;
+import leamon.erp.util.InvoicePaymentStatusEnum;
 import leamon.erp.util.LeamonERPConstants;
 import leamon.erp.util.LeamonUtil;
 import lombok.Getter;
@@ -150,7 +153,15 @@ public class InvoiceUI extends JInternalFrame {
 	
 	/*Added fro Release 3.1*/
 	private JLabel hiddenLabelStockId;
-
+	
+	/*Added from Release 3.2 */
+	private JXTextField textFieldCol1;
+	private JXTextField textFieldCol1Val;
+	private JXTextField textFieldCol2;
+	private JXTextField textFieldCol2Val;
+	private JXTextField textFieldGrNumber;
+	
+	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -491,7 +502,7 @@ public class InvoiceUI extends JInternalFrame {
 		lblTax.setText("GST");
 		lblTax.setForeground(new Color(0, 102, 51));
 		lblTax.setFont(new Font("Trebuchet MS", Font.BOLD, 13));
-		lblTax.setBounds(338, 16, 39, 16);
+		lblTax.setBounds(293, 16, 39, 16);
 		panel_7.add(lblTax);
 
 		textFieldGstTAX = new JXTextField();
@@ -500,14 +511,14 @@ public class InvoiceUI extends JInternalFrame {
 		textFieldGstTAX.setFont(new Font("DialogInput", Font.PLAIN, 16));
 		textFieldGstTAX.setEnabled(false);
 		textFieldGstTAX.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
-		textFieldGstTAX.setBounds(338, 38, 48, 23);
+		textFieldGstTAX.setBounds(293, 38, 48, 23);
 		panel_7.add(textFieldGstTAX);
 
 		JXLabel lblGtotal = new JXLabel();
 		lblGtotal.setText("G.Total");
 		lblGtotal.setForeground(new Color(0, 102, 51));
 		lblGtotal.setFont(new Font("Trebuchet MS", Font.BOLD, 13));
-		lblGtotal.setBounds(408, 16, 71, 16);
+		lblGtotal.setBounds(363, 16, 71, 16);
 		panel_7.add(lblGtotal);
 
 		textFieldGTotal1 = new JXTextField();
@@ -517,7 +528,7 @@ public class InvoiceUI extends JInternalFrame {
 		textFieldGTotal1.setFont(new Font("DialogInput", Font.PLAIN, 16));
 		textFieldGTotal1.setEnabled(false);
 		textFieldGTotal1.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
-		textFieldGTotal1.setBounds(396, 38, 141, 23);
+		textFieldGTotal1.setBounds(351, 38, 141, 23);
 		panel_7.add(textFieldGTotal1);
 
 		JXLabel label_14 = new JXLabel();
@@ -568,6 +579,22 @@ public class InvoiceUI extends JInternalFrame {
 		lblTaxableValue.setFont(new Font("Trebuchet MS", Font.BOLD, 13));
 		lblTaxableValue.setBounds(193, 16, 90, 16);
 		panel_7.add(lblTaxableValue);
+		
+		textFieldCol1 = new JXTextField();
+		textFieldCol1.setBounds(514, 11, 71, 26);
+		panel_7.add(textFieldCol1);
+		
+		textFieldCol1Val = new JXTextField();
+		textFieldCol1Val.setBounds(514, 43, 71, 26);
+		panel_7.add(textFieldCol1Val);
+		
+		textFieldCol2 = new JXTextField();
+		textFieldCol2.setBounds(596, 11, 71, 25);
+		panel_7.add(textFieldCol2);
+		
+		textFieldCol2Val = new JXTextField();
+		textFieldCol2Val.setBounds(596, 42, 71, 26);
+		panel_7.add(textFieldCol2Val);
 		panel.add(panel_6);
 		panel_6.setLayout(null);
 		panel_6.add(btnAdd);
@@ -706,7 +733,7 @@ public class InvoiceUI extends JInternalFrame {
 		lblBillNodate.setText("Bill No.");
 		lblBillNodate.setForeground(Color.BLACK);
 		lblBillNodate.setFont(new Font("Trebuchet MS", Font.BOLD, 15));
-		lblBillNodate.setBounds(11, 84, 59, 25);
+		lblBillNodate.setBounds(11, 65, 59, 25);
 		panel_4.add(lblBillNodate);
 
 		textFieldBillNo = new JXTextField();
@@ -714,8 +741,24 @@ public class InvoiceUI extends JInternalFrame {
 		textFieldBillNo.setName("txtInventoryBillNumber");
 		textFieldBillNo.setFont(new Font("DialogInput", Font.PLAIN, 16));
 		textFieldBillNo.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
-		textFieldBillNo.setBounds(11, 110, 110, 23);
+		textFieldBillNo.setBounds(11, 91, 110, 23);
 		panel_4.add(textFieldBillNo);
+		
+		JXLabel lblGrNo = new JXLabel();
+		lblGrNo.setText("Gr No.");
+		lblGrNo.setForeground(Color.BLACK);
+		lblGrNo.setFont(new Font("Trebuchet MS", Font.BOLD, 15));
+		lblGrNo.setBounds(143, 65, 59, 25);
+		panel_4.add(lblGrNo);
+		
+		textFieldGrNumber = new JXTextField();
+		textFieldGrNumber.setPrompt("Gr Number");
+		textFieldGrNumber.setName("txtInventoryBillNumber");
+		textFieldGrNumber.setFont(new Font("DialogInput", Font.PLAIN, 16));
+		textFieldGrNumber.setEnabled(false);
+		textFieldGrNumber.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
+		textFieldGrNumber.setBounds(140, 91, 110, 23);
+		panel_4.add(textFieldGrNumber);
 
 		JXPanel panel_5 = new JXPanel();
 		panel_5.setBounds(0, 218, 1050, 49);
@@ -908,6 +951,13 @@ public class InvoiceUI extends JInternalFrame {
 		tableInvoice.setEnabled(isTurnOn);
 		
 		textFieldBillNo.setEnabled(isTurnOn);
+		textFieldGrNumber.setEnabled(isTurnOn);
+		
+		textFieldCol1.setEnabled(isTurnOn);
+		textFieldCol2.setEnabled(isTurnOn);
+		textFieldCol1Val.setEnabled(isTurnOn);
+		textFieldCol2Val.setEnabled(isTurnOn);
+		
 	}
 
 	public void cleanAll(String text){
@@ -1187,7 +1237,14 @@ public class InvoiceUI extends JInternalFrame {
 		String billAmount			=	textFieldBillAmount.getText();
 		String packingAmount		=	textFieldPackingAmount.getText();
 		String gstAmount 			=	textFieldGstTAX.getText();
-
+		
+		/*------Release 3.2---------*/
+		String grBiltyNumber = Strings.isNullOrEmpty(textFieldGrNumber.getText()) ?"" :textFieldGrNumber.getText();
+		String col1Name= Strings.isNullOrEmpty(textFieldCol1.getText())?"" :textFieldCol1.getText();
+		String col2Name = Strings.isNullOrEmpty(textFieldCol2.getText())?"" :textFieldCol2.getText();
+		String col1Val= Strings.isNullOrEmpty(textFieldCol1Val.getText())?"" : textFieldCol1Val.getText();
+		String col2Val = textFieldCol2Val.getText();
+		
 		AccountInfo accountInfoVal = null;
 		boolean isFound = false;
 		List<AccountInfo> accountInfos = new ArrayList<>();
@@ -1296,8 +1353,40 @@ public class InvoiceUI extends JInternalFrame {
 			}
 
 		}//end for
+		
+		/*getting operation for col1val & col2 val*/
+		String col1Operator = "";
+		String col2Operator = "";
+		if(!Strings.isNullOrEmpty(col1Val)){
+			try{
+				OperationInfo operationInfo = OperationInfo.builder()
+						.key(CLASS_NAME)
+						.propertyname("textFieldCol1Val")
+						.build();
+				operationInfo = OperationInfoDaoImpl.getInstance().getByParam(operationInfo);
+				if(operationInfo!=null && !Strings.isNullOrEmpty(operationInfo.getPropertyvalue()) ){
+					col1Operator = operationInfo.getPropertyvalue(); 
+				}
+			}catch(Exception exp){
+				LOGGER.equals(exp);
+			}
+		}
 
-
+		if(!Strings.isNullOrEmpty(col2Val)){
+			try{
+				OperationInfo operationInfo = OperationInfo.builder()
+						.key(CLASS_NAME)
+						.propertyname("textFieldCol2Val")
+						.build();
+				operationInfo = OperationInfoDaoImpl.getInstance().getByParam(operationInfo);
+				if(operationInfo!=null && !Strings.isNullOrEmpty(operationInfo.getPropertyvalue()) ){
+					col2Operator = operationInfo.getPropertyvalue(); 
+				}
+			}catch(Exception exp){
+				LOGGER.equals(exp);
+			}
+		}
+			
 		invoiceInfo = InvoiceInfo.builder().items(invoiceItemInfos)
 				.invoicNum(invoiceNum)
 				.invoicDate(invoiceDate)
@@ -1306,10 +1395,29 @@ public class InvoiceUI extends JInternalFrame {
 				.pktNumber(goodsPackets2)
 				.billAmount(billAmount)
 				.gstValue(gstAmount)
+				.partyinfoID(accountInfoVal.getId())
+				
+				.col1Name(col1Name)
+				.col1Val(col1Val)
+				.col1Operator(col1Operator)
+				
+				.col2Name(col2Name)
+				.col2Val(col2Val)
+				.col2Operator(col2Operator)
+				
+				.withoutBillAmount(packingAmount)	
+				.grBiltyNumber(grBiltyNumber)
+				.remainingBillAmount(billAmount)
+				.remainingWithoutBillAmount(packingAmount)
+				.paidBillAmount(String.valueOf(Boolean.FALSE))
+				.paidWithoutBillAmount(String.valueOf(Boolean.FALSE))
+				
+				.paidStatus(InvoicePaymentStatusEnum.NOTHING_PAID.name())
+				.remainingStatus(InvoicePaymentStatusEnum.NOTHING_PAID.name())
+				
 				.createdDate(new Timestamp(System.currentTimeMillis()))
 				.lastUpdated(new Timestamp(System.currentTimeMillis()))
 				.isEnable(Boolean.TRUE)
-				.partyinfoID(accountInfoVal.getId())
 				.build();
 		try{
 			InvoiceDaoImpl.getInstance().save(invoiceInfo);
