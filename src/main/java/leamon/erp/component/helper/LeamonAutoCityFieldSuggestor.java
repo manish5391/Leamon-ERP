@@ -109,7 +109,7 @@ public class LeamonAutoCityFieldSuggestor<T extends List<E>, E> extends JWindow 
 	}
 	private void select(boolean enterPressed) {
 		if(!this.isVisible()) {
-			ui.getTextFieldPartyGST().requestFocus();
+			ui.getTextFieldBillNo().requestFocus();
 			return;
 		}
 		if(parent == null) {
