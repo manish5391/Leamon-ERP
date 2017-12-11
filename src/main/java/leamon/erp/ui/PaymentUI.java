@@ -16,6 +16,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyVetoException;
+import java.sql.Timestamp;
 
 import org.jdesktop.swingx.JXTextField;
 import org.jdesktop.swingx.plaf.basic.CalendarHeaderHandler;
@@ -26,10 +27,12 @@ import com.google.common.base.Strings;
 import leamon.erp.component.helper.LeamonAutoAccountInfoTextFieldSuggestor;
 import leamon.erp.db.AccountDaoImpl;
 import leamon.erp.db.InvoiceDaoImpl;
+import leamon.erp.db.PaymentInvoiceMappingDaoImpl;
 import leamon.erp.db.PaymentReceivedDaoImpl;
 import leamon.erp.model.AccountInfo;
 import leamon.erp.model.InvoiceInfo;
 import leamon.erp.model.InvoiceItemInfo;
+import leamon.erp.model.PaymentInvoiceMappingInfo;
 import leamon.erp.model.PaymentReceivedInfo;
 import leamon.erp.model.StockItem;
 import leamon.erp.ui.event.MouseClickHandler;
@@ -38,6 +41,8 @@ import leamon.erp.ui.model.GenericModelWithSnp;
 import leamon.erp.ui.model.TableInvoiceModel;
 import leamon.erp.ui.model.TablePaymentReceivedModel;
 import leamon.erp.ui.model.TableStockListItemModel;
+import leamon.erp.util.ERPEnum;
+import leamon.erp.util.InvoicePaymentStatusEnum;
 import leamon.erp.util.LeamonERPConstants;
 import leamon.erp.util.LeamonUtil;
 import lombok.Getter;
@@ -74,7 +79,7 @@ public class PaymentUI extends JInternalFrame {
 
 	private JXTextField textFieldPartyName;
 	private JXDatePicker datePickerPaymentDate;
-	private JXTextField textFieldBRemark;
+	private JXTextField textFieldRemark;
 	private JXTextField textFieldPayment;
 	private JXTextField textFieldAdjAmt;
 	private JXTextField textFieldRemainingAmt;
@@ -83,6 +88,7 @@ public class PaymentUI extends JInternalFrame {
 	private PaymentReceivedInfo paymentReceivedInfo;
 	private JCheckBox chckbxWamountAdjust;
 	private JCheckBox chckbxAdjustBillAmount;
+	private ButtonGroup bg;
 	
 	private AccountInfo accountInfo;
 	private JXTable table;
@@ -145,7 +151,7 @@ public class PaymentUI extends JInternalFrame {
 		label_1.setFont(new Font("Trebuchet MS", Font.BOLD, 13));
 		
 		JXLabel label_2 = new JXLabel();
-		label_2.setBounds(385, 15, 6, 16);
+		label_2.setBounds(550, 14, 6, 16);
 		panel.add(label_2);
 		label_2.setText("*");
 		label_2.setForeground(Color.RED);
@@ -153,21 +159,21 @@ public class PaymentUI extends JInternalFrame {
 		
 		UIManager.put(CalendarHeaderHandler.uiControllerID, SpinningCalendarHeaderHandler.class.getName());
 		datePickerPaymentDate = new JXDatePicker(new Date());
-		datePickerPaymentDate.setBounds(401, 13, 145, 22);
+		datePickerPaymentDate.setBounds(566, 12, 145, 22);
 		datePickerPaymentDate.getMonthView().setZoomable(true);
 		panel.add(datePickerPaymentDate);
 		
 		
-		textFieldBRemark = new JXTextField();
-		textFieldBRemark.setBounds(103, 131, 737, 23);
-		panel.add(textFieldBRemark);
-		textFieldBRemark.setPrompt("Remark");
-		textFieldBRemark.setName("txtFieldBRemark");
-		textFieldBRemark.setFont(new Font("DialogInput", Font.PLAIN, 16));
-		textFieldBRemark.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
+		textFieldRemark = new JXTextField();
+		textFieldRemark.setBounds(103, 131, 737, 23);
+		panel.add(textFieldRemark);
+		textFieldRemark.setPrompt("Remark");
+		textFieldRemark.setName("txtFieldBRemark");
+		textFieldRemark.setFont(new Font("DialogInput", Font.PLAIN, 16));
+		textFieldRemark.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
 		
 		textFieldPayment = new JXTextField();
-		textFieldPayment.setBounds(103, 42, 118, 23);
+		textFieldPayment.setBounds(103, 42, 184, 23);
 		panel.add(textFieldPayment);
 		textFieldPayment.setPrompt("Payment");
 		textFieldPayment.setName("txtFieldPayment");
@@ -175,7 +181,7 @@ public class PaymentUI extends JInternalFrame {
 		textFieldPayment.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
 		
 		textFieldPartyName = new JXTextField();
-		textFieldPartyName.setBounds(103, 11, 226, 23);
+		textFieldPartyName.setBounds(103, 11, 406, 23);
 		panel.add(textFieldPartyName);
 		textFieldPartyName.setPrompt("Select Party Name");
 		textFieldPartyName.setName("txtPartyName");
@@ -205,7 +211,7 @@ public class PaymentUI extends JInternalFrame {
 		lblRemark.setFont(new Font("Trebuchet MS", Font.BOLD, 13));
 		
 		JXLabel label_3 = new JXLabel();
-		label_3.setBounds(352, 12, 39, 25);
+		label_3.setBounds(517, 11, 39, 25);
 		panel.add(label_3);
 		label_3.setText("Date");
 		label_3.setForeground(Color.BLACK);
@@ -224,7 +230,8 @@ public class PaymentUI extends JInternalFrame {
 		textFieldAdjAmt.setFont(new Font("DialogInput", Font.PLAIN, 16));
 		textFieldAdjAmt.setEnabled(true);
 		textFieldAdjAmt.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
-		textFieldAdjAmt.setBounds(331, 95, 103, 23);
+		textFieldAdjAmt.setBounds(358, 95, 156, 23);
+		textFieldAdjAmt.setEditable(false);
 		panel.add(textFieldAdjAmt);
 		
 		textFieldRemainingAmt = new JXTextField();
@@ -233,21 +240,22 @@ public class PaymentUI extends JInternalFrame {
 		textFieldRemainingAmt.setFont(new Font("DialogInput", Font.PLAIN, 16));
 		textFieldRemainingAmt.setEnabled(true);
 		textFieldRemainingAmt.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
-		textFieldRemainingAmt.setBounds(444, 95, 126, 23);
+		textFieldRemainingAmt.setBounds(555, 95, 156, 23);
+		textFieldRemainingAmt.setEditable(false);
 		panel.add(textFieldRemainingAmt);
 		
 		JXLabel lblAdjustedAmt = new JXLabel();
 		lblAdjustedAmt.setText("Adjusted");
 		lblAdjustedAmt.setForeground(Color.BLACK);
 		lblAdjustedAmt.setFont(new Font("Trebuchet MS", Font.BOLD, 13));
-		lblAdjustedAmt.setBounds(341, 72, 59, 25);
+		lblAdjustedAmt.setBounds(361, 60, 59, 25);
 		panel.add(lblAdjustedAmt);
 		
 		JXLabel lblRemainingAmt = new JXLabel();
 		lblRemainingAmt.setText("Remaining");
 		lblRemainingAmt.setForeground(Color.BLACK);
 		lblRemainingAmt.setFont(new Font("Trebuchet MS", Font.BOLD, 13));
-		lblRemainingAmt.setBounds(454, 72, 71, 25);
+		lblRemainingAmt.setBounds(565, 60, 71, 25);
 		panel.add(lblRemainingAmt);
 		
 		JPanel panel_2 = new JPanel();
@@ -266,9 +274,10 @@ public class PaymentUI extends JInternalFrame {
 		chckbxWamountAdjust.addActionListener(e -> chckbxWamountAdjustClick(e));
 		panel_2.add(chckbxWamountAdjust);
 		
-		ButtonGroup bg = new ButtonGroup();
+		bg = new ButtonGroup();
 		bg.add(chckbxAdjustBillAmount);
 		bg.add(chckbxWamountAdjust);
+		
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(0, 162, 842, 383);
@@ -338,15 +347,15 @@ public class PaymentUI extends JInternalFrame {
 		//textFieldPartyName.addKeyListener(new PaymentUIKeyHndler(textFieldPayment));
 		textFieldPayment.addKeyListener(new PaymentUIKeyHndler(chckbxAdjustBillAmount));
 		chckbxAdjustBillAmount.addKeyListener(new PaymentUIKeyHndler(chckbxWamountAdjust));
-		chckbxWamountAdjust.addKeyListener(new PaymentUIKeyHndler(textFieldBRemark));
-		datePickerPaymentDate.getEditor().addKeyListener(new PaymentUIKeyHndler(textFieldBRemark));
+		chckbxWamountAdjust.addKeyListener(new PaymentUIKeyHndler(textFieldRemark));
+		datePickerPaymentDate.getEditor().addKeyListener(new PaymentUIKeyHndler(textFieldRemark));
 	}
 	
 	private void setOnLoadDisable(boolean isDisable){
 		table.setEnabled(isDisable);
 		//textFieldpartyName.setEnabled(isDisable);
 		datePickerPaymentDate.getEditor().setEnabled(isDisable);
-		textFieldBRemark.setEnabled(isDisable);
+		textFieldRemark.setEnabled(isDisable);
 		textFieldPayment.setEnabled(isDisable);
 	}
 	
@@ -373,20 +382,12 @@ public class PaymentUI extends JInternalFrame {
 		textFieldAdjAmt.setText(LeamonERPConstants.EMPTY_STR);
 		textFieldRemainingAmt.setText(LeamonERPConstants.EMPTY_STR);
 		textFieldPayment.requestFocus();
-		
+		bg.clearSelection();
+		table.setModel(new TablePaymentReceivedModel((List<InvoiceInfo>)null));
+		textFieldPayment.setEditable(true);
 		//fillPymentTable(info);
 	}
 	
-	private void fillPymentTable(AccountInfo info){
-		List<InvoiceInfo> filteredInvoiceInfo = getAllInvoice(info);
-		
-		List<Integer> snos = IntStream.range(1, 1+filteredInvoiceInfo.size()).boxed().collect(Collectors.toList());
-		GenericModelWithSnp<List<InvoiceInfo>, InvoiceInfo> paymentModel =new GenericModelWithSnp<List<InvoiceInfo>, InvoiceInfo>(filteredInvoiceInfo, snos);
-		/*TablePaymentReceivedModel tablePaymentReceivedModel= new TablePaymentReceivedModel(paymentModel, this);
-		table.setModel(tablePaymentReceivedModel);
-
-		textFieldPayment.requestFocus();*/
-	}
 	public List<InvoiceInfo> getAllInvoice(AccountInfo info){
 		List<InvoiceInfo> invoiceInfos = new ArrayList<InvoiceInfo>();
 		try {
@@ -407,9 +408,9 @@ public class PaymentUI extends JInternalFrame {
 		List<InvoiceInfo> invoiceInfos = new ArrayList<InvoiceInfo>();
 		try {
 			if(!Strings.isNullOrEmpty(type) && type.equals(LeamonERPConstants.TYPE_AMOUNT_WITHOUT_BILL_ADJUSTMENT)){
-				//invoiceInfos= invoiceInfosParam.stream().filter(e-> !Strings.isNullOrEmpty(e.getPackingAmount())).collect(Collectors.toList());
+				invoiceInfos= invoiceInfosParam.stream().filter(e-> !InvoicePaymentStatusEnum.ALL_CLEAR.name().equals(e.getWpaidstatus())).collect(Collectors.toList());
 			}else if(!Strings.isNullOrEmpty(type) && type.equals(LeamonERPConstants.TYPE_BILL_AMOUNT_ADJUSTMENT)){
-				invoiceInfos= invoiceInfosParam.stream().filter(e-> !Strings.isNullOrEmpty(e.getBillAmount())).collect(Collectors.toList());
+				invoiceInfos= invoiceInfosParam.stream().filter(e-> !InvoicePaymentStatusEnum.ALL_CLEAR.name().equals(e.getPaidStatus())).collect(Collectors.toList());
 			}
 		} catch (Exception e) {
 			LOGGER.error(e);
@@ -456,103 +457,37 @@ public class PaymentUI extends JInternalFrame {
 		LOGGER.info("PaymentUI[openInvoice] end");
 	}
 	
-	private void btnPaymentSaveClick(ActionEvent e){
-		
-		if(!validateToSave()){
-			return ;
-		}
-		
-		Integer partyId = accountInfo.getId();
-		String receivedDate = datePickerPaymentDate.getEditor().getText();
-		String payment = textFieldPayment.getText();
-		String bRemark = textFieldBRemark.getText();
-		//String wRemark  = textFieldWRemark.getText();
-		
-		PaymentReceivedInfo paymentReceivedInfo = PaymentReceivedInfo.builder()
-				.partyInfoID(partyId)
-				.receivedDate(receivedDate)
-				.receivedPayment(payment)
-				.bRemark(bRemark)
-				.wRemark("")
-				.build();
-		try{
-			PaymentReceivedDaoImpl.getInstance().save(paymentReceivedInfo);
-			this.paymentReceivedInfo = paymentReceivedInfo; 
-			JOptionPane.showMessageDialog(this, "Payment saved.","Leamon-ERP",JOptionPane.PLAIN_MESSAGE);
-			//btnPaymentSave.setEnabled(Boolean.FALSE);
-		}catch(Exception exp){
-			LOGGER.error(exp);
-			JOptionPane.showMessageDialog(this, "Failed to saved because ["+exp+"]","Leamon-ERP",JOptionPane.ERROR_MESSAGE);
-		}
-	}
-	
-	private boolean validateToSave(){
-		
-		if(accountInfo == null){
-			JOptionPane.showMessageDialog(this, "Please select party name","Leamon-ERP", JOptionPane.ERROR_MESSAGE);
-			return false;
-		}
-		
-		if(Strings.isNullOrEmpty(datePickerPaymentDate.getEditor().getText())){
-			JOptionPane.showMessageDialog(this, "Please enter payment date","Leamon-ERP", JOptionPane.ERROR_MESSAGE);
-			return false;
-		}
-		
-		if(Strings.isNullOrEmpty(textFieldPayment.getText())){
-			JOptionPane.showMessageDialog(this, "Please enter payment amount","Leamon-ERP", JOptionPane.ERROR_MESSAGE);
-			return false;
-		}
-		
-		if(Strings.isNullOrEmpty(textFieldBRemark.getText())){
-			JOptionPane.showMessageDialog(this, "Please enter billing remark","Leamon-ERP", JOptionPane.ERROR_MESSAGE);
-			return false;
-		}
-		
-		/*if(Strings.isNullOrEmpty(textFieldWRemark.getText())){
-			JOptionPane.showMessageDialog(this, "Please enter w-remark","Leamon-ERP", JOptionPane.ERROR_MESSAGE);
-			return false;
-		}*/
-		return true;
-	}
-	
 	private void clear (){
 		table.setModel(new TablePaymentReceivedModel((List<InvoiceInfo>)null));
 		textFieldPartyName.setText(LeamonERPConstants.EMPTY_STR);
-		textFieldBRemark.setText(LeamonERPConstants.EMPTY_STR);
+		textFieldRemark.setText(LeamonERPConstants.EMPTY_STR);
 		//textFieldWRemark.setText(LeamonERPConstants.EMPTY_STR);
 		textFieldPayment.setText(LeamonERPConstants.EMPTY_STR);
 		textFieldAdjAmt.setText(LeamonERPConstants.EMPTY_STR);
 		textFieldRemainingAmt.setText(LeamonERPConstants.EMPTY_STR);
 		//btnPaymentSave.setEnabled(Boolean.TRUE);
-		
+		bg.clearSelection();
 		paymentReceivedInfo = null;
 		accountInfo = null;
-		
-	}
-	
-	private void btnCloseClick(ActionEvent e){
-		this.dispose();
-	}
-	private void btnRefreshClick(ActionEvent e){
-		clear();
+		textFieldPayment.setEditable(true);
 	}
 	
 	private void chckbxWamountAdjustClick(ActionEvent e){
 		final String METHOD_NAME = "chckbxWamountAdjustClick";
+		if(!isValidAmouont()){
+			bg.clearSelection();
+			return ;
+		}
+		TablePaymentReceivedModel model  = (TablePaymentReceivedModel)table.getModel();
+		if(model!=null && LeamonERPConstants.TYPE_BILL_AMOUNT_ADJUSTMENT.equals(model.getType()) 
+				&& model.getIsBAmount().contains(Boolean.TRUE)){
+			chckbxAdjustBillAmount.setSelected(true);
+			JOptionPane.showMessageDialog(this, "please save b-adjustments", "Leamon-ERP : Message", JOptionPane.ERROR_MESSAGE);
+			return ;
+		}
 		if(chckbxWamountAdjust.isSelected()){
+			textFieldPayment.setEditable(false);
 			List<InvoiceInfo> filteredInvoiceInfo = getAllInvoice(accountInfo);
-
-			String packingAmt = "error";
-			for(int rowIndex =0; rowIndex < filteredInvoiceInfo.size(); rowIndex++ ){
-				try{
-					packingAmt = LeamonUtil.calcPackingAmount(filteredInvoiceInfo.get(rowIndex));
-					//filteredInvoiceInfo.get(rowIndex).setPackingAmount(packingAmt);
-				}catch(Exception exp){
-					packingAmt = exp.getMessage();
-					LOGGER.error(CLASS_NAME+"["+METHOD_NAME+"] Error : "+exp);
-					packingAmt = "";
-				}
-			}
 			filteredInvoiceInfo = filterinvoiceByType(filteredInvoiceInfo, LeamonERPConstants.TYPE_AMOUNT_WITHOUT_BILL_ADJUSTMENT);
 			List<Integer> snos = IntStream.range(1, 1+filteredInvoiceInfo.size()).boxed().collect(Collectors.toList());
 			GenericModelWithSnp<List<InvoiceInfo>, InvoiceInfo> paymentModel =new GenericModelWithSnp<List<InvoiceInfo>, InvoiceInfo>(filteredInvoiceInfo, snos);
@@ -562,7 +497,25 @@ public class PaymentUI extends JInternalFrame {
 	}
 	
 	private void chckbxAdjustBillAmountClick(ActionEvent e){
+		if(!isValidAmouont()){
+			bg.clearSelection();
+			return ;
+		}
+		
+		/*checking for payment*/
+		TablePaymentReceivedModel model  = (TablePaymentReceivedModel)table.getModel();
+		if(model!=null && LeamonERPConstants.TYPE_AMOUNT_WITHOUT_BILL_ADJUSTMENT.equals(model.getType()) 
+				&& model.getIsWAmount().contains(Boolean.TRUE)){
+			chckbxWamountAdjust.setSelected(true);
+			JOptionPane.showMessageDialog(this, "please save w-adjustments", "Leamon-ERP : Message", JOptionPane.ERROR_MESSAGE);
+			return ;
+		}
+		
+		
 		if(chckbxAdjustBillAmount.isSelected()){
+			
+			textFieldPayment.setEditable(false);
+			
 			List<InvoiceInfo> filteredInvoiceInfo = getAllInvoice(accountInfo);
 			filteredInvoiceInfo = filterinvoiceByType(filteredInvoiceInfo, LeamonERPConstants.TYPE_BILL_AMOUNT_ADJUSTMENT);
 			List<Integer> snos = IntStream.range(1, 1+filteredInvoiceInfo.size()).boxed().collect(Collectors.toList());
@@ -572,7 +525,285 @@ public class PaymentUI extends JInternalFrame {
 		}
 	}
 	
+	private boolean isValidAmouont(){
+		if(Strings.isNullOrEmpty(textFieldPayment.getText())){
+			JOptionPane.showMessageDialog(this, "Please enter some amount in payment field", "Leamon-Error", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		
+		try{
+			Double.parseDouble(textFieldPayment.getText());
+		}catch(Exception exp){
+			JOptionPane.showMessageDialog(this, "only numeric is accepted in pyment field", "Leamon-Error", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		
+		return true;
+	}
+	
+	private boolean checkValidation(){
+		if(Strings.isNullOrEmpty(textFieldPartyName.getText())){
+			JOptionPane.showMessageDialog(this, "Party name can't be left blank", "Leamon-ERP Error Message", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		
+		if(accountInfo == null){
+			JOptionPane.showMessageDialog(this, "Please select party name","Leamon-ERP Error Message", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		
+		if(Strings.isNullOrEmpty(datePickerPaymentDate.getEditor().getText())){
+			JOptionPane.showMessageDialog(this, "date can't be left blank", "Leamon-ERP Error Message", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		
+		if(Strings.isNullOrEmpty(textFieldPayment.getText())){
+			JOptionPane.showMessageDialog(this, "payment can't be left blank", "Leamon-ERP Error Message", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		
+		if(!chckbxAdjustBillAmount.isSelected() && !chckbxWamountAdjust.isSelected()){
+			JOptionPane.showMessageDialog(this, "No adjustment check is enable", "Leamon-ERP Error Message", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		
+		if(((TablePaymentReceivedModel)table.getModel()).getInvoiceInfos() == null 
+				|| ((TablePaymentReceivedModel)table.getModel()).getInvoiceInfos().isEmpty()){
+			JOptionPane.showMessageDialog(this, "No record in table", "Leamon-ERP Error Message", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		
+		
+		return true;
+	}
+	
+	private void saveBillingPaymentAdjustment(PaymentReceivedInfo paymentReceivedInfo, TablePaymentReceivedModel model ){
+
+		
+		try{
+			PaymentReceivedDaoImpl.getInstance().save(paymentReceivedInfo);
+			
+			/*Invoice payment handling*/
+			if(!LeamonERPConstants.TYPE_BILL_AMOUNT_ADJUSTMENT.equals(model.getType()) || Strings.isNullOrEmpty(model.getType())){
+				JOptionPane.showMessageDialog(this, "No appropriate data for billing amount adjustments. Hence Payment is saved with no adjustment.", "Leamon-ERP Error Message", JOptionPane.ERROR_MESSAGE);
+				return ;
+			}
+			
+			List<InvoiceInfo> invoiceInfos = model.getInvoiceInfos();
+			List<Boolean> isBAmount = model.getIsBAmount();
+			List<Double> receivedBillAmount = model.getReceivedBillAmount();
+			List<Double> reminingBillinigBalance = model.getRemainingBillingBalance();
+			
+			boolean isSaved = true;
+			for(int i=0; i<isBAmount.size(); i++ ){
+				if(Boolean.TRUE.equals(isBAmount.get(i))){
+					InvoiceInfo invoiceInfo = invoiceInfos.get(i);
+					double receivedBal = receivedBillAmount.get(i);
+					double remiaingBal = reminingBillinigBalance.get(i);
+					if(remiaingBal == 0){ /*Remianing is zero*/
+						invoiceInfo.setPaidStatus(InvoicePaymentStatusEnum.ALL_CLEAR.name());
+					}else{
+						double invoicePaidBillAmount = 0;
+						try{
+							invoicePaidBillAmount = Double.parseDouble(invoiceInfo.getPaidBillAmount());
+						}catch(Exception exp){
+							LOGGER.error(exp);
+						}
+
+						receivedBal = invoicePaidBillAmount + receivedBal; 
+						invoiceInfo.setPaidStatus(InvoicePaymentStatusEnum.PARTIAL_PAID.name());
+					}
+					invoiceInfo.setRemainingBillAmount(String.valueOf(remiaingBal));
+					invoiceInfo.setPaidBillAmount(String.valueOf(receivedBal));
+					invoiceInfo.setLastUpdated(new Timestamp(System.currentTimeMillis()));
+					try{
+						InvoiceDaoImpl.getInstance().updatePaidBillAmount(invoiceInfo);
+					}catch(Exception exp){
+						LOGGER.error(exp);
+						isSaved = false;
+						JOptionPane.showMessageDialog(this, "Invoice id '"+invoiceInfo.getInvoicNum()+"' "+exp.getMessage(),"Leamon-ERP Error Meesage", JOptionPane.ERROR_MESSAGE);
+						break;
+					}
+					
+					/*saving mapping of payment id with invoice id*/
+					PaymentInvoiceMappingInfo paymentInvoiceMappingInfo = PaymentInvoiceMappingInfo.builder()
+							.paymentReceivedInfo(paymentReceivedInfo.getId())
+							.invoiceInfoID(invoiceInfo.getId())
+							.createdDate(new Timestamp(System.currentTimeMillis()))
+							.lastUpdated(new Timestamp(System.currentTimeMillis()))
+							.isEnable(Boolean.TRUE)
+							.build();
+					try{
+						PaymentInvoiceMappingDaoImpl.getInstance().save(paymentInvoiceMappingInfo);
+					}catch(Exception exp){
+						LOGGER.error(exp);
+					}
+				}else{
+					continue;
+				}
+			}
+			
+			if(isSaved){
+				JOptionPane.showMessageDialog(this, "adjustment saved.", "Leamon-ERP Error Meesage", JOptionPane.PLAIN_MESSAGE);
+				clear();
+			}else{
+				JOptionPane.showMessageDialog(this, "Failed to save adjustment", "Leamon-ERP Error Meesage", JOptionPane.ERROR_MESSAGE);
+			}
+			
+		}catch(Exception exp){
+			LOGGER.error(exp);
+			JOptionPane.showMessageDialog(this, "Failed to saved because ["+exp+"]","Leamon-ERP",JOptionPane.ERROR_MESSAGE);
+		}
+	
+	}
+	private void saveWithoutBillingPaymentAdjustment(PaymentReceivedInfo paymentReceivedInfo, TablePaymentReceivedModel model ){
+		
+		try{
+			PaymentReceivedDaoImpl.getInstance().save(paymentReceivedInfo);
+			
+			/*Invoice payment handling*/
+			if(!LeamonERPConstants.TYPE_AMOUNT_WITHOUT_BILL_ADJUSTMENT.equals(model.getType()) || Strings.isNullOrEmpty(model.getType())){
+				JOptionPane.showMessageDialog(this, "No appropriate data for without billing amount adjustments. Hence Payment is saved with no adjustment.", "Leamon-ERP Error Message", JOptionPane.ERROR_MESSAGE);
+				return ;
+			}
+			
+			List<InvoiceInfo> invoiceInfos = model.getInvoiceInfos();
+			List<Boolean> isWAmount = model.getIsWAmount();
+			List<Double> receivedWBillAmount = model.getReceivedWithOutBillAmount();
+			List<Double> reminingWBillinigBalance = model.getRemainingWithOutBillBalance();
+			
+			boolean isSaved = true;
+			for(int i=0; i<isWAmount.size(); i++ ){
+				if(Boolean.TRUE.equals(isWAmount.get(i))){
+					InvoiceInfo invoiceInfo = invoiceInfos.get(i);
+					double receivedBal = receivedWBillAmount.get(i);
+					double remiaingBal = reminingWBillinigBalance.get(i);
+					if(remiaingBal == 0){ /*Remianing is zero*/
+						invoiceInfo.setWpaidstatus(InvoicePaymentStatusEnum.ALL_CLEAR.name());
+					}else{
+						double invoicePaidWBillAmount = 0;
+						try{
+							invoicePaidWBillAmount = Double.parseDouble(invoiceInfo.getPaidWithoutBillAmount());
+						}catch(Exception exp){
+							LOGGER.error(exp);
+						}
+
+						receivedBal = invoicePaidWBillAmount + receivedBal; 
+						invoiceInfo.setWpaidstatus(InvoicePaymentStatusEnum.PARTIAL_PAID.name());
+					}
+					invoiceInfo.setRemainingWithoutBillAmount(String.valueOf(remiaingBal));
+					invoiceInfo.setPaidWithoutBillAmount(String.valueOf(receivedBal));
+					invoiceInfo.setLastUpdated(new Timestamp(System.currentTimeMillis()));
+					try{
+						InvoiceDaoImpl.getInstance().updatePaidWBillAmount(invoiceInfo);
+					}catch(Exception exp){
+						LOGGER.error(exp);
+						isSaved = false;
+						JOptionPane.showMessageDialog(this, "Invoice id '"+invoiceInfo.getInvoicNum()+"' "+exp.getMessage(),"Leamon-ERP Error Meesage", JOptionPane.ERROR_MESSAGE);
+						break;
+					}
+					
+					/*saving mapping of payment id with invoice id*/
+					PaymentInvoiceMappingInfo paymentInvoiceMappingInfo = PaymentInvoiceMappingInfo.builder()
+							.paymentReceivedInfo(paymentReceivedInfo.getId())
+							.invoiceInfoID(invoiceInfo.getId())
+							.createdDate(new Timestamp(System.currentTimeMillis()))
+							.lastUpdated(new Timestamp(System.currentTimeMillis()))
+							.isEnable(Boolean.TRUE)
+							.build();
+					try{
+						PaymentInvoiceMappingDaoImpl.getInstance().save(paymentInvoiceMappingInfo);
+					}catch(Exception exp){
+						LOGGER.error(exp);
+					}
+				}else{
+					continue;
+				}
+			}
+			
+			if(isSaved){
+				JOptionPane.showMessageDialog(this, "adjustment saved.", "Leamon-ERP Error Meesage", JOptionPane.PLAIN_MESSAGE);
+				clear();
+			}else{
+				JOptionPane.showMessageDialog(this, "Failed to save adjustment", "Leamon-ERP Error Meesage", JOptionPane.ERROR_MESSAGE);
+			}
+			
+		}catch(Exception exp){
+			LOGGER.error(exp);
+			JOptionPane.showMessageDialog(this, "Failed to saved because ["+exp+"]","Leamon-ERP",JOptionPane.ERROR_MESSAGE);
+		}
+	
+	
+	}
 	private void btnSaveAdjustmentClick(ActionEvent e){
 		
+		if(!checkValidation()){
+			return ;
+		}
+		
+		/*get all value to save*/
+		Integer partyId = accountInfo.getId();
+		String receivedDate = datePickerPaymentDate.getEditor().getText();
+		String payment = textFieldPayment.getText();
+		String adjustedAmount = textFieldAdjAmt.getText();
+		String remainingAdjustmentAmount = textFieldRemainingAmt.getText();
+		String remark = textFieldRemark.getText();
+
+		String status = "";
+		if(Strings.isNullOrEmpty(remainingAdjustmentAmount) && Strings.isNullOrEmpty(adjustedAmount)){
+			status = ERPEnum.STATUS_PAYMENT_ADJUSTMENT_NOTHING.name();
+		}else if("0.0".equals(remainingAdjustmentAmount.trim())){
+			status = ERPEnum.STATUS_PAYMENT_ADJUSTMENT_CLEAR.name();
+		}else{
+			status = ERPEnum.STATUS_PAYMENT_ADJUSTMENT_PARTIAL.name();
+		}
+			
+		TablePaymentReceivedModel model  = (TablePaymentReceivedModel)table.getModel();
+		
+		PaymentReceivedInfo paymentReceivedInfo = PaymentReceivedInfo.builder()
+				.partyInfoID(partyId)
+				.receivedDate(receivedDate)
+				.receivedPayment(payment)
+				.adjustedPayment(adjustedAmount)
+				.remainingAmount(remainingAdjustmentAmount)
+				.remark(remark)
+				.status(status)
+				
+				.createdDate(new Timestamp(System.currentTimeMillis()))
+				.lastUpdated(new Timestamp(System.currentTimeMillis()))
+				.isEnable(Boolean.TRUE)
+				.build();
+		/*save bill amount adjustments*/
+		if(chckbxAdjustBillAmount.isSelected()){
+			paymentReceivedInfo.setType(ERPEnum.TYPE_PAYMENT_WITH_BILL.name());
+			
+			if(!model.getIsBAmount().contains(Boolean.TRUE)){
+				int choice =  JOptionPane.showConfirmDialog(this, "Nothing adjusted\n Still do you want to save?", "Leamon-ERP : Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+				
+				if(choice == JOptionPane.NO_OPTION){
+					return;
+				}
+			}
+			saveBillingPaymentAdjustment(paymentReceivedInfo, model);
+		}else if(chckbxWamountAdjust.isSelected()){
+			paymentReceivedInfo.setType(ERPEnum.TYPE_PAYMENT_WITHOUT_BILL.name());
+			
+			if(!model.getIsWAmount().contains(Boolean.TRUE)){
+				int choice =  JOptionPane.showConfirmDialog(this, "Nothing adjusted\n Still do you want to save?", "Leamon-ERP : Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+				
+				if(choice == JOptionPane.NO_OPTION){
+					return;
+				}
+			}
+			saveWithoutBillingPaymentAdjustment(paymentReceivedInfo, model);
+		}else{
+			JOptionPane.showMessageDialog(this, "No adjustment found.", "Leamon-ERP Message", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+	private void btnCloseClick(ActionEvent e){
+		this.dispose();
+	}
+	private void btnRefreshClick(ActionEvent e){
+		clear();
 	}
 }
