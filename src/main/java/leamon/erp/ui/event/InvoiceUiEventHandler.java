@@ -202,8 +202,10 @@ public class InvoiceUiEventHandler implements KeyListener, ActionListener, Mouse
 						nextTextAreaComponent.requestFocus();
 					}
 				}
-			}else if (e.getSource() instanceof JTextArea){
-				
+			}else{
+				if(nextComponent!=null){
+					nextComponent.requestFocus();
+				}
 			}
 		}// end if jtextfiled
 		else if(e.getSource() instanceof JButton){
