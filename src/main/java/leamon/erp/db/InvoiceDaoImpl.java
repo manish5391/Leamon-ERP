@@ -102,6 +102,37 @@ public class InvoiceDaoImpl  implements LeamonERPDao<InvoiceInfo>{
 		LOGGER.info("InvoiceDaoImpl[update] end.");
 	}
 
+	public void updatePaidBillAmount(InvoiceInfo item) throws Exception{
+		LOGGER.info("InvoiceDaoImpl[update] inside.");
+		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
+		InvoiceMapper InvoiceMapper= session.getMapper(InvoiceMapper.class);
+		try{
+		InvoiceMapper.updatePaidBillAmount(item);
+		session.commit();
+		}catch(Exception exp){
+			session.rollback();
+			throw exp;
+		}finally{
+			session.close();
+		}
+		LOGGER.info("InvoiceDaoImpl[update] end.");
+	}
+	
+	public void updatePaidWBillAmount(InvoiceInfo item) throws Exception{
+		LOGGER.info("InvoiceDaoImpl[update] inside.");
+		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
+		InvoiceMapper invoiceMapper= session.getMapper(InvoiceMapper.class);
+		try{
+		invoiceMapper.updatePaidWBillAmount(item);
+		session.commit();
+		}catch(Exception exp){
+			session.rollback();
+			throw exp;
+		}finally{
+			session.close();
+		}
+		LOGGER.info("InvoiceDaoImpl[update] end.");
+	}
 	
 	public List<InvoiceInfo> getItemListWithInvoiceItemList() {
 		LOGGER.info("InvoiceDaoImpl[getItemList] inside.");
