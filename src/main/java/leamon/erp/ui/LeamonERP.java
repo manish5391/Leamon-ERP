@@ -338,6 +338,72 @@ public class LeamonERP extends JFrame {
 		menuBar.setBounds(0, 0, ((int)sc.getWidth())-10, 30);
 		desktopPane.add(menuBar);
 		
+		JMenu mnCompanyMaster = new JMenu("Company Master");
+		menuBar.add(mnCompanyMaster);
+		
+		JMenuItem mntmCompanyInfo = new JMenuItem("Company Info");
+		mntmCompanyInfo.addActionListener(e -> hprlnkCompanyClick(e));
+		mnCompanyMaster.add(mntmCompanyInfo);
+		
+		JMenu mnInvoiceMaster = new JMenu("Invoice Master");
+		menuBar.add(mnInvoiceMaster);
+		
+		JMenuItem mntmB_Invoice = new JMenuItem("B-Invoice");
+		mntmB_Invoice.addActionListener(e -> hprlnkEinvoiceClick(e));
+		mnInvoiceMaster.add(mntmB_Invoice);
+		
+		JMenuItem mntmW_Invoice = new JMenuItem("W-Invoice");
+		mntmW_Invoice.addActionListener(e -> hyperlinkInvoiceClick(e));
+		mnInvoiceMaster.add(mntmW_Invoice);
+		
+		JMenu mnStockMaster = new JMenu("Stock Master");
+		menuBar.add(mnStockMaster);
+		
+		JMenuItem mntmAddNewStock = new JMenuItem("Add New");
+		mntmAddNewStock.addActionListener(e -> hprlnkStockItemAddNewClick(e));
+		mnStockMaster.add(mntmAddNewStock);
+		
+		JMenuItem mntmEditStock = new JMenuItem("Edit");
+		mntmEditStock.addActionListener(e -> hprlnkStockItemEditClick(e));
+		mnStockMaster.add(mntmEditStock);
+		
+		JMenuItem mntmSearchStock = new JMenuItem("Search");
+		mntmSearchStock.addActionListener(e -> hprlnkStockItemSearchClick(e));
+		mnStockMaster.add(mntmSearchStock);
+		
+		JMenuItem mntmDeleteStock = new JMenuItem("Delete");
+		mntmDeleteStock.addActionListener(e -> hprlnkStockItemDeleteClick(e));
+		mnStockMaster.add(mntmDeleteStock);
+		
+		JMenu mnPartyMaster = new JMenu("Party Master");
+		menuBar.add(mnPartyMaster);
+		
+		JMenuItem mntmAddNewParty = new JMenuItem("Add New");
+		mntmAddNewParty.addActionListener(e -> hyperlinkAccountAddNewClick(e));
+		mnPartyMaster.add(mntmAddNewParty);
+		
+		JMenuItem mntmEditParty = new JMenuItem("Edit");
+		mntmEditParty.addActionListener(e -> hyperlinkAccountEditClick(e));
+		mnPartyMaster.add(mntmEditParty);
+		
+		JMenuItem mntmSearchParty = new JMenuItem("Search");
+		mntmSearchParty.addActionListener(e ->  hyperlinkAccountSearchClick(e));
+		mnPartyMaster.add(mntmSearchParty);
+		
+		JMenuItem mntmDeleteParty = new JMenuItem("Delete");
+		mntmDeleteParty.addActionListener(e-> hyperlinkAccountDeleteClick(e));
+		mnPartyMaster.add(mntmDeleteParty);
+		
+		JMenu mnNewMenu_2 = new JMenu("Payment Master");
+		menuBar.add(mnNewMenu_2);
+		
+		JMenuItem mntmAdjustmentPayment = new JMenuItem("Adjustments");
+		mntmAdjustmentPayment.addActionListener(e -> hprlnkPaymentRegisterClick(e));
+		mnNewMenu_2.add(mntmAdjustmentPayment);
+		
+		JMenuItem mntmSummaryPayment = new JMenuItem("Summary");
+		mnNewMenu_2.add(mntmSummaryPayment);
+		
 		JMenu mnTheme = new JMenu("Theme");
 		menuBar.add(mnTheme);
 		
