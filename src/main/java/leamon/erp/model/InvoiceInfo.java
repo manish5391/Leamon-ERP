@@ -9,12 +9,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Builder
 @Getter
+@ToString
 public class InvoiceInfo implements Serializable, Comparable<InvoiceInfo>{
 	
 	private Integer id;
@@ -53,7 +55,7 @@ public class InvoiceInfo implements Serializable, Comparable<InvoiceInfo>{
 	private String paidBillAmount; //how much is paid
 	private String paidWithoutBillAmount; //how much is paid in packing amount
 	private String paidStatus; //CLEAR, REMAINING, NOTHING PAID
-	private String remainingStatus; //clear, remaining, Nothing Paid
+	private String wpaidstatus; //clear, remaining, Nothing Paid
 	
 	@Override
 	public int compareTo(InvoiceInfo o) {
