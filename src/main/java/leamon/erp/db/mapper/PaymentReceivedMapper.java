@@ -17,8 +17,9 @@ public interface PaymentReceivedMapper {
 	final String getAll = "SELECT * FROM PAYMENT_RECEIVED_INFO WHERE ISENABLE = TRUE ORDER BY ID"; 
 	final String getById = "SELECT * FROM PAYMENT_RECEIVED_INFO WHERE ID = #{id}";
 	
-	final String insert = "INSERT INTO PAYMENT_RECEIVED_INFO (PARTYINFOID, RECEIVEDPAYMENT, RECEIVEDATE, BREMARK, WREMARK, CREATEDDATE, LASTUPDATED, ISENABLE) "
-						+ "VALUES (#{partyInfoID}, #{receivedPayment}, #{receivedDate}, #{bRemark}, #{wRemark}, #{createdDate}, #{lastUpdated}, #{isEnable} )";
+	final String insert = "INSERT INTO PAYMENT_RECEIVED_INFO (PARTYINFOID, RECEIVEDPAYMENT, ADJUSTEDPAYMENT, REMAININGAMOUNT, STATUS, REMARK, TYPE, RECEIVEDDATE, CREATEDDATE, LASTUPDATED, ISENABLE ) "
+						+ "VALUES (#{partyInfoID}, #{receivedPayment}, #{adjustedPayment}, #{remainingAmount}, #{status}, #{remark}, #{type}, #{receivedDate}, "
+						+ "#{createdDate}, #{lastUpdated}, #{isEnable} )";
 	
 	final String update = "UPDATE PAYMENT_RECEIVED_INFO SET PARTYINFOID = #{partyInfoID}, RECEIVEDPAYMENT = #{receivedPayment}, RECEIVEDATE = #{receivedDate}, "
 						+ "BREMARK = #{bRemark}, "
@@ -35,12 +36,16 @@ public interface PaymentReceivedMapper {
 	      @Result(property = "id", column = "ID"),
 	      @Result(property = "partyInfoID", column = "PARTYINFOID"),
 	      @Result(property = "receivedPayment", column = "RECEIVEDPAYMENT"),
-	      @Result(property = "receivedDate", column = "RECEIVEDATE"),
-	      @Result(property = "bRemark", column = "BREMARK"),
-	      @Result(property = "wRemark", column = "WREMARK"),
-	      @Result(property = "isEnable", column = "ISENABLE"),
+	      @Result(property = "adjustedPayment", column = "ADJUSTEDPAYMENT"),
+	      @Result(property = "remainingAmount", column = "REMAININGAMOUNT"),
+	      @Result(property = "status", column = "STATUS"),
+	      @Result(property = "remark", column = "REMARK"),
+	      @Result(property = "type", column = "TYPE"),
+	      @Result(property = "receivedDate", column = "RECEIVEDDATE"),
+	      
 	      @Result(property = "createdDate", column = "CREATEDDATE"),
-	      @Result(property = "lastUpdated", column = "LASTUPDATED")
+	      @Result(property = "lastUpdated", column = "LASTUPDATED"),
+	      @Result(property = "isEnable", column = "ISENABLE")
 	      
 	})
 	public List<PaymentReceivedInfo> getAll() throws Exception;
