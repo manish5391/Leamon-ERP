@@ -960,32 +960,6 @@ public class InvoiceUI extends JInternalFrame {
 		
 	}
 
-	public void cleanAll(String text){
-		textFieldTotal.setText(text);
-		textFieldBillAmount.setText(text);
-		textFieldPackingAmount.setText(text);
-		textFieldInvoiceNum.setText(text);
-		textFieldPartyName.setText(text);
-		textFieldPartyState.setText(text);
-		textFieldStateCode.setText(text);
-		textFieldPartyGST.setText(text);
-		textFieldPartyMobile.setText(text);
-		textFieldPartyTransportList.setText(text);
-		textFieldGoodsPackets1.setText(text);
-		textFieldOrderBookedBy.setText(text);
-		textFieldGoodsPackets2.setText(text);
-		textAreaPartyAddress.setText(text);
-		textFieldProductDesc.setText(text);
-		textFieldProductSize.setText(text);
-		textFieldProductQty.setText(text);
-		textFieldProductUnit.setText(text);
-		textFieldProductRate.setText(text);
-		textFieldProductAmount.setText(text);
-		textFieldProductTD.setText(text);
-		textFieldPartynickName.setText(text);
-		hiddenLabelStockId.setText(text);
-	}
-
 	public void getTextFromField(){
 
 		String invoiceNum			=	textFieldInvoiceNum.getText();
@@ -1031,7 +1005,15 @@ public class InvoiceUI extends JInternalFrame {
 
 		//textFieldPartyName.addKeyListener(new InvoiceUiEventHandler(textAreaPartyAddress));
 		//textAreaPartyAddress.addKeyListener(new InvoiceUiEventHandler(textFieldPartyState));
-		textFieldPartyGST.addKeyListener(new InvoiceUiEventHandler(textFieldPartyState));
+		textFieldCol1.addKeyListener(new InvoiceUiEventHandler(textFieldCol1Val));
+		textFieldCol1Val.addKeyListener(new InvoiceUiEventHandler(textFieldCol2));
+		textFieldCol2.addKeyListener(new InvoiceUiEventHandler(textFieldCol2Val));
+		textFieldCol2Val.addKeyListener(new InvoiceUiEventHandler(textFieldBillAmount));
+		
+		textFieldBillNo.addKeyListener(new InvoiceUiEventHandler(textFieldGrNumber));
+		textFieldGrNumber.addKeyListener(new InvoiceUiEventHandler(textFieldPartyGST));
+		//textFieldPartyGST.addKeyListener(new InvoiceUiEventHandler(textFieldPartyState));
+		
 		textFieldPartyState.addKeyListener(new InvoiceUiEventHandler(textFieldPartyGST));
 		textFieldPartyGST.addKeyListener(new InvoiceUiEventHandler(textFieldPartyMobile));
 		textFieldPartyMobile.addKeyListener(new InvoiceUiEventHandler(textFieldOrderBookedBy));
@@ -1041,7 +1023,7 @@ public class InvoiceUI extends JInternalFrame {
 		textFieldPartyTransportList.addKeyListener(new InvoiceUiEventHandler(textFieldGoodsPackets1));//textFieldGoodsPackets1
 		
 		textFieldGoodsPackets1.addKeyListener(new InvoiceUiEventHandler(textFieldProductDesc,this));
-		textFieldGstTAX.addKeyListener(new InvoiceUiEventHandler(textFieldBillAmount,this));
+		textFieldGstTAX.addKeyListener(new InvoiceUiEventHandler(textFieldCol1,this));
 
 		/*invoice item fields */
 		//textFieldProductDesc.addKeyListener(new InvoiceUiEventHandler(textFieldProductSize));
@@ -1243,7 +1225,7 @@ public class InvoiceUI extends JInternalFrame {
 		String col1Name= Strings.isNullOrEmpty(textFieldCol1.getText())?"" :textFieldCol1.getText();
 		String col2Name = Strings.isNullOrEmpty(textFieldCol2.getText())?"" :textFieldCol2.getText();
 		String col1Val= Strings.isNullOrEmpty(textFieldCol1Val.getText())?"" : textFieldCol1Val.getText();
-		String col2Val = textFieldCol2Val.getText();
+		String col2Val = Strings.isNullOrEmpty(textFieldCol2Val.getText())?"" : textFieldCol2Val.getText();; 
 		
 		AccountInfo accountInfoVal = null;
 		boolean isFound = false;
@@ -1355,37 +1337,8 @@ public class InvoiceUI extends JInternalFrame {
 		}//end for
 		
 		/*getting operation for col1val & col2 val*/
-		String col1Operator = "";
-		String col2Operator = "";
-		if(!Strings.isNullOrEmpty(col1Val)){
-			try{
-				OperationInfo operationInfo = OperationInfo.builder()
-						.key(CLASS_NAME)
-						.propertyname("textFieldCol1Val")
-						.build();
-				operationInfo = OperationInfoDaoImpl.getInstance().getByParam(operationInfo);
-				if(operationInfo!=null && !Strings.isNullOrEmpty(operationInfo.getPropertyvalue()) ){
-					col1Operator = operationInfo.getPropertyvalue(); 
-				}
-			}catch(Exception exp){
-				LOGGER.equals(exp);
-			}
-		}
-
-		if(!Strings.isNullOrEmpty(col2Val)){
-			try{
-				OperationInfo operationInfo = OperationInfo.builder()
-						.key(CLASS_NAME)
-						.propertyname("textFieldCol2Val")
-						.build();
-				operationInfo = OperationInfoDaoImpl.getInstance().getByParam(operationInfo);
-				if(operationInfo!=null && !Strings.isNullOrEmpty(operationInfo.getPropertyvalue()) ){
-					col2Operator = operationInfo.getPropertyvalue(); 
-				}
-			}catch(Exception exp){
-				LOGGER.equals(exp);
-			}
-		}
+		String col1Operator = getCol1Operator(col1Val);
+		String col2Operator = getCol2Operator(col2Val);
 			
 		invoiceInfo = InvoiceInfo.builder().items(invoiceItemInfos)
 				.invoicNum(invoiceNum)
@@ -1404,16 +1357,17 @@ public class InvoiceUI extends JInternalFrame {
 				.col2Name(col2Name)
 				.col2Val(col2Val)
 				.col2Operator(col2Operator)
-				
+				.billNo(billNo)	
 				.withoutBillAmount(packingAmount)	
 				.grBiltyNumber(grBiltyNumber)
-				.remainingBillAmount(billAmount)
-				.remainingWithoutBillAmount(packingAmount)
-				.paidBillAmount(String.valueOf(Boolean.FALSE))
-				.paidWithoutBillAmount(String.valueOf(Boolean.FALSE))
 				
+				.remainingBillAmount(billAmount)
+				.paidBillAmount(String.valueOf(0))
 				.paidStatus(InvoicePaymentStatusEnum.NOTHING_PAID.name())
-				.remainingStatus(InvoicePaymentStatusEnum.NOTHING_PAID.name())
+				
+				.remainingWithoutBillAmount(packingAmount)
+				.paidWithoutBillAmount(String.valueOf(0))
+				.wpaidstatus(InvoicePaymentStatusEnum.NOTHING_PAID.name())
 				
 				.createdDate(new Timestamp(System.currentTimeMillis()))
 				.lastUpdated(new Timestamp(System.currentTimeMillis()))
@@ -1553,6 +1507,8 @@ public class InvoiceUI extends JInternalFrame {
 		String packtNumber = info.getPktNumber();
 		String transportName = info.getTransport();
 		String billNo = info.getBillNo();
+		
+		String grNumber = info.getGrBiltyNumber();
 
 		List<AccountInfo>  accountInfos  =  new ArrayList<AccountInfo>();
 		try {
@@ -1574,6 +1530,11 @@ public class InvoiceUI extends JInternalFrame {
 		textFieldGoodsPackets2.setText(packtNumber);
 		textFieldPartyTransportList.setText(transportName);
 		textFieldBillNo.setText(billNo);
+		textFieldGrNumber.setText(grNumber);
+		textFieldCol1.setText(Strings.isNullOrEmpty(info.getCol1Name())? "" : info.getCol1Name());
+		textFieldCol1Val.setText(Strings.isNullOrEmpty(info.getCol1Val())? "" : info.getCol1Val());
+		textFieldCol2.setText(Strings.isNullOrEmpty(info.getCol1Name())? "" : info.getCol2Name());
+		textFieldCol2Val.setText(Strings.isNullOrEmpty(info.getCol1Val())? "" : info.getCol2Val());
 
 		TableInvoiceModel model = (TableInvoiceModel) tableInvoice.getModel();
 		model.setInvoiceItemInfos(invoiceItemInfos);
@@ -1602,7 +1563,8 @@ public class InvoiceUI extends JInternalFrame {
 				textFieldStateCode.setText(stateCityInfo.getStateCode());
 				textFieldStateAbbr.setText(stateCityInfo.getAbbreviations());
 			}
-			textFieldPartyGST.requestFocus();
+			textFieldBillNo.requestFocus();
+			//textFieldPartyGST.requestFocus();
 	}
 
 	private void refresh(){
@@ -1644,6 +1606,11 @@ public class InvoiceUI extends JInternalFrame {
 		textFieldDiscount.setText(LeamonERPConstants.EMPTY_STR);
 		hiddenLabelStockId.setText(LeamonERPConstants.EMPTY_STR);
 		textFieldBillNo.setText(LeamonERPConstants.EMPTY_STR);
+		textFieldGrNumber.setText(LeamonERPConstants.EMPTY_STR);
+		textFieldCol1.setText(LeamonERPConstants.EMPTY_STR);
+		textFieldCol1Val.setText(LeamonERPConstants.EMPTY_STR);
+		textFieldCol2.setText(LeamonERPConstants.EMPTY_STR);
+		textFieldCol2Val.setText(LeamonERPConstants.EMPTY_STR);
 		
 		btnPrint.setEnabled(false);
 		btnUpdate.setEnabled(false);
@@ -1733,6 +1700,8 @@ public class InvoiceUI extends JInternalFrame {
 
 		textFieldPartyTransportList.setText(info.getTransport());
 		textFieldPartynickName.setText(info.getNickName());
+		textFieldPartyGST.setText(info.getGstNumber());
+		
 	}
 
 	private boolean isValidatedToSave(){
@@ -1936,6 +1905,14 @@ public class InvoiceUI extends JInternalFrame {
 		String packingAmount		=	textFieldPackingAmount.getText();
 		String gstAmount 			=	textFieldGstTAX.getText();
 
+		String grBiltyNumber = Strings.isNullOrEmpty(textFieldGrNumber.getText()) ?"" :textFieldGrNumber.getText();
+		String col1Name= Strings.isNullOrEmpty(textFieldCol1.getText())?"" :textFieldCol1.getText();
+		String col2Name = Strings.isNullOrEmpty(textFieldCol2.getText())?"" :textFieldCol2.getText();
+		String col1Val= Strings.isNullOrEmpty(textFieldCol1Val.getText())?"" : textFieldCol1Val.getText();
+		String col2Val = Strings.isNullOrEmpty(textFieldCol2Val.getText())?"" : textFieldCol2Val.getText();;
+		String col1Operator = getCol1Operator(col1Val);
+		String col2Operator = getCol2Operator(col2Val);
+		
 		/*-------------Getting account info if not found then saving into db-------------*/
 		AccountInfo accountInfoVal = null;
 		boolean isFound = false;
@@ -2053,12 +2030,23 @@ public class InvoiceUI extends JInternalFrame {
 				.orderBookedBy(orderBookedBy)
 				.transport(partyTransportList)
 				.pktNumber(goodsPackets2)
-				.billAmount(billAmount)
 				.gstValue(gstAmount)
-				.createdDate(new Timestamp(System.currentTimeMillis()))
+				
+				.billAmount(billAmount)
+				.grBiltyNumber(grBiltyNumber)
+				//.createdDate(new Timestamp(System.currentTimeMillis()))
+				.col1Name(col1Name)
+				.col1Val(col1Val)
+				.col2Name(col2Name)
+				.col2Val(col2Val)
+				.col1Operator(col1Operator)
+				.col2Operator(col2Operator)
+				.withoutBillAmount(packingAmount)	
+				
 				.lastUpdated(new Timestamp(System.currentTimeMillis()))
 				.isEnable(Boolean.TRUE)
 				.partyinfoID(accountInfoVal.getId())
+				
 				.build();
 		try{
 			InvoiceDaoImpl.getInstance().update(invoiceInfo);
@@ -2167,5 +2155,45 @@ public class InvoiceUI extends JInternalFrame {
 
 		editAction .putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_DOWN_MASK));
 		return editAction;
+	}
+	
+	private String getCol1Operator(String col1Val){
+		/*getting operation for col1val & col2 val*/
+		String col1Operator = "";
+		
+		if(!Strings.isNullOrEmpty(col1Val)){
+			try{
+				OperationInfo operationInfo = OperationInfo.builder()
+						.key(CLASS_NAME)
+						.propertyname("textFieldCol1Val")
+						.build();
+				operationInfo = OperationInfoDaoImpl.getInstance().getByParam(operationInfo);
+				if(operationInfo!=null && !Strings.isNullOrEmpty(operationInfo.getPropertyvalue()) ){
+					col1Operator = operationInfo.getPropertyvalue();
+				}
+			}catch(Exception exp){
+				LOGGER.equals(exp);
+			}
+		}
+		return  col1Operator;
+	}
+	
+	private String getCol2Operator(String col2Val){
+		String col2Operator = "";
+		if(!Strings.isNullOrEmpty(col2Val)){
+			try{
+				OperationInfo operationInfo = OperationInfo.builder()
+						.key(CLASS_NAME)
+						.propertyname("textFieldCol2Val")
+						.build();
+				operationInfo = OperationInfoDaoImpl.getInstance().getByParam(operationInfo);
+				if(operationInfo!=null && !Strings.isNullOrEmpty(operationInfo.getPropertyvalue()) ){
+					col2Operator = operationInfo.getPropertyvalue(); 
+				}
+			}catch(Exception exp){
+				LOGGER.equals(exp);
+			}
+		}
+		return col2Operator;
 	}
 }
