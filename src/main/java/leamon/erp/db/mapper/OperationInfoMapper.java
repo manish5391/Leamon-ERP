@@ -19,7 +19,7 @@ public interface OperationInfoMapper {
 	final String getAll = "SELECT * FROM OPERATIONS_INFO WHERE ISENABLE = TRUE"; 
 	final String getById = "SELECT * FROM OPERATIONS_INFO WHERE ID = #{id}";
 	
-	final String getAllByParam = "SELECT *  FROM OPERATIONS_INFO WHERE KEY = #{key}, AND PROPERTYNAME = #{propertyname} AND  ISENABLE = TRUE";
+	final String getAllByParam = "SELECT *  FROM OPERATIONS_INFO WHERE KEY = #{key} AND PROPERTYNAME = #{propertyname} AND  ISENABLE = TRUE";
 	
 	final String deleteById = "DELETE from OPERATIONS_INFO WHERE ID = #{id}";
 	
