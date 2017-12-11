@@ -73,7 +73,7 @@ public class CompanyUIAdmin extends JFrame {
 			String password = prop.getProperty("jdbc.password");
 			org.hsqldb.util.DatabaseManagerSwing.main(new String[] { "--url", urlVal, 
 					"-user",user, "-password", password, "--noexit" });
-		} catch (IOException exp) {
+		} catch (Exception exp) {
 			LOGGER.error("CompanyUIAdmin[mntmOpenHsqlEditorClick] failed to initialize DB session factory");
 			LOGGER.error("CompanyUIAdmin[mntmOpenHsqlEditorClick] "+exp);
 		}
