@@ -50,13 +50,11 @@ public class TablePaymentReceivedModel extends AbstractTableModel{
 	
 
 	private List<Double> receivedBillAmount = new ArrayList<Double>();
-	private List<Double> reminingBillinigBalance = new ArrayList<Double>();
+	private List<Double> remainingBillingBalance = new ArrayList<Double>();
 	
 	private List<Double> receivedWithOutBillAmount = new ArrayList<Double>();
-	private List<Double> reminingWithOutBillBalance = new ArrayList<Double>();
+	private List<Double> remainingWithOutBillBalance = new ArrayList<Double>();
 	
-	private List<Double> receivedAmount = new ArrayList<Double>();
-	private List<Double> reminingAmount = new ArrayList<Double>();
 	
 	/*type -: Billing or without bill*/
 	private String type;
@@ -70,29 +68,11 @@ public class TablePaymentReceivedModel extends AbstractTableModel{
 			isBAmount.add(Boolean.FALSE);
 			isWAmount.add(Boolean.FALSE);
 			receivedBillAmount.add(Double.parseDouble(String.valueOf("0.0")));
-			reminingBillinigBalance.add(Double.parseDouble(String.valueOf("0.0")));
+			remainingBillingBalance.add(Double.parseDouble(String.valueOf("0.0")));
 			
 			receivedWithOutBillAmount.add(Double.parseDouble(String.valueOf("0.0")));
-			reminingWithOutBillBalance.add(Double.parseDouble(String.valueOf("0.0")));
+			remainingWithOutBillBalance.add(Double.parseDouble(String.valueOf("0.0")));
 			
-			receivedAmount.add(Double.parseDouble(String.valueOf("0.0")));
-			reminingAmount.add(Double.parseDouble(String.valueOf("0.0")));
-		}
-	}
-
-	public TablePaymentReceivedModel(GenericModelWithSnp<List<InvoiceInfo>, InvoiceInfo> genericModelWithSnp){
-		this.invoiceInfos  = genericModelWithSnp.getOb();
-		this.serialNumbers = genericModelWithSnp.getSno();
-
-		for(int i=0; i< invoiceInfos.size(); i++){
-			isBAmount.add(Boolean.FALSE);
-			isWAmount.add(Boolean.FALSE);
-			
-			receivedBillAmount.add(Double.parseDouble(String.valueOf("0.0")));
-			reminingBillinigBalance.add(Double.parseDouble(String.valueOf("0.0")));
-			
-			receivedWithOutBillAmount.add(Double.parseDouble(String.valueOf("0.0")));
-			reminingWithOutBillBalance.add(Double.parseDouble(String.valueOf("0.0")));
 		}
 	}
 	
@@ -107,10 +87,10 @@ public class TablePaymentReceivedModel extends AbstractTableModel{
 			isWAmount.add(Boolean.FALSE);
 			
 			receivedBillAmount.add(Double.parseDouble(String.valueOf("0.0")));
-			reminingBillinigBalance.add(Double.parseDouble(String.valueOf("0.0")));
+			remainingBillingBalance.add(Double.parseDouble(String.valueOf("0.0")));
 			
 			receivedWithOutBillAmount.add(Double.parseDouble(String.valueOf("0.0")));
-			reminingWithOutBillBalance.add(Double.parseDouble(String.valueOf("0.0")));
+			remainingWithOutBillBalance.add(Double.parseDouble(String.valueOf("0.0")));
 		}
 	}
 
@@ -138,79 +118,69 @@ public class TablePaymentReceivedModel extends AbstractTableModel{
 		case 1: temp = invoiceInfos.get(rowIndex).getInvoicNum();break;
 		case 2:
 			if(!Strings.isNullOrEmpty(type) &&  type.equals(LeamonERPConstants.TYPE_BILL_AMOUNT_ADJUSTMENT)){
-				if(Strings.isNullOrEmpty(invoiceInfos.get(rowIndex).getBillAmount())){
+				if(Strings.isNullOrEmpty(invoiceInfos.get(rowIndex).getRemainingBillAmount())){
 					temp = "N/A";
 				}else{
-					temp = invoiceInfos.get(rowIndex).getBillAmount();
+					temp = invoiceInfos.get(rowIndex).getRemainingBillAmount();
 				}
 			}else if(!Strings.isNullOrEmpty(type) &&  type.equals(LeamonERPConstants.TYPE_AMOUNT_WITHOUT_BILL_ADJUSTMENT)){
-				/*if(Strings.isNullOrEmpty(invoiceInfos.get(rowIndex).getPackingAmount())){
+				if(Strings.isNullOrEmpty(invoiceInfos.get(rowIndex).getRemainingWithoutBillAmount())){
 					temp = "N/A";
 				}else{
-					temp = invoiceInfos.get(rowIndex).getPackingAmount();
-				}*/
+					temp = invoiceInfos.get(rowIndex).getRemainingWithoutBillAmount();
+				}
 			}
-		break;
+			break;
 		case 3:
-			/*String packingAmt = "error";
-			try{
-				packingAmt = LeamonUtil.calcPackingAmount(invoiceInfos.get(rowIndex));
-				invoiceInfos.get(rowIndex).setPackingAmount(packingAmt);
-			}catch(Exception e){
-				packingAmt = e.getMessage();
-				LOGGER.error(CLASS_NAME+"["+METHOD_NAME+"] Error : "+e);
-				packingAmt = "N/A";
+			if(!Strings.isNullOrEmpty(type) &&  type.equals(LeamonERPConstants.TYPE_BILL_AMOUNT_ADJUSTMENT)){
+				if(!isBAmount.isEmpty() && rowIndex < isBAmount.size()){ 
+					temp =  isBAmount.get(rowIndex);
+				}else{ 
+					temp = Boolean.FALSE; 
+				}
+			}else if(!Strings.isNullOrEmpty(type) &&  type.equals(LeamonERPConstants.TYPE_AMOUNT_WITHOUT_BILL_ADJUSTMENT)){
+					if(!isWAmount.isEmpty() && rowIndex < isWAmount.size()){ 
+						temp =  isWAmount.get(rowIndex);
+					}else{ 
+						temp = Boolean.FALSE; 
+					}
 			}
-			temp = packingAmt;*/ 
+			
 			break;
 		case 4:
-			if(!receivedAmount.isEmpty() && rowIndex< receivedAmount.size()){
-				temp = receivedAmount.get(rowIndex);
-			}else {
-				temp = Double.parseDouble(String.valueOf("0.0"));
+			if(!Strings.isNullOrEmpty(type) &&  type.equals(LeamonERPConstants.TYPE_BILL_AMOUNT_ADJUSTMENT)){
+				if(!receivedBillAmount.isEmpty() && rowIndex< receivedBillAmount.size()){
+					temp = receivedBillAmount.get(rowIndex);
+				}else {
+					temp = Double.parseDouble(String.valueOf("0.0"));
+				}
+			}else if(!Strings.isNullOrEmpty(type) &&  type.equals(LeamonERPConstants.TYPE_AMOUNT_WITHOUT_BILL_ADJUSTMENT)){
+				if(!receivedWithOutBillAmount.isEmpty() && rowIndex< receivedWithOutBillAmount.size()){
+					temp = receivedWithOutBillAmount.get(rowIndex);
+				}else {
+					temp = Double.parseDouble(String.valueOf("0.0"));
+				}
+				temp =  receivedWithOutBillAmount.get(rowIndex);
 			}
 			break;
-			/*if(!isBAmount.isEmpty() && rowIndex < isBAmount.size()){ 
-				temp =  isBAmount.get(rowIndex);
-			}else{ 
-				temp = Boolean.FALSE; 
-			}break;*/
+			
 		case 5:
-			if(!receivedAmount.isEmpty() && rowIndex< receivedAmount.size()){
-				temp = receivedAmount.get(rowIndex);
-			}else {
-				temp = Double.parseDouble(String.valueOf("0.0"));
+			if(!Strings.isNullOrEmpty(type) &&  type.equals(LeamonERPConstants.TYPE_BILL_AMOUNT_ADJUSTMENT)){
+				if(!remainingBillingBalance.isEmpty() && rowIndex< remainingBillingBalance.size()){
+					temp = remainingBillingBalance.get(rowIndex);
+				}else {
+					temp = Double.parseDouble(String.valueOf("0.0"));
+				}
+			}else if(!Strings.isNullOrEmpty(type) &&  type.equals(LeamonERPConstants.TYPE_AMOUNT_WITHOUT_BILL_ADJUSTMENT)){
+				if(!remainingWithOutBillBalance.isEmpty() && rowIndex< remainingWithOutBillBalance.size()){
+					temp = remainingWithOutBillBalance.get(rowIndex);
+				}else {
+					temp = Double.parseDouble(String.valueOf("0.0"));
+				}
 			}
 			break;
-			/*if(!isBAmount.isEmpty() && rowIndex < isBAmount.size()){ 
-				temp = isWAmount.get(rowIndex); 
-			}else{ 
-				temp = Boolean.FALSE; 
-			}break;*/
-		case 6:  
-			/*if(!receivedBillAmount.isEmpty() && rowIndex < receivedBillAmount.size()){ 
-				temp = receivedBillAmount.get(rowIndex); 
-			}else{ 
-				temp = Double.parseDouble(String.valueOf("0.0")); 
-			}break;*/
-		case 7:
-			/*if(!reminingBillinigBalance.isEmpty() && rowIndex < reminingBillinigBalance.size()){ 
-				temp = reminingBillinigBalance.get(rowIndex); 
-			}else{ 
-				temp = Double.parseDouble(String.valueOf("0.0")); 
-			}break;*/
-		case 8:
-			/*if(!receivedWithOutBillAmount.isEmpty() && rowIndex < receivedWithOutBillAmount.size()){ 
-				temp = receivedWithOutBillAmount.get(rowIndex); 
-			}else{ 
-				temp = Double.parseDouble(String.valueOf("0.0")); 
-			}break;*/
-		case 9:
-			/*if(!reminingWithOutBillBalance.isEmpty() && rowIndex < reminingWithOutBillBalance.size()){ 
-				temp = reminingWithOutBillBalance.get(rowIndex); 
-			}else{ 
-				temp = Double.parseDouble(String.valueOf("0.0")); 
-			}break;*/
+
+
 		default : temp = new Object();
 		}
 
@@ -220,22 +190,23 @@ public class TablePaymentReceivedModel extends AbstractTableModel{
 	@Override
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 		switch (columnIndex) {
-			case 2:
+		case 3:
+			if(!Strings.isNullOrEmpty(type) &&  type.equals(LeamonERPConstants.TYPE_BILL_AMOUNT_ADJUSTMENT)){
 				isBAmount.set(rowIndex, (Boolean)aValue);
 				if(null != aValue && aValue instanceof Boolean && aValue == Boolean.TRUE){
 					calcBillAmtAdjustment(rowIndex, columnIndex, (Boolean)aValue);
 				}else if(null != aValue && aValue instanceof Boolean && aValue == Boolean.FALSE){
 					calcBillAmtAdjustment(rowIndex, columnIndex, (Boolean)aValue);
 				}
-				break;
-			/*case 5:
+			}else if(!Strings.isNullOrEmpty(type) &&  type.equals(LeamonERPConstants.TYPE_AMOUNT_WITHOUT_BILL_ADJUSTMENT)){
 				isWAmount.set(rowIndex, (Boolean)aValue);
 				if(null != aValue && aValue instanceof Boolean && aValue == Boolean.TRUE){
 					calcWithoutBillAmtAdjustment(rowIndex, columnIndex, (Boolean)aValue);
 				}else if(null != aValue && aValue instanceof Boolean && aValue == Boolean.FALSE){
 					calcWithoutBillAmtAdjustment(rowIndex, columnIndex, (Boolean)aValue);
 				}
-				break;*/
+			}
+			break;
 		}
 	}
 
@@ -261,7 +232,7 @@ public class TablePaymentReceivedModel extends AbstractTableModel{
 	@Override
 	public boolean isCellEditable(int rowIndex, int columnIndex) {
 		// TODO Auto-generated method stub
-		if(columnIndex == 4 || columnIndex ==5 || columnIndex ==6){
+		if(columnIndex == 3 ){
 			return true;
 		}else
 			return super.isCellEditable(rowIndex, columnIndex);
@@ -281,7 +252,7 @@ public class TablePaymentReceivedModel extends AbstractTableModel{
 			return ;
 		}
 		
-		if(Strings.isNullOrEmpty(invoiceInfos.get(rowIndex).getBillAmount())){
+ 		if(Strings.isNullOrEmpty(invoiceInfos.get(rowIndex).getRemainingBillAmount())){
 			JOptionPane.showMessageDialog(paymentUI, "Billing amount is N/A hence Can't be adjusted ", "Leamon-ERP-Payment", JOptionPane.ERROR_MESSAGE);
 			isBAmount.set(rowIndex, Boolean.FALSE);
 			return ;
@@ -291,7 +262,7 @@ public class TablePaymentReceivedModel extends AbstractTableModel{
 			InvoiceInfo info =  invoiceInfos.get(rowIndex);
 			double billAmt = 0;
 			try{
-				billAmt = Double.parseDouble(info.getBillAmount());
+				billAmt = Double.parseDouble(info.getRemainingBillAmount());
 			}catch(Exception e){ LOGGER.error(e); }
 			
 			if(Strings.isNullOrEmpty(paymentUI.getTextFieldAdjAmt().getText())){
@@ -299,14 +270,14 @@ public class TablePaymentReceivedModel extends AbstractTableModel{
 				if(billAmt > amount){
 					double totalBillAdjustment =  billAmt - amount;
 					receivedBillAmount.set(rowIndex, amount);
-					reminingBillinigBalance.set(rowIndex, totalBillAdjustment);
+					remainingBillingBalance.set(rowIndex, totalBillAdjustment);
 					
 					paymentUI.getTextFieldAdjAmt().setText(String.valueOf(amount));
 					paymentUI.getTextFieldRemainingAmt().setText(String.valueOf("0.0"));
 				}else{
 					double remainingBal =    amount - billAmt;
 					receivedBillAmount.set(rowIndex, billAmt);
-					reminingBillinigBalance.set(rowIndex, 0.0);
+					remainingBillingBalance.set(rowIndex, 0.0);
 					paymentUI.getTextFieldAdjAmt().setText(String.valueOf(billAmt));
 					paymentUI.getTextFieldRemainingAmt().setText(String.valueOf(remainingBal));
 				}
@@ -333,14 +304,14 @@ public class TablePaymentReceivedModel extends AbstractTableModel{
 				if(billAmt > remainingAmt){
 					double totalBillAdjustment =  billAmt - remainingAmt;
 					receivedBillAmount.set(rowIndex, remainingAmt);
-					reminingBillinigBalance.set(rowIndex, totalBillAdjustment);
+					remainingBillingBalance.set(rowIndex, totalBillAdjustment);
 					
 					paymentUI.getTextFieldAdjAmt().setText(String.valueOf(adjustedAmount+remainingAmt));
 					paymentUI.getTextFieldRemainingAmt().setText(String.valueOf("0.0"));
 				}else{
 					double remainingBal =    remainingAmt - billAmt;
 					receivedBillAmount.set(rowIndex, billAmt);
-					reminingBillinigBalance.set(rowIndex, 0.0);
+					remainingBillingBalance.set(rowIndex, 0.0);
 					paymentUI.getTextFieldAdjAmt().setText(String.valueOf(adjustedAmount+billAmt));
 					paymentUI.getTextFieldRemainingAmt().setText(String.valueOf(remainingBal));
 				}
@@ -353,7 +324,7 @@ public class TablePaymentReceivedModel extends AbstractTableModel{
 			double billAmt = 0;
 			
 			try{
-				billAmt = Double.parseDouble(info.getBillAmount());
+				billAmt = Double.parseDouble(info.getRemainingBillAmount());
 			}catch(Exception e){
 				LOGGER.error(e);
 			}
@@ -368,7 +339,7 @@ public class TablePaymentReceivedModel extends AbstractTableModel{
 				
 				paymentUI.getTextFieldAdjAmt().setText(String.valueOf(val-receivedAmount));
 				receivedBillAmount.set(rowIndex, 0.0);
-				reminingBillinigBalance.set(rowIndex, 0.0);
+				remainingBillingBalance.set(rowIndex, 0.0);
 				
 				double val2=0;
 				try{
@@ -397,17 +368,17 @@ public class TablePaymentReceivedModel extends AbstractTableModel{
 			return ;
 		}
 
-		/*if(Strings.isNullOrEmpty(invoiceInfos.get(rowIndex).getPackingAmount())){
+		if(Strings.isNullOrEmpty(invoiceInfos.get(rowIndex).getRemainingWithoutBillAmount())){
 			JOptionPane.showMessageDialog(paymentUI, "W amount is N/A hence Can't be adjusted ", "Leamon-ERP-Payment", JOptionPane.ERROR_MESSAGE);
 			isWAmount.set(rowIndex, Boolean.FALSE);
 			return ;
-		}*/
+		}
 
 		if(isChecked){
 			InvoiceInfo info =  invoiceInfos.get(rowIndex);
 			double billAmt = 0;
 			try{
-				//billAmt = Double.parseDouble(info.getPackingAmount());
+				billAmt = Double.parseDouble(info.getRemainingWithoutBillAmount());
 			}catch(Exception e){ LOGGER.error(e); }
 
 			if(Strings.isNullOrEmpty(paymentUI.getTextFieldAdjAmt().getText())){
@@ -415,14 +386,14 @@ public class TablePaymentReceivedModel extends AbstractTableModel{
 				if(billAmt > amount){
 					double totalBillAdjustment =  billAmt - amount;
 					receivedWithOutBillAmount.set(rowIndex, amount);
-					reminingWithOutBillBalance.set(rowIndex, totalBillAdjustment);
+					remainingWithOutBillBalance.set(rowIndex, totalBillAdjustment);
 
 					paymentUI.getTextFieldAdjAmt().setText(String.valueOf(amount));
 					paymentUI.getTextFieldRemainingAmt().setText(String.valueOf("0.0"));
 				}else{
 					double remainingBal =    amount - billAmt;
 					receivedWithOutBillAmount.set(rowIndex, billAmt);
-					reminingWithOutBillBalance.set(rowIndex, 0.0);
+					remainingWithOutBillBalance.set(rowIndex, 0.0);
 					paymentUI.getTextFieldAdjAmt().setText(String.valueOf(billAmt));
 					paymentUI.getTextFieldRemainingAmt().setText(String.valueOf(remainingBal));
 				}
@@ -449,14 +420,14 @@ public class TablePaymentReceivedModel extends AbstractTableModel{
 				if(billAmt > remainingAmt){
 					double totalBillAdjustment =  billAmt - remainingAmt;
 					receivedWithOutBillAmount.set(rowIndex, remainingAmt);
-					reminingWithOutBillBalance.set(rowIndex, totalBillAdjustment);
+					remainingWithOutBillBalance.set(rowIndex, totalBillAdjustment);
 
 					paymentUI.getTextFieldAdjAmt().setText(String.valueOf(adjustedAmount+remainingAmt));
 					paymentUI.getTextFieldRemainingAmt().setText(String.valueOf("0.0"));
 				}else{
 					double remainingBal =    remainingAmt - billAmt;
 					receivedWithOutBillAmount.set(rowIndex, billAmt);
-					reminingWithOutBillBalance.set(rowIndex, 0.0);
+					remainingWithOutBillBalance.set(rowIndex, 0.0);
 					paymentUI.getTextFieldAdjAmt().setText(String.valueOf(adjustedAmount+billAmt));
 					paymentUI.getTextFieldRemainingAmt().setText(String.valueOf(remainingBal));
 				}
@@ -468,7 +439,7 @@ public class TablePaymentReceivedModel extends AbstractTableModel{
 			double billAmt = 0;
 
 			try{
-				//billAmt = Double.parseDouble(info.getPackingAmount());
+				billAmt = Double.parseDouble(info.getRemainingWithoutBillAmount());
 			}catch(Exception e){
 				LOGGER.error(e);
 			}
@@ -483,7 +454,7 @@ public class TablePaymentReceivedModel extends AbstractTableModel{
 
 				paymentUI.getTextFieldAdjAmt().setText(String.valueOf(val-receivedAmount));
 				receivedWithOutBillAmount.set(rowIndex, 0.0);
-				reminingWithOutBillBalance.set(rowIndex, 0.0);
+				remainingWithOutBillBalance.set(rowIndex, 0.0);
 
 				double val2=0;
 				try{
