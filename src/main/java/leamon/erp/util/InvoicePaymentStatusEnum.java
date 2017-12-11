@@ -3,8 +3,8 @@ package leamon.erp.util;
 public enum InvoicePaymentStatusEnum {
 	//CLEAR, REMAINING, NOTHING_PAID
 	NOTHING_PAID("NOTHING_PAID"),
-	ALL_CLEAR("CLEAR"),
-	REMAINING("REMAINING");
+	PARTIAL_PAID("PARTIAL_PAID"),
+	ALL_CLEAR("CLEAR");
 	
 	private String value;
 	
