@@ -24,21 +24,31 @@ public interface InvoiceMapper {
 	final String insert = "INSERT INTO INVOICE_BILL (PARTYINFOID, INVOICENUM, INVOICEDATE, BILL_NO, GRNUMBER, ORDERBOOKBY, "
 							+ "TRANSPORT, PACKETNUM, GSTAMOUNT, "
 							+ "BILLAMOUNT, PAIDBILLAMOUNT, REMAININGBILLAMOUNT, PAIDSTATUS, "
-							+ "WITHOUTBILLAMOUNT, PAIDWITHOUTBILLAMOUNT, REMAININGWITHOUTBILLAMOUNT, REMAININGSTATUS, "
+							+ "WITHOUTBILLAMOUNT, PAIDWITHOUTBILLAMOUNT, REMAININGWITHOUTBILLAMOUNT, WPAIDSTATUS, "
 							+ "COL1NAME, COL1VAL, COL2NAME, COL2VAL, COL1OPERATOR, COL2OPERATOR, "
 							+ "CREATEDDATE, LASTUPDATEDDATE, ISENABLE) "
 						+ "VALUES ( #{partyinfoID}, #{invoicNum}, #{invoicDate}, #{billNo}, #{grBiltyNumber},  #{orderBookedBy}, "
 						+ "#{transport}, #{pktNumber}, #{gstValue}, "
 						+ "#{billAmount}, #{paidBillAmount}, #{remainingBillAmount}, #{paidStatus}, "
-						+ "#{withoutBillAmount}, #{paidWithoutBillAmount}, #{remainingWithoutBillAmount}, #{remainingStatus}, "
+						+ "#{withoutBillAmount}, #{paidWithoutBillAmount}, #{remainingWithoutBillAmount}, #{wpaidstatus}, "
 						+ "#{col1Name}, #{col1Val}, #{col2Name}, #{col2Val}, #{col1Operator}, #{col2Operator},"
 						+ "#{createdDate}, #{lastUpdated}, #{isEnable})";
 	
 	final String update = "UPDATE INVOICE_BILL SET PARTYINFOID = #{partyinfoID}, INVOICENUM = #{invoicNum}, INVOICEDATE = #{invoicDate}, "
 						+ "BILL_NO = #{billNo}, ORDERBOOKBY = #{orderBookedBy},  TRANSPORT = #{transport}, PACKETNUM = #{pktNumber}, GSTAMOUNT = #{gstValue}, "
-						+ "BILLAMOUNT = #{billAmount}, "
+						+ "BILLAMOUNT = #{billAmount}, GRNUMBER = #{grBiltyNumber},"
+						+ "COL1NAME = #{col1Name}, COL1VAL = #{col1Val}, COL2NAME = #{col2Name}, COL2VAL = #{col2Val}, COL1OPERATOR = #{col1Operator}, COL2OPERATOR = #{col2Operator},"
 						+ "LASTUPDATEDDATE = #{lastUpdated} "
 						+ " WHERE ID = #{id}";
+	
+	final String UPDATE_BILLING_PAYMENT = "UPDATE INVOICE_BILL SET PAIDBILLAMOUNT = #{paidBillAmount}, REMAININGBILLAMOUNT = #{remainingBillAmount}, "
+			+ "PAIDSTATUS = #{paidStatus}, LASTUPDATEDDATE = #{lastUpdated}  "
+			+ "WHERE ID = #{id}";
+	
+	final String UPDATE_WITHOUT_BILLING_PAYMENT = "UPDATE INVOICE_BILL SET PAIDWITHOUTBILLAMOUNT = #{paidWithoutBillAmount}, "
+			+ "REMAININGWITHOUTBILLAMOUNT= #{remainingWithoutBillAmount}, WPAIDSTATUS = #{wpaidstatus}, "
+			+ "LASTUPDATEDDATE = #{lastUpdated} "
+			+ "WHERE ID = #{id}";
 	
 	final String deleteById = "DELETE from INVOICE_BILL WHERE ID = #{id}";
 	
@@ -83,6 +93,12 @@ public interface InvoiceMapper {
 	@Update(update)
 	void update(InvoiceInfo invoiceInfo);
 
+	@Update(UPDATE_BILLING_PAYMENT)
+	void updatePaidBillAmount(InvoiceInfo invoiceInfo);
+	
+	@Update(UPDATE_WITHOUT_BILLING_PAYMENT)
+	void updatePaidWBillAmount(InvoiceInfo invoiceInfo);
+	
 	@Update(disableByID)
 	void disableInvoiceById(InvoiceInfo invoiceInfo);
 	
@@ -106,6 +122,18 @@ public interface InvoiceMapper {
 	      @Result(property = "pktNumber", column = "PACKETNUM"),
 	      @Result(property = "billAmount", column = "BILLAMOUNT"), //GSTAMOUNT
 	      @Result(property = "gstValue", column = "GSTAMOUNT"), //BILLAMOUNT
+	      @Result(property = "grBiltyNumber", column = "GRNUMBER"), //BILLAMOUNT
+	      
+	      @Result(property = "col1Name", column = "COL1NAME"), 
+	      @Result(property = "col2Name", column = "COL2NAME"), 
+	      @Result(property = "col1Val", column = "COL1VAL"), 
+	      @Result(property = "col2Val", column = "COL2VAL"), 
+	      @Result(property = "col1Operator", column = "COL1OPERATOR"), 
+	      @Result(property = "col2Operator", column = "COL2OPERATOR"), 
+	      
+	      @Result(property = "grBiltyNumber", column = "GRNUMBER"),
+	      @Result(property = "grBiltyNumber", column = "GRNUMBER"),
+	      
 	      @Result(property = "createdDate", column = "CREATEDDATE"),
 	      @Result(property = "lastUpdated", column = "LASTUPDATEDDATE"),
 	      @Result(property = "isEnable", column = "ISENABLE"),
