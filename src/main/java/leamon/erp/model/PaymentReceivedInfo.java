@@ -12,6 +12,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
+ * This will record partypayment
+ * 
  * @Copyright Leamon India 
  * 
  * AccountInfo Entity
@@ -33,9 +35,12 @@ public class PaymentReceivedInfo implements Serializable, Comparable<PaymentRece
 	private Integer id;
 	private Integer partyInfoID;
 	private String  receivedPayment;
+	private String  adjustedPayment;
+	private String  remainingAmount;  // receivedPayment - adjustedPayment  
+	private String  status; /*CLEAR, PARTIAL-ADJUSTED*/
+	private String 	remark;
+	private String 	type;
 	private String 	receivedDate;
-	private String 	bRemark;
-	private String 	wRemark;
 	
 	/*get related accountInfo*/
 	private AccountInfo accountInfo;
