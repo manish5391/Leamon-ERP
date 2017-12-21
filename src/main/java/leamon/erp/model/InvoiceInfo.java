@@ -57,6 +57,9 @@ public class InvoiceInfo implements Serializable, Comparable<InvoiceInfo>{
 	private String paidStatus; //CLEAR, REMAINING, NOTHING PAID
 	private String wpaidstatus; //clear, remaining, Nothing Paid
 	
+	/*Release 3.3 -- DEC 19,2017 mapped with partyinfoid*/
+	private AccountInfo accountInfo;
+	
 	@Override
 	public int compareTo(InvoiceInfo o) {
 		
