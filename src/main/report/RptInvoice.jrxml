@@ -27,7 +27,7 @@
 		<band height="77" splitType="Stretch">
 			<image>
 				<reportElement x="4" y="0" width="71" height="61" uuid="f67edd4d-cf0a-4c45-8b62-4acae1441a84"/>
-				<imageExpression><![CDATA["src/main/report/logo.jpg"]]></imageExpression>
+				<imageExpression><![CDATA["D:\WORKSPACES\workspace-lemon\workspace-sts-3.8.4.RELEASE\Leamon-ERP\report\logo.jpg"]]></imageExpression>
 			</image>
 			<staticText>
 				<reportElement x="420" y="-10" width="32" height="18" uuid="5faa336a-a225-40ea-8cad-a95842d6521e">
