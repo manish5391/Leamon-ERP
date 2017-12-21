@@ -35,6 +35,8 @@ import javax.swing.border.SoftBevelBorder;
 import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXHyperlink;
 import org.jdesktop.swingx.JXTaskPane;
+import org.jdesktop.swingx.plaf.basic.CalendarHeaderHandler;
+import org.jdesktop.swingx.plaf.basic.SpinningCalendarHeaderHandler;
 
 import leamon.erp.db.StateCityDaoImpl;
 import leamon.erp.db.StockDaoImpl;
@@ -71,6 +73,7 @@ public class LeamonERP extends JFrame {
 	public static CompanyUI companyUI;
 	public static InvoiceSearchUI invoiceSearchUI;
 	public static PaymentUI paymentUI;
+	public static PaymentReceivedSummaryUI paymentReceivedUI;
 	public static StockItemQuantityUI stockItemQuantityUI;
 
 	public static  List<String> cityCache;
@@ -124,10 +127,10 @@ public class LeamonERP extends JFrame {
 		//root.putClientProperty( "apple.awt.brushMetalLook", Boolean.TRUE );
 		//root.putClientProperty( "Window.style", "small" );
 		//setDefaultLookAndFeelDecorated( false );
-		
+		UIManager.put(CalendarHeaderHandler.uiControllerID, SpinningCalendarHeaderHandler.class.getName());
 		Dimension minimumSize = new Dimension(200, 200);
 		this.setMinimumSize(minimumSize);
-
+		
 		setBounds(0, 0, (int)sc.getWidth(), (int)sc.getHeight());
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.WHITE);
@@ -149,7 +152,7 @@ public class LeamonERP extends JFrame {
 		//desktopPane = new JDesktopPane();
 		desktopPane.setBackground(new Color(128, 128, 128));
 		scrollPaneContent.setViewportView(desktopPane);
-
+		
 		JXTaskPane taskPaneInventory = new JXTaskPane();
 		taskPaneInventory.getContentPane().setBackground(new Color(255, 255, 255));
 		
@@ -402,6 +405,7 @@ public class LeamonERP extends JFrame {
 		mnNewMenu_2.add(mntmAdjustmentPayment);
 		
 		JMenuItem mntmSummaryPayment = new JMenuItem("Summary");
+		mntmSummaryPayment.addActionListener(e -> mntmSummaryPaymentClick(e) );
 		mnNewMenu_2.add(mntmSummaryPayment);
 		
 		JMenu mnTheme = new JMenu("Theme");
@@ -451,6 +455,7 @@ public class LeamonERP extends JFrame {
 		invoiceUI = new InvoiceUI();
 		invoiceUILegal =new InvoiceUILegal();
 		paymentUI = new PaymentUI();
+		paymentReceivedUI = new PaymentReceivedSummaryUI();
 		stockItemQuantityUI = new StockItemQuantityUI();
 	
 		}
@@ -899,6 +904,21 @@ public class LeamonERP extends JFrame {
 		SwingUtilities.updateComponentTreeUI(paymentUI);
 	}
 	
+	private void mntmSummaryPaymentClick(ActionEvent e){
+
+		if(paymentReceivedUI.isVisible()){
+			try {
+				paymentReceivedUI.setSelected(true);
+			} catch (PropertyVetoException e1) {
+				LOGGER.error(e1.toString());
+			}
+			paymentReceivedUI.moveToFront();
+		}else{
+			desktopPane.add(paymentReceivedUI);
+			paymentReceivedUI.setVisible(true);
+		}
+		SwingUtilities.updateComponentTreeUI(paymentReceivedUI);
+	}
 	
 	private void loadAddressData(){
 		
@@ -908,6 +928,7 @@ public class LeamonERP extends JFrame {
 		 }
 		 
 		 cityCache = stateCityInfos.stream().map(StateCityInfo::getCity).collect(Collectors.toList());
+		 cityCache.add(0, LeamonERPConstants.CITY_PROMPT_MSG);
 		 stateCache = stateCityInfos.stream().map(StateCityInfo::getState).collect(Collectors.toList());
 
 		try(InputStream countryList = this.getClass().getClassLoader().getResourceAsStream("countrylist.txt")) {
