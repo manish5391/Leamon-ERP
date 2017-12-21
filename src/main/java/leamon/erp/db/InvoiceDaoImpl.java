@@ -143,4 +143,25 @@ public class InvoiceDaoImpl  implements LeamonERPDao<InvoiceInfo>{
 		LOGGER.info("InvoiceDaoImpl[getItemList] end.");
 		return InvoiceInfos;
 	}
+	
+	public List<InvoiceInfo> getItemListWithInvoiceItemListAndAccountInfo() {
+		LOGGER.info("InvoiceDaoImpl[getItemListWithInvoiceItemListAndAccountInfo] inside.");
+		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
+		InvoiceMapper invoiceInfoMapper= session.getMapper(InvoiceMapper.class);
+		List<InvoiceInfo> InvoiceInfos = invoiceInfoMapper.getAllWithChildAndAccount();
+		session.close();
+		LOGGER.info("InvoiceDaoImpl[getItemListWithInvoiceItemListAndAccountInfo] end.");
+		return InvoiceInfos;
+	}
+	
+	//public List<InvoiceInfo> getAllWithChildAndAccountByDateRange(String fromDate, String toDate) {
+	public List<InvoiceInfo> getAllWithChildAndAccountByDateRange(java.sql.Date fromDate, java.sql.Date toDate) {
+		LOGGER.info("InvoiceDaoImpl[getAllWithChildAndAccountByDateRange] inside.");
+		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
+		InvoiceMapper invoiceInfoMapper= session.getMapper(InvoiceMapper.class);
+		List<InvoiceInfo> InvoiceInfos = invoiceInfoMapper.getAllWithChildAndAccountByDateRange(fromDate, toDate);
+		session.close();
+		LOGGER.info("InvoiceDaoImpl[getAllWithChildAndAccountByDateRange] end.");
+		return InvoiceInfos;
+	}
 }
