@@ -15,6 +15,7 @@ public interface LeamonERPConstants {
 	public static final Integer VERTICAL_GAP 	= 	50;
 	public static final Integer HORIZONTAL_GAP 	=	50;
 	
+	
 	public static final String IMG_SAVE="";
 	
 	public static final String IMG_SAVE_BUTTON="save_button.png";
@@ -184,10 +185,24 @@ public interface LeamonERPConstants {
 	String TABLE_HEADER_AMOUNT="Amount";
 	String TABLE_HEADER_ADJUST="Adjust";
 	String TABLE_HEADER_STATUS="STATUS";
+	String TABLE_HEADER_BILL_DATE="Invoice Date";
 	String TABLE_HEADER_RECEIVED_PAYMENT="Received";
 	String TABLE_HEADER_REMAINING_PAYMENT="Remaining";
 	String TYPE_BILL_AMOUNT_ADJUSTMENT="BA"; //Billing Amount
 	String TYPE_AMOUNT_WITHOUT_BILL_ADJUSTMENT="WA"; //without billing amount
+	String TABLE_HEADER_BILL_NO="Bill No.";
+	String TABLE_HEADER_INVOICE_DATE="Invoice Date";
+	String TABLE_HEADER_PARTY_NAME="Party Name";
+	String TABLE_HEADER_B_AMOUNT="B Amt.";
+	String TABLE_HEADER_W_AMOUNT="W Amt.";
+	String TABLE_HEADER_B_STATUS="B Status";
+	String TABLE_HEADER_W_STATUS="W Status";
+	String TABLE_HEADER_G_TOTAL="G.Total";
+	String TABLE_HEADER_B_RECEIVED_AMOUNT="B Rec. Amt.";
+	String TABLE_HEADER_W_RECEIVED_AMOUNT="W Rec. Amt";
+	String TABLE_HEADER_B_REMARK="B Remark";
+	String TABLE_HEADER_W_REMARK="W Remark";
+	
 	
 	String ACTION_COMMAND_="DESCRIPTIONS";
 	
@@ -221,5 +236,5 @@ public interface LeamonERPConstants {
 	String TABLE_PAYMENT = "TablePayment";
 	
 	
-	
+	String CITY_PROMPT_MSG = "- - Select City - -";
 }
