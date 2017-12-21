@@ -36,6 +36,7 @@ import com.google.common.base.Strings;
 import leamon.erp.model.AccountInfo;
 import leamon.erp.model.InvoiceInfo;
 import leamon.erp.ui.InvoiceUI;
+import leamon.erp.ui.PaymentReceivedSummaryUI;
 import leamon.erp.ui.PaymentUI;
 import leamon.erp.ui.model.AccountInfoInvoiceListCellRender;
 import leamon.erp.ui.model.InvoiceInfoListCellRender;
@@ -289,6 +290,19 @@ public class LeamonAutoAccountInfoTextFieldSuggestor <T extends List<E>, E> exte
 		return false;
 	}
 	
+	/**
+	 * @date DEC 11,2017
+	 * @author Manish Kumar Mishra
+	 * @param frame
+	 * @return
+	 */
+	private boolean isPaymentReceivedUI(JInternalFrame frame){
+		if(frame instanceof PaymentReceivedSummaryUI){
+			return true;
+		}
+		return false;
+	}
+	
 	private void setAccountInfoData(JInternalFrame ui ,AccountInfo info){
 		
 		if(isInvoiceInstance(ui)){
@@ -298,6 +312,11 @@ public class LeamonAutoAccountInfoTextFieldSuggestor <T extends List<E>, E> exte
 		
 		if(isPaymentUIInstance(ui)){
 			PaymentUI paymentUi = (PaymentUI) ui;
+			paymentUi.setAccountInfo(info);
+		}
+		
+		if(isPaymentReceivedUI(ui)){
+			PaymentReceivedSummaryUI paymentUi = (PaymentReceivedSummaryUI) ui;
 			paymentUi.setAccountInfo(info);
 		}
 	}
