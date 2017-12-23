@@ -9,6 +9,9 @@ public enum ERPEnum {
 	STATUS_PAYMENT_ADJUSTMENT_CLEAR("CLEAR"), //everything is adjusted
 	STATUS_PAYMENT_ADJUSTMENT_PARTIAL("PARTIAL"),
 	
+	/*Leamon-Property*/
+	REPORTTD("REPORTTD"),
+	REPORTWITHOUTD("REPORTWITHOUTD"),
 	;
 	
 	
