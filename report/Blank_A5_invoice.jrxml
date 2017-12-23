@@ -46,7 +46,7 @@
 			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<image>
 				<reportElement x="12" y="0" width="71" height="58" uuid="f67edd4d-cf0a-4c45-8b62-4acae1441a84"/>
-				<imageExpression><![CDATA["./logo.jpg"]]></imageExpression>
+				<imageExpression><![CDATA["D:\\WORKSPACES\\workspace-lemon\\workspace-sts-3.8.4.RELEASE\\Leamon-ERP\\report\\logo.jpg"]]></imageExpression>
 			</image>
 			<textField>
 				<reportElement x="100" y="0" width="325" height="20" uuid="191b12ad-cd62-43dc-96b4-2ee3603c9959"/>
@@ -302,9 +302,7 @@
 				<text><![CDATA[Amount]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Transparent" x="520" y="3" width="30" height="21" uuid="75a5a6ee-677e-485b-aeb3-1446d26730e6">
-					<printWhenExpression><![CDATA[NOT($P{td}.equals( ".00" ) )]]></printWhenExpression>
-				</reportElement>
+				<reportElement mode="Transparent" x="520" y="3" width="30" height="21" isRemoveLineWhenBlank="true" uuid="75a5a6ee-677e-485b-aeb3-1446d26730e6"/>
 				<textElement>
 					<font fontName="Courier New" size="12" isBold="true"/>
 				</textElement>
@@ -475,7 +473,6 @@
 			<staticText>
 				<reportElement x="541" y="3" width="8" height="21" isRemoveLineWhenBlank="true" uuid="acafafbc-398e-420b-85a8-776a256ae096">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-					<printWhenExpression><![CDATA[NOT($F{td}.isEmpty())]]></printWhenExpression>
 				</reportElement>
 				<textElement>
 					<font size="10" isBold="true"/>
@@ -576,7 +573,6 @@
 				<reportElement x="395" y="30" width="30" height="15" uuid="4da3665b-622f-4b58-8595-7fcc50ff3e9a">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-					<printWhenExpression><![CDATA[NOT($P{td}.equals( ".00" ) )]]></printWhenExpression>
 				</reportElement>
 				<textElement>
 					<font fontName="Courier New" size="11" isBold="true"/>
@@ -587,7 +583,6 @@
 				<reportElement x="439" y="30" width="73" height="19" uuid="9e4e64e8-d71d-4505-9892-51ef968582bb">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-					<printWhenExpression><![CDATA[NOT($P{td}.equals( ".00" ) )]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Top"/>
 				<textFieldExpression><![CDATA[$P{td}]]></textFieldExpression>
