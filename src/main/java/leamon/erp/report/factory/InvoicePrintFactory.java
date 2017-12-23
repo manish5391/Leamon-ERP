@@ -21,6 +21,8 @@ import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
 
+import com.google.common.base.Strings;
+
 import leamon.erp.db.CompanyInfoDaoImpl;
 import leamon.erp.model.CompanyInfo;
 import leamon.erp.model.InvoiceInfo;
@@ -29,6 +31,7 @@ import leamon.erp.ui.AccountInfoUI;
 import leamon.erp.ui.InvoiceUI;
 import leamon.erp.ui.LeamonERP;
 import leamon.erp.ui.model.TableInvoiceModel;
+import leamon.erp.util.LeamonERPConstants;
 import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRPropertiesUtil;
@@ -81,6 +84,14 @@ public class InvoicePrintFactory {
 		String grandTotal = invoiceUI.getTextFieldGTotal1().getText();
 		String billAmt = invoiceUI.getTextFieldBillAmount().getText();
 		String packingAmount = invoiceUI.getTextFieldPackingAmount().getText();
+		
+		total = Strings.isNullOrEmpty(total) ? LeamonERPConstants.EMPTY_STR : total;
+		discount = Strings.isNullOrEmpty(discount) ? LeamonERPConstants.EMPTY_STR : discount;
+		taxableValue = Strings.isNullOrEmpty(taxableValue) ? LeamonERPConstants.EMPTY_STR : taxableValue;
+		gst = Strings.isNullOrEmpty(gst) ? LeamonERPConstants.EMPTY_STR : gst;
+		grandTotal = Strings.isNullOrEmpty(grandTotal) ? LeamonERPConstants.EMPTY_STR : grandTotal;
+		billAmt = Strings.isNullOrEmpty(billAmt) ? LeamonERPConstants.EMPTY_STR : billAmt;
+		packingAmount = Strings.isNullOrEmpty(packingAmount) ? LeamonERPConstants.EMPTY_STR : packingAmount;
 		
 		List<InvoiceItemInfo> invoiceItemInfos =  ((TableInvoiceModel)invoiceUI.getTableInvoice().getModel()).getInvoiceItemInfos();
 		
