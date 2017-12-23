@@ -36,28 +36,11 @@ public class LoginUI {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		if(args == null ){
-			LOGGER.error("Please supply argument");
-			return;
-		}
-
-		if(args.length > 0 ){
-			rptInvoiceReportPath = args[0];
-			if(rptInvoiceReportPath == null){
-				LOGGER.error("Report not found. "+rptInvoiceReportPath);
-			}else{
-				LOGGER.info("Report Path : "+rptInvoiceReportPath);
-			}
-		}else{
-			LOGGER.error("No Arg found");
-			return;
-		}
 
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
 					LoginUI frame = new LoginUI();
-					LeamonERP.main(args);
 					//frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();

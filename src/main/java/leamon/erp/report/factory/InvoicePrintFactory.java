@@ -31,6 +31,7 @@ import leamon.erp.ui.AccountInfoUI;
 import leamon.erp.ui.InvoiceUI;
 import leamon.erp.ui.LeamonERP;
 import leamon.erp.ui.model.TableInvoiceModel;
+import leamon.erp.util.ERPEnum;
 import leamon.erp.util.LeamonERPConstants;
 import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRException;
@@ -139,7 +140,13 @@ public class InvoicePrintFactory {
 		JRPropertiesUtil.getInstance(context).setProperty("net.sf.jasperreports.xpath.executer.factory",
 		    "net.sf.jasperreports.engine.util.xml.JaxenXPathExecuterFactory");
 		
-		try (InputStream  compiledInvoiceReport = new FileInputStream(LeamonERP.rptInvoiceReportPath)){
+		String reportPath = "";
+		if(Strings.isNullOrEmpty(discount) || discount.equals(".00")){
+			reportPath = LeamonERP.getPropertyValue(ERPEnum.REPORTWITHOUTD.name());
+		}else{
+			reportPath = LeamonERP.getPropertyValue(ERPEnum.REPORTTD.name());
+		}
+		try (InputStream  compiledInvoiceReport = new FileInputStream(reportPath)){
 			//compiledInvoiceReport = new FileInputStream(new File(this.getClass().getClassLoader().getResource("report/Blank_A5_invoice.jrxml").getPath().toString()));
 			//compiledInvoiceReport = new FileInputStream(LeamonERP.rptInvoiceReportPath);
 			
@@ -350,8 +357,14 @@ public class InvoicePrintFactory {
 		DefaultJasperReportsContext context = DefaultJasperReportsContext.getInstance();
 		JRPropertiesUtil.getInstance(context).setProperty("net.sf.jasperreports.xpath.executer.factory",
 		    "net.sf.jasperreports.engine.util.xml.JaxenXPathExecuterFactory");
-		
-		try (InputStream compiledInvoiceReport = new FileInputStream(LeamonERP.rptInvoiceReportPath)){
+		String reportPath = "";
+		if(Strings.isNullOrEmpty(discount)){
+			reportPath = LeamonERP.getPropertyValue(ERPEnum.REPORTWITHOUTD.name());
+		}else{
+			reportPath = LeamonERP.getPropertyValue(ERPEnum.REPORTTD.name());
+		}
+		LOGGER.info("Report Path : "+ reportPath);
+		try (InputStream compiledInvoiceReport = new FileInputStream(reportPath)){
 			
 			JasperDesign jasperDesign = JRXmlLoader.load(compiledInvoiceReport);
 			JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);

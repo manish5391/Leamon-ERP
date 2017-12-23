@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
@@ -38,8 +39,12 @@ import org.jdesktop.swingx.JXTaskPane;
 import org.jdesktop.swingx.plaf.basic.CalendarHeaderHandler;
 import org.jdesktop.swingx.plaf.basic.SpinningCalendarHeaderHandler;
 
+import com.google.common.base.Strings;
+
+import leamon.erp.db.LeamonPropertyDaoImpl;
 import leamon.erp.db.StateCityDaoImpl;
 import leamon.erp.db.StockDaoImpl;
+import leamon.erp.model.LeamonProperty;
 import leamon.erp.model.StateCityInfo;
 import leamon.erp.ui.custom.BGImagePanel;
 import leamon.erp.util.LeamonERPConstants;
@@ -87,31 +92,13 @@ public class LeamonERP extends JFrame {
 	
 	public static LeamonERP frame;
 
-	public static String rptInvoiceReportPath;
+	public static  List<LeamonProperty> leamonProperties = new ArrayList<LeamonProperty>();
+	public static boolean isleamonPropertiesLoaded = false;
 	
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		
-		if(args == null ){
-			LOGGER.error("Please supply argument");
-			return;
-		}
-		
-		if(args.length > 0 ){
-			rptInvoiceReportPath = args[0];
-			if(rptInvoiceReportPath == null){
-				LOGGER.error("Report not found. "+rptInvoiceReportPath);
-			}else{
-				LOGGER.info("Report Path : "+rptInvoiceReportPath);
-			}
-		}else{
-			LOGGER.error("No Arg found");
-			return;
-		}
-		
-	}
+	public static void main(String[] args) {}
 
 	/**
 	 * Create the frame.
@@ -438,7 +425,17 @@ public class LeamonERP extends JFrame {
 		}catch(Exception e){
 			LOGGER.error(e);
 		}
-
+		
+		/*preparing LeamonProeprty*/
+		try{
+			if(!isleamonPropertiesLoaded){
+				leamonProperties = LeamonPropertyDaoImpl.getInstance().getItemList();
+				isleamonPropertiesLoaded = true;
+			}
+		}catch(Exception exp){
+			LOGGER.error(exp);
+		}
+		
 		stockItemManager = new StockItemUI();
 		stockItemList = new StockItemListManager();
 		accountListManager = new AccountListManager();
@@ -1030,7 +1027,31 @@ public class LeamonERP extends JFrame {
 		}
 	}
 
-	
+	public static String getPropertyValue(String propertyName){
+		
+		if(Strings.isNullOrEmpty(propertyName)){
+			return propertyName;
+		}
+		
+		
+		try{
+			if(!isleamonPropertiesLoaded){
+				leamonProperties = LeamonPropertyDaoImpl.getInstance().getItemList();
+				isleamonPropertiesLoaded = true;
+			}
+		}catch(Exception exp){
+			LOGGER.error(exp);
+		}
+		
+		Optional<LeamonProperty> leamonPropertyOp = leamonProperties.stream()
+				.filter(e -> propertyName.equals(e.getPropertyname()))
+				.findFirst();
+		if(leamonPropertyOp.isPresent()){
+			return leamonPropertyOp.get().getPropertyvalue();
+		}else{
+			return LeamonERPConstants.EMPTY_STR;
+		}
+	}
 
 	public void framCreator(){
 		SwingUtilities.invokeLater(() -> {
