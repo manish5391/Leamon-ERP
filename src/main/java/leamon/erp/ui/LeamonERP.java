@@ -80,6 +80,7 @@ public class LeamonERP extends JFrame {
 	public static PaymentUI paymentUI;
 	public static PaymentReceivedSummaryUI paymentReceivedUI;
 	public static StockItemQuantityUI stockItemQuantityUI;
+	public static AccountOpeningBalanceUI accountOpeningBalanceUI;
 
 	public static  List<String> cityCache;
 	public static  List<String> countryCache;
@@ -384,16 +385,20 @@ public class LeamonERP extends JFrame {
 		mntmDeleteParty.addActionListener(e-> hyperlinkAccountDeleteClick(e));
 		mnPartyMaster.add(mntmDeleteParty);
 		
-		JMenu mnNewMenu_2 = new JMenu("Payment Master");
-		menuBar.add(mnNewMenu_2);
+		JMenu mnPaymentMaster = new JMenu("Payment Master");
+		menuBar.add(mnPaymentMaster);
 		
 		JMenuItem mntmAdjustmentPayment = new JMenuItem("Adjustments");
 		mntmAdjustmentPayment.addActionListener(e -> hprlnkPaymentRegisterClick(e));
-		mnNewMenu_2.add(mntmAdjustmentPayment);
+		mnPaymentMaster.add(mntmAdjustmentPayment);
 		
 		JMenuItem mntmSummaryPayment = new JMenuItem("Summary");
 		mntmSummaryPayment.addActionListener(e -> mntmSummaryPaymentClick(e) );
-		mnNewMenu_2.add(mntmSummaryPayment);
+		mnPaymentMaster.add(mntmSummaryPayment);
+		
+		JMenuItem mntmOpeningBalance = new JMenuItem("Opening Balance");
+		mntmOpeningBalance.addActionListener(e -> mntmOpeningBalanceClick(e));
+		mnPaymentMaster.add(mntmOpeningBalance);
 		
 		JMenu mnTheme = new JMenu("Theme");
 		menuBar.add(mnTheme);
@@ -454,6 +459,7 @@ public class LeamonERP extends JFrame {
 		paymentUI = new PaymentUI();
 		paymentReceivedUI = new PaymentReceivedSummaryUI();
 		stockItemQuantityUI = new StockItemQuantityUI();
+		accountOpeningBalanceUI = new AccountOpeningBalanceUI();
 	
 		}
 	
@@ -682,8 +688,6 @@ public class LeamonERP extends JFrame {
 		
 		invoiceSearchUI = new InvoiceSearchUI();
 
-
-
 		accountInfoUI = new AccountInfoUI();
 		invoiceUI = new InvoiceUI();
 	
@@ -889,6 +893,7 @@ public class LeamonERP extends JFrame {
 
 		if(paymentUI.isVisible()){
 			try {
+				paymentUI.autoAccountInfoSuggestor(paymentUI.getTextFieldPartyName());
 				paymentUI.setSelected(true);
 			} catch (PropertyVetoException e1) {
 				LOGGER.error(e1.toString());
@@ -896,6 +901,7 @@ public class LeamonERP extends JFrame {
 			paymentUI.moveToFront();
 		}else{
 			desktopPane.add(paymentUI);
+			paymentUI.autoAccountInfoSuggestor(paymentUI.getTextFieldPartyName());
 			paymentUI.setVisible(true);
 		}
 		SwingUtilities.updateComponentTreeUI(paymentUI);
@@ -905,6 +911,7 @@ public class LeamonERP extends JFrame {
 
 		if(paymentReceivedUI.isVisible()){
 			try {
+				paymentReceivedUI.autoAccountInfoSuggestor(paymentReceivedUI.getTextFieldPartyName());
 				paymentReceivedUI.setSelected(true);
 			} catch (PropertyVetoException e1) {
 				LOGGER.error(e1.toString());
@@ -912,9 +919,25 @@ public class LeamonERP extends JFrame {
 			paymentReceivedUI.moveToFront();
 		}else{
 			desktopPane.add(paymentReceivedUI);
+			paymentReceivedUI.autoAccountInfoSuggestor(paymentReceivedUI.getTextFieldPartyName());
 			paymentReceivedUI.setVisible(true);
 		}
 		SwingUtilities.updateComponentTreeUI(paymentReceivedUI);
+	}
+	
+	private void mntmOpeningBalanceClick(ActionEvent e){
+		if(accountOpeningBalanceUI.isVisible()){
+			try {
+				accountOpeningBalanceUI.setSelected(true);
+			} catch (PropertyVetoException e1) {
+				LOGGER.error(e1.toString());
+			}
+			accountOpeningBalanceUI.moveToFront();
+		}else{
+			desktopPane.add(accountOpeningBalanceUI);
+			accountOpeningBalanceUI.setVisible(true);
+		}
+		SwingUtilities.updateComponentTreeUI(accountOpeningBalanceUI);
 	}
 	
 	private void loadAddressData(){
