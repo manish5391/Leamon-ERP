@@ -212,6 +212,14 @@ public class StockDaoImpl implements  LeamonERPDao<StockItem> {
 	}
 
 	
-	
+	public List<StockItem> getItemListWithQuantity() throws Exception {
+		LOGGER.info("LeamonERPDaoImpl[getItemListWithQuantity] inside.");
+		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
+		StockMapper stockItemMapper= session.getMapper(StockMapper.class);
+		List<StockItem> stockItems = stockItemMapper.getAllWithQuantity();
+		session.close();
+		LOGGER.info("LeamonERPDaoImpl[getItemListWithQuantity] end.");
+		return stockItems;
+	}
 	
 }
