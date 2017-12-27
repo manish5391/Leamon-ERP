@@ -310,8 +310,8 @@ public class StockItemUI extends JInternalFrame implements ActionListener{
 		lblShape.setForeground((Color) null);
 		lblShape.setFont(new Font("DialogInput", Font.BOLD, 16));
 		
-		JLabel lblSaleUnit = new JLabel("Sale Unit");
-		lblSaleUnit.setBounds(16, 94, 90, 22);
+		JLabel lblSaleUnit = new JLabel("Unit");
+		lblSaleUnit.setBounds(16, 94, 59, 22);
 		lblSaleUnit.setForeground((Color) null);
 		lblSaleUnit.setFont(new Font("DialogInput", Font.BOLD, 16));
 		
@@ -398,7 +398,7 @@ public class StockItemUI extends JInternalFrame implements ActionListener{
 		label_4 = new JLabel("*");
 		label_4.setForeground(Color.RED);
 		label_4.setFont(new Font("DialogInput", Font.BOLD, 16));
-		label_4.setBounds(110, 94, 16, 22);
+		label_4.setBounds(56, 94, 16, 22);
 		panel.add(label_4);
 		
 		label_5 = new JLabel("*");
