@@ -17,6 +17,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyVetoException;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 import org.jdesktop.swingx.JXTextField;
 import org.jdesktop.swingx.plaf.basic.CalendarHeaderHandler;
@@ -158,7 +160,9 @@ public class PaymentUI extends JInternalFrame {
 		label_2.setFont(new Font("Trebuchet MS", Font.BOLD, 13));
 		
 		UIManager.put(CalendarHeaderHandler.uiControllerID, SpinningCalendarHeaderHandler.class.getName());
+		DateFormat df = new SimpleDateFormat("EEE dd/MM/yyyy");
 		datePickerPaymentDate = new JXDatePicker(new Date());
+		datePickerPaymentDate.setFormats(df);
 		datePickerPaymentDate.setBounds(566, 12, 145, 22);
 		datePickerPaymentDate.getMonthView().setZoomable(true);
 		panel.add(datePickerPaymentDate);
