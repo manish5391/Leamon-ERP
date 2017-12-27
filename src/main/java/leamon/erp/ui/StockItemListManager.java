@@ -52,7 +52,8 @@ public class StockItemListManager extends JInternalFrame implements ActionListen
 	
 	static final Logger LOGGER = Logger.getLogger(StockItemListManager.class);
 	
-	private JTable tblStockList;
+	//private JTable tblStockList;
+	private JXTable tblStockList;
 	private JXSearchField textSearchField;
 	private JLabel lblImage;
 	
@@ -66,12 +67,13 @@ public class StockItemListManager extends JInternalFrame implements ActionListen
 		setClosable(true);
 		setBounds(10, 10, 1200, 674);
 		
-		tblStockList = new LeamonTable();
+		//tblStockList = new LeamonTable();
+		tblStockList = new JXTable();
         
 		StockDaoImpl daoImpl = StockDaoImpl.getInstance();
 		List<StockItem> stockItems = new ArrayList<StockItem>();
 		try{
-		stockItems = daoImpl.getItemList();
+		stockItems = daoImpl.getItemListWithQuantity();
 		}catch(Exception e){
 			LOGGER.error(e);
 		}
@@ -79,17 +81,9 @@ public class StockItemListManager extends JInternalFrame implements ActionListen
 		tblStockList.setModel(stockListItemModel);
 		tblStockList.setRowHeight(tblStockList.getRowHeight()+20);
 		tblStockList.setAutoCreateRowSorter(true);
-		setColumnWidth(tblStockList);
-		/*tblStockList.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		tblStockList.getColumnModel().getColumn(0).setPreferredWidth(27);
-		tblStockList.getColumnModel().getColumn(1).setPreferredWidth(27);
-		tblStockList.getColumnModel().getColumn(2).setPreferredWidth(77);
-		tblStockList.getColumnModel().getColumn(3).setPreferredWidth(27);
-		tblStockList.getColumnModel().getColumn(4).setPreferredWidth(27);
-		tblStockList.getColumnModel().getColumn(5).setPreferredWidth(27);
-		tblStockList.getColumnModel().getColumn(6).setPreferredWidth(27);
-		tblStockList.getColumnModel().getColumn(7).setPreferredWidth(50);
-		tblStockList.getColumnModel().getColumn(8).setPreferredWidth(127);*/
+		tblStockList.setColumnControlVisible(true);
+		tblStockList.packAll();
+		
 		tblStockList.setComponentPopupMenu(createPopup());
 		tblStockList.setName(LeamonERPConstants.TABLE_STOCK_ITEMS);
 		tblStockList.addKeyListener(new KeyListenerHandler(tblStockList));
@@ -135,12 +129,8 @@ public class StockItemListManager extends JInternalFrame implements ActionListen
 		JButton btnAddItem = new JButton();
 		btnAddItem.setBackground(Color.WHITE);
 		btnAddItem.setActionCommand(LeamonERPConstants.BUTTON_ACTION_ADD_STOCK_ITEM);
-		//btnAddItem.setBorder(BorderFactory.createEmptyBorder());
-		//btnAddItem.setContentAreaFilled(false);
 		btnAddItem.setIcon(new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_ADD_BUTTON)));
 		btnAddItem.addActionListener(this);
-		//btnAddItem.setBorderPainted(true);
-		//btnAddItem.setFocusPainted(tru/);
 		
 		JButton btnedit = new JButton();
 		btnedit.setIcon(new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_EDIT_BUTTON)));
@@ -360,7 +350,7 @@ public class StockItemListManager extends JInternalFrame implements ActionListen
 	 		}
 	 	}
 	 	try{
-	 	stockItems = StockDaoImpl.getInstance().getItemList();
+	 	stockItems = StockDaoImpl.getInstance().getItemListWithQuantity();
 	 	}catch(Exception e){
 				LOGGER.error(e);
 		}
@@ -397,7 +387,7 @@ public class StockItemListManager extends JInternalFrame implements ActionListen
 	public void refreshStockTable(){
 		List<StockItem> stockItems = new  ArrayList<StockItem>();
 		try{
-		stockItems = StockDaoImpl.getInstance().getItemList();
+		stockItems = StockDaoImpl.getInstance().getItemListWithQuantity();
 		}catch(Exception e){
 				LOGGER.error(e);
 		}
@@ -407,30 +397,6 @@ public class StockItemListManager extends JInternalFrame implements ActionListen
 	 	((AbstractTableModel)tblStockList.getModel()).fireTableDataChanged();
 		tblStockList.repaint();
 		//SwingUtilities.updateComponentTreeUI(this);
-	}
-	
-	public void setColumnWidth(JTable table){
-		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-
-		TableColumnModel columnModel =  table.getColumnModel();
-		//columnModel.getColumn(0).setPreferredWidth(70);
-		columnModel.getColumn(1).setPreferredWidth(230);
-		/*columnModel.getColumn(2).setPreferredWidth(115);
-		columnModel.getColumn(3).setPreferredWidth(100);*/
-		//		columnModel.getColumn(4).setPreferredWidth(80);
-		/*columnModel.getColumn(5).setPreferredWidth(100);
-		columnModel.getColumn(6).setPreferredWidth(150);*/
-		//		columnModel.getColumn(7).setPreferredWidth(80);
-		
-		/*tblStockList.getColumnModel().getColumn(0).setPreferredWidth(27);
-		tblStockList.getColumnModel().getColumn(1).setPreferredWidth(27);
-		tblStockList.getColumnModel().getColumn(2).setPreferredWidth(77);
-		tblStockList.getColumnModel().getColumn(3).setPreferredWidth(27);
-		tblStockList.getColumnModel().getColumn(4).setPreferredWidth(27);
-		tblStockList.getColumnModel().getColumn(5).setPreferredWidth(27);
-		tblStockList.getColumnModel().getColumn(6).setPreferredWidth(27);
-		tblStockList.getColumnModel().getColumn(7).setPreferredWidth(50);
-		tblStockList.getColumnModel().getColumn(8).setPreferredWidth(127);*/
 	}
 	
 	public void hprlnkAddStockQuantityClick(ActionEvent e){
