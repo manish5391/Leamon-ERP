@@ -10,6 +10,9 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
 import org.apache.log4j.Logger;
+import org.jdesktop.swingx.JXTable;
+import org.jdesktop.swingx.search.TableSearchable;
+import org.jdesktop.swingx.sort.TableSortController;
 
 public class DocumentListenerHandler implements DocumentListener {
 
@@ -17,6 +20,7 @@ public class DocumentListenerHandler implements DocumentListener {
 	
 	private Object component;
 	private TableRowSorter<TableModel> rowSorter;
+	private TableSortController<TableModel> rowSorterX;
 	
 	private RowSorter<?> rowSorterT;
 	
@@ -25,19 +29,21 @@ public class DocumentListenerHandler implements DocumentListener {
 		this.rowSorter = rowSorter;
 	}*/
 	
-	private JTable table;
+	private JXTable table;
 	
 	public DocumentListenerHandler(Object component, RowSorter<?> rowSorter){
 		this.component=component;
 		this.rowSorterT = rowSorter;
 		LOGGER.info("DocumentListenerHandler[constructor] "+rowSorter);
-		if(rowSorter instanceof TableRowSorter<?>){
+		if(rowSorter instanceof TableRowSorter<?> ){
 			LOGGER.info("DocumentListenerHandler[constructor] instance of "+rowSorter);
 			this.rowSorter = (TableRowSorter<TableModel>)rowSorter;
+		}else if (rowSorter instanceof TableSortController<?>){
+			this.rowSorterX = (TableSortController<TableModel>)rowSorter;
 		}
 	}
 	
-	public DocumentListenerHandler(Object component, JTable table){
+	public DocumentListenerHandler(Object component, JXTable table){
 		this.component=component;
 		this.table = table;
 	}
@@ -47,16 +53,27 @@ public class DocumentListenerHandler implements DocumentListener {
 		if(component instanceof JTextField){
 			JTextField txtField = (JTextField) component;
 			String text = txtField.getText();
-			if(rowSorter == null){
+			if(rowSorter == null && rowSorterX == null){
 				return;
 			}
 			if (text.trim().length() == 0) {
-				rowSorter.setRowFilter(null);
+				if(rowSorter!=null){
+					rowSorter.setRowFilter(null);
+				}
+				
+				if(rowSorterX!=null){
+					rowSorterX.setRowFilter(null);
+				}
 			} else {
 				if(text.contains("\\") || text.contains(")") || text.contains("(") ){
 					return ;
 				}
-				rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+				if(rowSorter!=null){
+					rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+				}
+				if(rowSorterX!=null){
+					rowSorterX.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+				}
 			}
 		}
 	}
@@ -67,17 +84,28 @@ public class DocumentListenerHandler implements DocumentListener {
 		if(component instanceof JTextField){
 			JTextField txtField = (JTextField) component;
 			String text = txtField.getText();
-			if(rowSorter == null){
+			if(rowSorter == null && rowSorterX == null){
 				return;
 			}
 			
 			if (text.trim().length() == 0) {
-				rowSorter.setRowFilter(null);
+				if(rowSorter!=null){
+					rowSorter.setRowFilter(null);
+				}
+				
+				if(rowSorterX!=null){
+					rowSorterX.setRowFilter(null);
+				}
 			} else {
 				if(text.contains("\\") || text.contains(")") || text.contains("(")){
 					return ;
 				}
-				rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+				if(rowSorter!=null){
+					rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+				}
+				if(rowSorterX!=null){
+					rowSorterX.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+				}
 			}
 		}
 	}
