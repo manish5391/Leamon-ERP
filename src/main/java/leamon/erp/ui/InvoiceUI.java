@@ -9,6 +9,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.math.BigInteger;
 import java.sql.Timestamp;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -290,13 +291,13 @@ public class InvoiceUI extends JInternalFrame {
 
 		JXLabel lblPackingAmt = new JXLabel();
 		lblPackingAmt.setBounds(813, 16, 81, 16);
-		lblPackingAmt.setText("Packing Amt.");
+		lblPackingAmt.setText("W Amt.");
 		lblPackingAmt.setForeground(new Color(0, 102, 51));
 		lblPackingAmt.setFont(new Font("Trebuchet MS", Font.BOLD, 13));
 
 		textFieldPackingAmount = new JXTextField();
 		textFieldPackingAmount.setBounds(813, 38, 107, 23);
-		textFieldPackingAmount.setPrompt("Pkg. Amt.");
+		textFieldPackingAmount.setPrompt("W. Amt.");
 		textFieldPackingAmount.setName((String) null);
 		textFieldPackingAmount.setFont(new Font("DialogInput", Font.PLAIN, 16));
 		textFieldPackingAmount.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
@@ -326,7 +327,9 @@ public class InvoiceUI extends JInternalFrame {
 		textFieldInvoiceNum.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
 
 		UIManager.put(CalendarHeaderHandler.uiControllerID, SpinningCalendarHeaderHandler.class.getName());
+		DateFormat df = new SimpleDateFormat("EEE dd/MM/yyyy");
 		datePickerInvoiceDate = new JXDatePicker(new Date());
+		datePickerInvoiceDate.setFormats(df);
 		datePickerInvoiceDate.setBounds(131, 33, 145, 22);
 		datePickerInvoiceDate.getMonthView().setZoomable(true);
 
@@ -565,7 +568,7 @@ public class InvoiceUI extends JInternalFrame {
 
 		textFieldTaxableValue = new JXTextField();
 		textFieldTaxableValue.setHorizontalAlignment(SwingConstants.LEFT);
-		textFieldTaxableValue.setPrompt("Taxable V.");
+		textFieldTaxableValue.setPrompt("Net Value");
 		textFieldTaxableValue.setName((String) null);
 		textFieldTaxableValue.setFont(new Font("DialogInput", Font.PLAIN, 16));
 		textFieldTaxableValue.setEnabled(false);
@@ -574,7 +577,7 @@ public class InvoiceUI extends JInternalFrame {
 		panel_7.add(textFieldTaxableValue);
 
 		JXLabel lblTaxableValue = new JXLabel();
-		lblTaxableValue.setText("Taxable value");
+		lblTaxableValue.setText("Net value");
 		lblTaxableValue.setForeground(new Color(0, 102, 51));
 		lblTaxableValue.setFont(new Font("Trebuchet MS", Font.BOLD, 13));
 		lblTaxableValue.setBounds(193, 16, 90, 16);
@@ -745,14 +748,14 @@ public class InvoiceUI extends JInternalFrame {
 		panel_4.add(textFieldBillNo);
 		
 		JXLabel lblGrNo = new JXLabel();
-		lblGrNo.setText("Gr No.");
+		lblGrNo.setText("Bilty No.");
 		lblGrNo.setForeground(Color.BLACK);
 		lblGrNo.setFont(new Font("Trebuchet MS", Font.BOLD, 15));
-		lblGrNo.setBounds(143, 65, 59, 25);
+		lblGrNo.setBounds(143, 65, 80, 25);
 		panel_4.add(lblGrNo);
 		
 		textFieldGrNumber = new JXTextField();
-		textFieldGrNumber.setPrompt("Gr Number");
+		textFieldGrNumber.setPrompt("Bilty No.");
 		textFieldGrNumber.setName("txtInventoryBillNumber");
 		textFieldGrNumber.setFont(new Font("DialogInput", Font.PLAIN, 16));
 		textFieldGrNumber.setEnabled(false);
@@ -1673,7 +1676,7 @@ public class InvoiceUI extends JInternalFrame {
 
 	public void setTodayDateForPicker(){
 		Date dt = new Date();
-		SimpleDateFormat format = new SimpleDateFormat("E dd/MM/yyyy");
+		SimpleDateFormat format = new SimpleDateFormat("EEE dd/MM/yyyy");
 		datePickerInvoiceDate.getEditor().setText(format.format(dt));
 	}
 
