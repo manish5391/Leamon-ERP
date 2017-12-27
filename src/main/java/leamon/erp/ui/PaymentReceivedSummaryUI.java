@@ -66,7 +66,7 @@ import javax.swing.JButton;
 import javax.swing.DefaultComboBoxModel;
 import leamon.erp.util.InvoicePaymentStatusEnum;
 
-//@Getter
+@Getter
 public class PaymentReceivedSummaryUI extends JInternalFrame {
 	
 	private static final Logger LOGGER = Logger.getLogger(PaymentReceivedSummaryUI.class);
