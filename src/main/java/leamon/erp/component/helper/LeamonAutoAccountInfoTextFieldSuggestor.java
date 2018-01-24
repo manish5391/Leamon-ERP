@@ -12,6 +12,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -27,21 +29,24 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JWindow;
+import javax.swing.KeyStroke;
 import javax.swing.text.JTextComponent;
 
 import org.jdesktop.swingx.JXList;
+import org.jdesktop.swingx.JXTextField;
 
 import com.google.common.base.Strings;
 
 import leamon.erp.model.AccountInfo;
 import leamon.erp.model.InvoiceInfo;
+import leamon.erp.ui.AccountOpeningBalanceUI;
 import leamon.erp.ui.InvoiceUI;
 import leamon.erp.ui.PaymentReceivedSummaryUI;
 import leamon.erp.ui.PaymentUI;
 import leamon.erp.ui.model.AccountInfoInvoiceListCellRender;
 import leamon.erp.ui.model.InvoiceInfoListCellRender;
 
-public class LeamonAutoAccountInfoTextFieldSuggestor <T extends List<E>, E> extends JWindow implements KeyListener, FocusListener, ActionListener {
+public class LeamonAutoAccountInfoTextFieldSuggestor <T extends List<E>, E> extends JWindow implements KeyListener, FocusListener, ActionListener, MouseListener {
 	
 	JTextComponent parent = null;
 	JXList lst = null;
@@ -57,7 +62,8 @@ public class LeamonAutoAccountInfoTextFieldSuggestor <T extends List<E>, E> exte
 		lst = new JXList();
 		lst.setCellRenderer(new AccountInfoInvoiceListCellRender());
 		lst.addKeyListener(this);
-		lst.addFocusListener(this); 
+		lst.addFocusListener(this);
+		lst.addMouseListener(this);
 		this.getContentPane().add(new JScrollPane(lst), BorderLayout.CENTER);
 		setButtons();
 		
@@ -70,6 +76,7 @@ public class LeamonAutoAccountInfoTextFieldSuggestor <T extends List<E>, E> exte
 		parent = (JTextComponent) jc;
 		jc.addFocusListener(this);
 		jc.addKeyListener(this);
+		jc.addMouseListener(this);
 	}
 	
 	private void setButtons() {
@@ -120,6 +127,10 @@ public class LeamonAutoAccountInfoTextFieldSuggestor <T extends List<E>, E> exte
 			
 			if(isPaymentUIInstance(ui) && !Strings.isNullOrEmpty(((PaymentUI)ui).getTextFieldPartyName().getText())){
 				((PaymentUI)ui).getTextFieldPayment().requestFocus();
+			}
+			
+			if(isAccountOpeningBalanceUI(ui) && !Strings.isNullOrEmpty(((AccountOpeningBalanceUI)ui).getTextFieldPartyName().getText())){
+				((AccountOpeningBalanceUI)ui).getTextFieldBillNo().requestFocus();
 			}
 			return;
 		} 
@@ -184,7 +195,8 @@ public class LeamonAutoAccountInfoTextFieldSuggestor <T extends List<E>, E> exte
 	public void keyReleased(KeyEvent ke) {
 
 		int kc = ke.getKeyCode();
-		if((kc == KeyEvent.VK_F7 || kc == KeyEvent.VK_ENTER) || (parent instanceof JTextField && kc==KeyEvent.VK_ENTER))
+		if((kc == KeyEvent.VK_F7 || kc == KeyEvent.VK_ENTER) || (parent instanceof JTextField && kc==KeyEvent.VK_ENTER) 
+				|| (parent instanceof JXTextField && kc==KeyEvent.VK_ENTER))
 			select(true);
 		else if(parent != null)
 			populateList();
@@ -303,6 +315,19 @@ public class LeamonAutoAccountInfoTextFieldSuggestor <T extends List<E>, E> exte
 		return false;
 	}
 	
+	/**
+	 * @since Version : 3.4 
+	 * @date JAN 09,2018
+	 * @param frame
+	 * @return
+	 */
+	private boolean isAccountOpeningBalanceUI(JInternalFrame frame){
+		if(frame instanceof AccountOpeningBalanceUI){
+			return true;
+		}
+		return false;
+	}
+	
 	private void setAccountInfoData(JInternalFrame ui ,AccountInfo info){
 		
 		if(isInvoiceInstance(ui)){
@@ -319,5 +344,46 @@ public class LeamonAutoAccountInfoTextFieldSuggestor <T extends List<E>, E> exte
 			PaymentReceivedSummaryUI paymentUi = (PaymentReceivedSummaryUI) ui;
 			paymentUi.setAccountInfo(info);
 		}
+		
+		if(isAccountOpeningBalanceUI(ui)){
+			AccountOpeningBalanceUI accountOpeningBalanceUI = (AccountOpeningBalanceUI) ui;
+			accountOpeningBalanceUI.setAccountInfo(info);
+		}
 	}
+	
+	/**
+	 * Support Mouse click to select Account Names
+	 * 
+	 * @since Version 3.4
+	 * @date JAN 10 , 2018
+	 */
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		if(e.getClickCount()==2){
+			KeyEvent ke = new KeyEvent(parent, 0, 0, 0, KeyEvent.VK_ENTER, ' ');
+			keyReleased(ke);
+		}
+	}
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
 }
