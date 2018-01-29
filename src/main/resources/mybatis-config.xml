@@ -36,5 +36,6 @@
 		<mapper class="leamon.erp.db.mapper.OperationInfoMapper"/>
 		<mapper class="leamon.erp.db.mapper.PaymentInvoiceMappingMapper"/>
 		<mapper class="leamon.erp.db.mapper.LeamonPropertyMapper"/>
+		<mapper class="leamon.erp.db.mapper.OpeningBalanceMapper"/>
 	</mappers>
 </configuration>
