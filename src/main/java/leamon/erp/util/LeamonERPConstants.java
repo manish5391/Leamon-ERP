@@ -234,6 +234,7 @@ public interface LeamonERPConstants {
 	String TEXTFIELD_INVOICE_ADDRESS = "textFieldADDRESS";
 	
 	String TABLE_PAYMENT = "TablePayment";
+	String TABLE_PAYMENT_RECEIVED_SUMMARY = "TablePaymentSummary";
 	
 	
 	String CITY_PROMPT_MSG = "- - Select City - -";
