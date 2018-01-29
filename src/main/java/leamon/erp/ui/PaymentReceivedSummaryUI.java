@@ -1,61 +1,14 @@
 package leamon.erp.ui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
-
-import javax.swing.JInternalFrame;
-import javax.swing.JOptionPane;
-
-import org.apache.log4j.Logger;
-
-import lombok.Getter;
-import java.awt.BorderLayout;
-import javax.swing.JPanel;
-import javax.swing.border.BevelBorder;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.UIManager;
-
-import org.jdesktop.swingx.JXTable;
-import org.jdesktop.swingx.JXLabel;
-import org.jdesktop.swingx.JXMonthView;
-
 import java.awt.Font;
 import java.awt.event.ActionEvent;
-import java.math.BigDecimal;
-import java.math.BigInteger;
+import java.beans.PropertyVetoException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-
-import org.jdesktop.swingx.JXTextField;
-import org.jdesktop.swingx.calendar.DateSelectionModel;
-import org.jdesktop.swingx.calendar.DateSelectionModel.SelectionMode;
-import org.jdesktop.swingx.plaf.basic.CalendarHeaderHandler;
-import org.jdesktop.swingx.plaf.basic.SpinningCalendarHeaderHandler;
-import org.jdesktop.swingx.prompt.PromptSupport;
-import org.jdesktop.swingx.table.ColumnControlButton;
-import org.jdesktop.swingx.table.TableColumnModelExt;
-
-import com.google.common.base.Strings;
-
-
-import leamon.erp.component.helper.LeamonAutoAccountInfoTextFieldSuggestor;
-import leamon.erp.db.AccountDaoImpl;
-import leamon.erp.db.InvoiceDaoImpl;
-import leamon.erp.db.OpeningBalanceDaoImpl;
-import leamon.erp.model.AccountInfo;
-import leamon.erp.model.InvoiceInfo;
-import leamon.erp.model.OpeningBalanceInfo;
-import leamon.erp.ui.model.GenericModelWithSnp;
-import leamon.erp.ui.model.TablePaymentReceivedModel;
-import leamon.erp.ui.model.TablePaymentReceivedSummaryModel;
-import leamon.erp.util.LeamonERPConstants;
-import leamon.erp.util.LeamonUtil;
-
-import org.jdesktop.swingx.JXButton;
-import org.jdesktop.swingx.JXDatePicker;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -67,13 +20,42 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JButton;
-import javax.swing.DefaultComboBoxModel;
+import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.border.BevelBorder;
 
+import org.apache.log4j.Logger;
+import org.jdesktop.swingx.JXButton;
+import org.jdesktop.swingx.JXDatePicker;
+import org.jdesktop.swingx.JXLabel;
+import org.jdesktop.swingx.JXTable;
+import org.jdesktop.swingx.JXTextField;
+
+import com.google.common.base.Strings;
+
+import leamon.erp.component.helper.LeamonAutoAccountInfoTextFieldSuggestor;
+import leamon.erp.db.AccountDaoImpl;
+import leamon.erp.db.InvoiceDaoImpl;
+import leamon.erp.db.OpeningBalanceDaoImpl;
+import leamon.erp.model.AccountInfo;
+import leamon.erp.model.InvoiceInfo;
+import leamon.erp.model.OpeningBalanceInfo;
+import leamon.erp.ui.event.MouseClickHandler;
+import leamon.erp.ui.model.GenericModelWithSnp;
+import leamon.erp.ui.model.TablePaymentReceivedSummaryModel;
 import leamon.erp.util.ERPEnum;
 import leamon.erp.util.InvoicePaymentStatusEnum;
+import leamon.erp.util.LeamonERPConstants;
+import leamon.erp.util.LeamonUtil;
+import lombok.Getter;
 
 @Getter
 public class PaymentReceivedSummaryUI extends JInternalFrame {
@@ -232,9 +214,11 @@ public class PaymentReceivedSummaryUI extends JInternalFrame {
 		panel_2.add(scrollPane);
 
 		table = new JXTable();
+		table.setName(LeamonERPConstants.TABLE_PAYMENT_RECEIVED_SUMMARY);
 		table.setColumnControlVisible(true);
 		table.packAll();
 		scrollPane.setViewportView(table);
+		table.addMouseListener(new MouseClickHandler());
 
 		JPanel panel_3 = new JPanel();
 		panel_3.setBackground(new Color(255, 255, 204));
@@ -1309,5 +1293,47 @@ public class PaymentReceivedSummaryUI extends JInternalFrame {
 		invoiceInfos.clear();
 		invoiceInfos.addAll(invoiceInfosOnly);
 		invoiceInfos.addAll(0,invoiceInfosOpeningBal);
+	}
+	
+	
+	public void openInvoice(String actionCommand){
+		LOGGER.info("PaymentReceivedSummaryUI[openInvoice] inside");
+		int selectedRow = table.getSelectedRow();
+		
+		if(selectedRow == LeamonERPConstants.NO_ROW_SELECTED){
+			JOptionPane.showMessageDialog(this, "Please select atleast one item", "Warning", JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+		
+		/*Get accurate selected row after filtering records*/
+		if(table.getRowSorter() != null){
+			selectedRow = table.getRowSorter().convertRowIndexToModel(selectedRow);
+		}
+		
+		TablePaymentReceivedSummaryModel model  = (TablePaymentReceivedSummaryModel)table.getModel();
+		List<InvoiceInfo> invoiceInfos = model.getInvoiceInfos();
+		
+		InvoiceInfo invoiceInfo = invoiceInfos.get(selectedRow);
+		if(invoiceInfo.isOpeningBalance()){
+			JOptionPane.showMessageDialog(this, "It's not invoice","Leamon-ERP Error Message", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		if(!LeamonERP.invoiceUI.isVisible()){
+			LeamonERP.desktopPane.add(LeamonERP.invoiceUI);
+		}
+		LeamonERP.invoiceUI.requestFocus();
+		try {
+			LeamonERP.invoiceUI.setSelected(true);
+		} catch (PropertyVetoException e1) {
+			LOGGER.error("PaymentReceivedSummaryUI[openInvoice] "+e1);
+		}
+		LeamonERP.invoiceUI.setInvoiceInfo(invoiceInfo);
+		/*if(actionCommand.equals(LeamonERPConstants.BUTTON_ACTION_EDIT_STOCK_ITEM)){
+			LeamonERP.stockItemManager.getBtnSave().setEnabled(false);
+		}*/
+		LeamonERP.invoiceUI.setVisible(true);
+		LeamonERP.invoiceUI.moveToFront();
+		SwingUtilities.updateComponentTreeUI(this);
+		LOGGER.info("PaymentReceivedSummaryUI[openInvoice] end");
 	}
 }
