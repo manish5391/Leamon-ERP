@@ -19,12 +19,23 @@ import leamon.erp.model.InvoiceInfo;
 import leamon.erp.model.InvoiceItemInfo;
 import leamon.erp.ui.PaymentUI;
 import leamon.erp.model.InvoiceInfo;
+import leamon.erp.util.ERPEnum;
 import leamon.erp.util.LeamonERPConstants;
 import leamon.erp.util.LeamonUtil;
 import lombok.Getter;
 import lombok.Setter;
 import net.sf.jasperreports.data.cache.BooleanStore;
 
+/**
+ * 
+ * @author Manish Kumar Mishra
+ * @version 1.1
+ * 
+ * 
+ * Enhanced By : Manish Kumar Mishra on JAN 28,2018
+ * To accomodate Release 3.3.2 changes for opening balance
+ *
+ */
 @Getter
 @Setter
 public class TablePaymentReceivedSummaryModel extends AbstractTableModel{
@@ -43,7 +54,8 @@ public class TablePaymentReceivedSummaryModel extends AbstractTableModel{
 			LeamonERPConstants.TABLE_HEADER_W_AMOUNT,
 			LeamonERPConstants.TABLE_HEADER_G_TOTAL,
 			LeamonERPConstants.TABLE_HEADER_B_STATUS,
-			LeamonERPConstants.TABLE_HEADER_W_STATUS
+			LeamonERPConstants.TABLE_HEADER_W_STATUS,
+			LeamonERPConstants.TABLE_HEADER_DESC
 	};
 
 	private List<InvoiceInfo> invoiceInfos;
@@ -81,26 +93,93 @@ public class TablePaymentReceivedSummaryModel extends AbstractTableModel{
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		final String METHOD_NAME = "getValueAt";
-		
+
 		Object temp = null;
 		switch (columnIndex) {
-			case 0: temp = serialNumbers.get(rowIndex); break;
-			case 1:	{
-					
-					temp = 
-					null == invoiceInfos.get(rowIndex).getAccountInfo()? "" : invoiceInfos.get(rowIndex).getAccountInfo().getName();
-				}break;
-			case 2: temp = invoiceInfos.get(rowIndex).getInvoicNum(); break;
-			case 3: temp = invoiceInfos.get(rowIndex).getBillNo(); break;
-			case 4: temp = invoiceInfos.get(rowIndex).getInvoicDate(); break; 
-			case 5: temp = invoiceInfos.get(rowIndex).getBillAmount(); break; 
-			case 6: temp = invoiceInfos.get(rowIndex).getWithoutBillAmount(); break;
-			case 7: temp = getGT(invoiceInfos.get(rowIndex).getBillAmount(), 
-					invoiceInfos.get(rowIndex).getWithoutBillAmount()); 
-			break;
-			case 8 : temp = invoiceInfos.get(rowIndex).getPaidStatus(); break;
-			case 9 : temp = invoiceInfos.get(rowIndex).getWpaidstatus(); break;
-			default : temp = new Object();
+		case 0: temp = serialNumbers.get(rowIndex); break;
+		case 1:	{
+			if(invoiceInfos.get(rowIndex).isOpeningBalance()){
+				temp = invoiceInfos.get(rowIndex).getOpenigBalanceInfo().getAccountInfo().getName();
+			}else{
+				temp = 
+						null == invoiceInfos.get(rowIndex).getAccountInfo()
+						? "" 
+								: invoiceInfos.get(rowIndex).getAccountInfo().getName();
+			}
+		}break;
+		case 2: {
+			temp = invoiceInfos.get(rowIndex).getInvoicNum();
+		}break;
+		case 3: {
+			if(invoiceInfos.get(rowIndex).isOpeningBalance()){
+				temp = invoiceInfos.get(rowIndex).getOpenigBalanceInfo().getBillnumber();
+			}else{
+				temp = invoiceInfos.get(rowIndex).getBillNo(); 
+			}
+		}break;
+		case 4: {
+			if(invoiceInfos.get(rowIndex).isOpeningBalance()){
+				temp = invoiceInfos.get(rowIndex).getOpenigBalanceInfo().getBilldate();
+			}else{
+				temp = invoiceInfos.get(rowIndex).getInvoicDate(); 
+			}
+		}break; 
+		case 5: {
+			if(invoiceInfos.get(rowIndex).isOpeningBalance()){
+				if(invoiceInfos.get(rowIndex).getOpenigBalanceInfo().getType()
+						.equals(ERPEnum.TYPE_PAYMENT_WITH_BILL.name())){
+					temp = invoiceInfos.get(rowIndex).getOpenigBalanceInfo().getOpeningbalanceamount();
+				}
+			}else{
+				temp = invoiceInfos.get(rowIndex).getBillAmount(); 
+			}
+		}break; 
+		case 6: {
+			if(invoiceInfos.get(rowIndex).isOpeningBalance()){
+				if(invoiceInfos.get(rowIndex).getOpenigBalanceInfo().getType()
+						.equals(ERPEnum.TYPE_PAYMENT_WITHOUT_BILL.name())){
+					temp = invoiceInfos.get(rowIndex).getOpenigBalanceInfo().getOpeningbalanceamount();
+				}
+			}else{
+				temp = invoiceInfos.get(rowIndex).getWithoutBillAmount(); 
+			}
+		}break;
+		case 7:{
+			if(invoiceInfos.get(rowIndex).isOpeningBalance()){
+				temp = temp = invoiceInfos.get(rowIndex).getOpenigBalanceInfo().getOpeningbalanceamount();
+			}else{
+				temp = getGT(invoiceInfos.get(rowIndex).getBillAmount(), 
+				invoiceInfos.get(rowIndex).getWithoutBillAmount());
+			}
+		}  
+		break;
+		case 8 :{
+			if(invoiceInfos.get(rowIndex).isOpeningBalance()){
+				if(invoiceInfos.get(rowIndex).getOpenigBalanceInfo().getType()
+						.equals(ERPEnum.TYPE_PAYMENT_WITH_BILL.name())){
+					temp = invoiceInfos.get(rowIndex).getOpenigBalanceInfo().getStatus();
+				}
+			}else{
+				temp = invoiceInfos.get(rowIndex).getPaidStatus(); 
+			}
+		} break;
+		case 9 : 
+			if(invoiceInfos.get(rowIndex).isOpeningBalance()){
+				if(invoiceInfos.get(rowIndex).getOpenigBalanceInfo().getType()
+						.equals(ERPEnum.TYPE_PAYMENT_WITHOUT_BILL.name())){
+					temp = invoiceInfos.get(rowIndex).getOpenigBalanceInfo().getStatus();
+				}
+			}else{
+				temp = invoiceInfos.get(rowIndex).getWpaidstatus();  
+			}break;
+		case 10:{
+				if(invoiceInfos.get(rowIndex).isOpeningBalance()){
+					temp = "Opening Balance";
+				}else{
+					temp = "Invoice";
+				}
+			}break;
+		default : temp = new Object();
 		}
 
 		return temp;
