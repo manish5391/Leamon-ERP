@@ -38,7 +38,6 @@ import org.jdesktop.swingx.JXTable;
 
 import leamon.erp.db.AccountDaoImpl;
 import leamon.erp.model.AccountInfo;
-import leamon.erp.ui.custom.LeamonTable;
 import leamon.erp.ui.event.FocusEventHandler;
 import leamon.erp.ui.event.KeyListenerHandler;
 import leamon.erp.ui.event.ListSelectionListenerHandler;

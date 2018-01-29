@@ -29,13 +29,8 @@ import javax.swing.text.JTextComponent;
 
 import org.jdesktop.swingx.JXList;
 
-import com.google.common.base.Strings;
-
-import leamon.erp.model.AccountInfo;
 import leamon.erp.model.InvoiceInfo;
 import leamon.erp.ui.InvoiceUI;
-import leamon.erp.ui.InvoiceUI;
-import leamon.erp.ui.model.AccountInfoCellRender;
 import leamon.erp.ui.model.InvoiceInfoListCellRender;
 
 public class LeamonAutoInvoiceIDTextFieldSuggestor <T extends List<E>, E> extends JWindow implements KeyListener, FocusListener, ActionListener {

@@ -12,7 +12,6 @@ import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -35,7 +34,6 @@ import leamon.erp.model.StockItemQuantity;
 import leamon.erp.ui.InvoiceUI;
 import leamon.erp.ui.LeamonERP;
 import leamon.erp.ui.model.TableInvoiceModel;
-import leamon.erp.ui.model.TableStockListItemModel;
 import leamon.erp.util.LeamonERPConstants;
 import lombok.Getter;
 

@@ -20,29 +20,26 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableColumnModel;
 
 import org.apache.log4j.Logger;
+import org.jdesktop.swingx.JXHyperlink;
 import org.jdesktop.swingx.JXSearchField;
 import org.jdesktop.swingx.JXTable;
 
 import leamon.erp.db.StockDaoImpl;
 import leamon.erp.model.StockItem;
-import leamon.erp.ui.custom.LeamonTable;
 import leamon.erp.ui.event.FocusEventHandler;
 import leamon.erp.ui.event.KeyListenerHandler;
 import leamon.erp.ui.event.MouseClickHandler;
 import leamon.erp.ui.model.TableStockListItemModel;
 import leamon.erp.util.LeamonERPConstants;
 import lombok.Getter;
-import org.jdesktop.swingx.JXHyperlink;
 /**
  * @author Manish Kumar Mishra
  * @date 3 May, 2017

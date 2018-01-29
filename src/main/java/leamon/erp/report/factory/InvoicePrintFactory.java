@@ -1,6 +1,5 @@
 package leamon.erp.report.factory;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -15,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
-import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 
@@ -27,7 +25,6 @@ import leamon.erp.db.CompanyInfoDaoImpl;
 import leamon.erp.model.CompanyInfo;
 import leamon.erp.model.InvoiceInfo;
 import leamon.erp.model.InvoiceItemInfo;
-import leamon.erp.ui.AccountInfoUI;
 import leamon.erp.ui.InvoiceUI;
 import leamon.erp.ui.LeamonERP;
 import leamon.erp.ui.model.TableInvoiceModel;

@@ -1,31 +1,25 @@
 package leamon.erp.ui;
 
-import java.awt.EventQueue;
-
-import javax.swing.JInternalFrame;
+import java.awt.BorderLayout;
 import java.awt.Color;
-import javax.swing.JPanel;
-import javax.swing.JToolBar;
-import javax.swing.JLabel;
-import org.jdesktop.swingx.JXSearchPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFrame;
-
+import java.awt.EventQueue;
 import java.awt.Font;
-import javax.swing.border.BevelBorder;
-import org.jdesktop.swingx.JXTextField;
-import leamon.erp.util.LeamonERPConstants;
-import org.jdesktop.swingx.JXLabel;
-import org.jdesktop.swingx.JXDatePicker;
-import org.jdesktop.swingx.JXList;
-import javax.swing.JList;
+
 import javax.swing.AbstractListModel;
 import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
+import javax.swing.JList;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import java.awt.BorderLayout;
-import org.jdesktop.swingx.JXTable;
 import javax.swing.table.DefaultTableModel;
+
+import org.jdesktop.swingx.JXDatePicker;
+import org.jdesktop.swingx.JXLabel;
+import org.jdesktop.swingx.JXTable;
+import org.jdesktop.swingx.JXTextField;
+
+import leamon.erp.util.LeamonERPConstants;
 
 public class InvoiceSearchUI extends JInternalFrame {
 

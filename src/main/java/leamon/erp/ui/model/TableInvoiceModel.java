@@ -7,7 +7,6 @@ import javax.swing.table.AbstractTableModel;
 
 import org.apache.log4j.Logger;
 
-import leamon.erp.model.InventoryInfo;
 import leamon.erp.model.InvoiceItemInfo;
 import leamon.erp.util.LeamonERPConstants;
 import lombok.Getter;

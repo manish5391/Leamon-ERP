@@ -1,6 +1,5 @@
 package leamon.erp.ui.event;
 
-import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.RowFilter;
 import javax.swing.RowSorter;
@@ -11,7 +10,6 @@ import javax.swing.table.TableRowSorter;
 
 import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXTable;
-import org.jdesktop.swingx.search.TableSearchable;
 import org.jdesktop.swingx.sort.TableSortController;
 
 public class DocumentListenerHandler implements DocumentListener {

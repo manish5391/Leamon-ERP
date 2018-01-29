@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
@@ -40,12 +39,6 @@ import leamon.erp.db.StockDaoImpl;
 import leamon.erp.model.StateCityInfo;
 import leamon.erp.ui.custom.BGImagePanel;
 import leamon.erp.util.LeamonERPConstants;
-import lombok.Getter;
-
-import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-
-import javax.swing.JLabel;
 
 public class LeamonERP3 extends JFrame {
 

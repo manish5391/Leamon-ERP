@@ -19,7 +19,6 @@ import java.util.regex.PatternSyntaxException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -28,11 +27,8 @@ import javax.swing.text.JTextComponent;
 
 import org.jdesktop.swingx.JXList;
 
-import leamon.erp.model.AccountInfo;
 import leamon.erp.model.StateCityInfo;
-import leamon.erp.ui.InventoryUI;
 import leamon.erp.ui.InvoiceUI;
-import leamon.erp.ui.model.AccountInfoCellRender;
 import leamon.erp.ui.model.StateCityInfoCellRender;
 
 

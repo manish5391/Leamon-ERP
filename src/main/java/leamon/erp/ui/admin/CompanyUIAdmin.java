@@ -1,25 +1,17 @@
 package leamon.erp.ui.admin;
 
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.io.InputStream;
+import java.util.Properties;
 
 import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
+import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
 import org.apache.ibatis.io.Resources;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.log4j.Logger;
-
-import leamon.erp.db.util.MyBatsUtil;
-import leamon.erp.util.LeamonERPConstants;
-
-import javax.swing.JMenu;
-import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-import java.awt.event.ActionEvent;
 
 public class CompanyUIAdmin extends JFrame {
 

@@ -7,9 +7,6 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
-import com.google.common.base.Strings;
-
-import leamon.erp.model.AccountInfo;
 import leamon.erp.model.StockItem;
 
 public class StockItemsInvoiceListCellRender extends JLabel implements ListCellRenderer{

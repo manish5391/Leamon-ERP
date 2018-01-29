@@ -3,7 +3,6 @@ package leamon.erp.model;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-import leamon.erp.model.StockItem.StockItemBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

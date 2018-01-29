@@ -6,9 +6,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.log4j.Logger;
 
 import leamon.erp.db.mapper.OpeningBalanceMapper;
-import leamon.erp.db.mapper.OpeningBalanceMapper;
 import leamon.erp.db.util.MyBatsUtil;
-import leamon.erp.model.OpeningBalanceInfo;
 import leamon.erp.model.OpeningBalanceInfo;
 import lombok.Getter;
 

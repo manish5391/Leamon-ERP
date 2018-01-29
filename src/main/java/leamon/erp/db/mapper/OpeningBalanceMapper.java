@@ -13,8 +13,6 @@ import org.apache.ibatis.annotations.Update;
 
 import leamon.erp.model.AccountInfo;
 import leamon.erp.model.OpeningBalanceInfo;
-import leamon.erp.model.OpeningBalanceInfo;
-import leamon.erp.model.OpeningBalanceInfo;
 
 /**
  * @version 1.0

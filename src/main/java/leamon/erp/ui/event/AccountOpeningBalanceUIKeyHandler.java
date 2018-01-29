@@ -9,7 +9,6 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
 
 import org.apache.log4j.Logger;
-import org.jdesktop.swingx.JXDatePicker;
 
 import com.google.common.base.Strings;
 

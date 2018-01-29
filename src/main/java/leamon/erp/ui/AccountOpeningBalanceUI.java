@@ -2,23 +2,29 @@ package leamon.erp.ui;
 
 import java.awt.Color;
 import java.awt.EventQueue;
-
-import javax.swing.JInternalFrame;
-import javax.swing.JOptionPane;
-
-import org.jdesktop.swingx.JXPanel;
-import javax.swing.border.BevelBorder;
-import org.jdesktop.swingx.JXLabel;
 import java.awt.Font;
-
-import org.apache.log4j.Logger;
-import org.codehaus.groovy.control.io.StringReaderSource;
-import org.jdesktop.swingx.JXDatePicker;
-
+import java.awt.event.ActionEvent;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.UIManager;
+import javax.swing.border.BevelBorder;
+
+import org.apache.log4j.Logger;
+import org.jdesktop.swingx.JXDatePicker;
+import org.jdesktop.swingx.JXLabel;
+import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTextField;
 import org.jdesktop.swingx.plaf.basic.CalendarHeaderHandler;
 import org.jdesktop.swingx.plaf.basic.SpinningCalendarHeaderHandler;
@@ -31,27 +37,10 @@ import leamon.erp.db.OpeningBalanceDaoImpl;
 import leamon.erp.model.AccountInfo;
 import leamon.erp.model.OpeningBalanceInfo;
 import leamon.erp.ui.event.AccountOpeningBalanceUIKeyHandler;
-import leamon.erp.ui.event.PaymentUIKeyHndler;
 import leamon.erp.util.ERPEnum;
 import leamon.erp.util.InvoicePaymentStatusEnum;
 import leamon.erp.util.LeamonERPConstants;
 import lombok.Getter;
-
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
-import javax.swing.UIManager;
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import java.awt.event.KeyEvent;
-import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
 @Getter
 public class AccountOpeningBalanceUI extends JInternalFrame  {

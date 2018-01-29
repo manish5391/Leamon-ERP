@@ -1,10 +1,8 @@
 package leamon.erp.model;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.sql.Timestamp;
 
-import leamon.erp.util.ERPEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

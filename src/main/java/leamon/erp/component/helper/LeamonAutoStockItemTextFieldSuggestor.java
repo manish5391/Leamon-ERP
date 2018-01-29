@@ -23,7 +23,6 @@ import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JWindow;
 import javax.swing.text.JTextComponent;
@@ -32,11 +31,9 @@ import org.jdesktop.swingx.JXList;
 
 import com.google.common.base.Strings;
 
-import leamon.erp.model.AccountInfo;
 import leamon.erp.model.StockItem;
 import leamon.erp.ui.InvoiceUI;
 import leamon.erp.ui.StockItemQuantityUI;
-import leamon.erp.ui.model.AccountInfoInvoiceListCellRender;
 import leamon.erp.ui.model.StockItemsInvoiceListCellRender;
 
 public class LeamonAutoStockItemTextFieldSuggestor  <T extends List<E>, E> extends JWindow implements KeyListener, FocusListener, ActionListener {

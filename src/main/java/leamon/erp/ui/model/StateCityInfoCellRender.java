@@ -7,7 +7,6 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
-import leamon.erp.model.AccountInfo;
 import leamon.erp.model.StateCityInfo;
 
 public class StateCityInfoCellRender extends JLabel implements ListCellRenderer{

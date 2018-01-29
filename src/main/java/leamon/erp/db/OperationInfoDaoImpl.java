@@ -6,9 +6,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.log4j.Logger;
 
 import leamon.erp.db.mapper.OperationInfoMapper;
-import leamon.erp.db.mapper.OperationInfoMapper;
 import leamon.erp.db.util.MyBatsUtil;
-import leamon.erp.model.OperationInfo;
 import leamon.erp.model.OperationInfo;
 import lombok.Getter;
 

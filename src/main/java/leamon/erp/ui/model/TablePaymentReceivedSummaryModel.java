@@ -2,29 +2,17 @@ package leamon.erp.ui.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.DoubleStream;
-import java.util.stream.Stream;
 
-import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
 
 import org.apache.log4j.Logger;
-import org.apache.poi.ss.formula.IStabilityClassifier;
-
-import com.google.common.base.Strings;
 
 import leamon.erp.model.AccountInfo;
-import leamon.erp.model.InventoryInfo;
-import leamon.erp.model.InvoiceInfo;
-import leamon.erp.model.InvoiceItemInfo;
-import leamon.erp.ui.PaymentUI;
 import leamon.erp.model.InvoiceInfo;
 import leamon.erp.util.ERPEnum;
 import leamon.erp.util.LeamonERPConstants;
-import leamon.erp.util.LeamonUtil;
 import lombok.Getter;
 import lombok.Setter;
-import net.sf.jasperreports.data.cache.BooleanStore;
 
 /**
  * 

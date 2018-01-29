@@ -8,8 +8,6 @@ import java.awt.Toolkit;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import leamon.erp.util.LeamonERPConstants;
-
 public class BGImagePanel extends JPanel{
 	Image bgimage = null;
 	
