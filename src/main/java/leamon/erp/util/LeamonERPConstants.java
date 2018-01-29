@@ -202,7 +202,7 @@ public interface LeamonERPConstants {
 	String TABLE_HEADER_W_RECEIVED_AMOUNT="W Rec. Amt";
 	String TABLE_HEADER_B_REMARK="B Remark";
 	String TABLE_HEADER_W_REMARK="W Remark";
-	
+	String TABLE_HEADER_DESC="Desc";
 	
 	String ACTION_COMMAND_="DESCRIPTIONS";
 	
