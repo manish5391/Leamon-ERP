@@ -54,29 +54,35 @@ public class CompanyUIAdmin extends JFrame {
 		menuBar.add(mnHsqlui);
 		
 		JMenuItem mntmOpenHsqlEditor = new JMenuItem("Open Editor");
-		mntmOpenHsqlEditor.addActionListener(e -> mntmOpenHsqlEditorClick(e));
 		mnHsqlui.add(mntmOpenHsqlEditor);
-
+		
+		mntmOpenHsqlEditor.addActionListener(e -> mntmOpenHsqlEditorClick(e));
+		
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
 	private void mntmOpenHsqlEditorClick(ActionEvent e){
 		//jdbc:hsqldb:file:../db/leamonerp.db;ifexists=false;sql.syntax_ora=true;crypt_key=604a6105889da65326bf35790a923932;crypt_type=blowfish
-		
-		InputStream inputStream = null;
-		try {
-			LOGGER.debug("MyBatsUtil[static] Loading .");
-			inputStream = Resources.getResourceAsStream("jdbc.properties");
-			Properties prop = new Properties();
-			prop.load(inputStream);
-			String urlVal = prop.getProperty("jdbc.url");
-			String user = prop.getProperty("jdbc.username");
-			String password = prop.getProperty("jdbc.password");
-			org.hsqldb.util.DatabaseManagerSwing.main(new String[] { "--url", urlVal, 
-					"-user",user, "-password", password, "--noexit" });
-		} catch (Exception exp) {
-			LOGGER.error("CompanyUIAdmin[mntmOpenHsqlEditorClick] failed to initialize DB session factory");
-			LOGGER.error("CompanyUIAdmin[mntmOpenHsqlEditorClick] "+exp);
-		}
-		
+		Runnable task = () ->{
+			InputStream inputStream = null;
+			try {
+				LOGGER.debug("MyBatsUtil[static] Loading .");
+				inputStream = Resources.getResourceAsStream("jdbc.properties");
+				Properties prop = new Properties();
+				prop.load(inputStream);
+				String urlVal = prop.getProperty("jdbc.url");
+				String user = prop.getProperty("jdbc.username");
+				String password = prop.getProperty("jdbc.password");
+				/*org.hsqldb.util.DatabaseManagerSwing.main(new String[] { "--url", urlVal, 
+						"-user",user, "-password", password, "--noexit" });*/
+				
+				org.hsqldb.util.DatabaseManager.main(new String[] { "--url", urlVal, 
+						"-user",user, "-password", password, "--noexit" });
+			} catch (Exception exp) {
+				LOGGER.error("CompanyUIAdmin[mntmOpenHsqlEditorClick] failed to initialize DB session factory");
+				LOGGER.error("CompanyUIAdmin[mntmOpenHsqlEditorClick] "+exp);
+			}
+		};
+		EventQueue.invokeLater(task);
 	}
 }
