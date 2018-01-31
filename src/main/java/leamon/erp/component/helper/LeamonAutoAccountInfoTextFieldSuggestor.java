@@ -22,14 +22,12 @@ import java.util.regex.PatternSyntaxException;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JWindow;
-import javax.swing.KeyStroke;
 import javax.swing.text.JTextComponent;
 
 import org.jdesktop.swingx.JXList;
@@ -38,13 +36,11 @@ import org.jdesktop.swingx.JXTextField;
 import com.google.common.base.Strings;
 
 import leamon.erp.model.AccountInfo;
-import leamon.erp.model.InvoiceInfo;
 import leamon.erp.ui.AccountOpeningBalanceUI;
 import leamon.erp.ui.InvoiceUI;
 import leamon.erp.ui.PaymentReceivedSummaryUI;
 import leamon.erp.ui.PaymentUI;
 import leamon.erp.ui.model.AccountInfoInvoiceListCellRender;
-import leamon.erp.ui.model.InvoiceInfoListCellRender;
 
 public class LeamonAutoAccountInfoTextFieldSuggestor <T extends List<E>, E> extends JWindow implements KeyListener, FocusListener, ActionListener, MouseListener {
 	

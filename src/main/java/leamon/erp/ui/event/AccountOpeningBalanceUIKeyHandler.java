@@ -3,7 +3,9 @@ package leamon.erp.ui.event;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
 
 import org.apache.log4j.Logger;
@@ -11,18 +13,23 @@ import org.apache.log4j.Logger;
 import com.google.common.base.Strings;
 
 
-public class PaymentUIKeyHndler implements KeyListener {
+public class AccountOpeningBalanceUIKeyHandler implements KeyListener {
 	
 	private static final Logger LOGGER = Logger.getLogger(InvoiceUiEventHandler.class);
 	private JTextField nextComponent;
 	private JCheckBox nextComponentCheckBox;
+	private JButton nextComponentButton;
 	
-	public PaymentUIKeyHndler(JTextField nextComponent){
+	public AccountOpeningBalanceUIKeyHandler(JTextField nextComponent){
 		this.nextComponent = nextComponent;
 	}
 	
-	public PaymentUIKeyHndler(JCheckBox nextComponent){
+	public AccountOpeningBalanceUIKeyHandler(JCheckBox nextComponent){
 		this.nextComponentCheckBox = nextComponent;
+	}
+
+	public AccountOpeningBalanceUIKeyHandler(JButton btnSave) {
+		this.nextComponentButton = btnSave;
 	}
 
 	@Override
@@ -57,13 +64,18 @@ public class PaymentUIKeyHndler implements KeyListener {
 		if(e.getSource() instanceof JTextField){
 			JTextField textField = (JTextField) e.getSource();
 			if(nextComponent != null ){
-				nextComponent.requestFocus();
-				if(!Strings.isNullOrEmpty(nextComponent.getName()) && nextComponent.getName().equals("txtFieldWRemark")){
-					nextComponent.setText(textField.getText());
+				if(nextComponent instanceof JFormattedTextField){
+					((JFormattedTextField)nextComponent).requestFocus();
+				}else{
+					nextComponent.requestFocus();
+					if(!Strings.isNullOrEmpty(nextComponent.getName()) && nextComponent.getName().equals("txtFieldWRemark")){
+						nextComponent.setText(textField.getText());
+					}
 				}
-				
 			}else if(nextComponentCheckBox != null){
 				nextComponentCheckBox.requestFocus();
+			}else if(nextComponentButton != null){
+				nextComponentButton.requestFocus();
 			}
 		}else if(e.getSource() instanceof JCheckBox){
 			if(nextComponentCheckBox != null){

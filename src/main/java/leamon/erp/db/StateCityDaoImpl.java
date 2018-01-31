@@ -6,7 +6,6 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.log4j.Logger;
 
 import leamon.erp.db.mapper.StateCityInfoMapper;
-import leamon.erp.db.mapper.StockMapper;
 import leamon.erp.db.util.MyBatsUtil;
 import leamon.erp.model.StateCityInfo;
 

@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.log4j.Logger;

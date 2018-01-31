@@ -3,14 +3,10 @@ package leamon.erp.ui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyVetoException;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -18,13 +14,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
@@ -48,17 +45,6 @@ import leamon.erp.model.LeamonProperty;
 import leamon.erp.model.StateCityInfo;
 import leamon.erp.ui.custom.BGImagePanel;
 import leamon.erp.util.LeamonERPConstants;
-import lombok.Getter;
-
-import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-
-import javax.swing.JLabel;
-import javax.swing.JMenuBar;
-import org.jdesktop.swingx.JXPanel;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 
 public class LeamonERP extends JFrame {
 

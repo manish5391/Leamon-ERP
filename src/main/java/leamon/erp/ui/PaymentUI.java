@@ -1,25 +1,39 @@
 package leamon.erp.ui;
 
-import java.awt.EventQueue;
-
-import javax.swing.JInternalFrame;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
-
 import java.awt.Color;
-import org.jdesktop.swingx.JXLabel;
+import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.beans.PropertyVetoException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
+import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JInternalFrame;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.border.BevelBorder;
+
+import org.apache.log4j.Logger;
+import org.jdesktop.swingx.JXDatePicker;
+import org.jdesktop.swingx.JXLabel;
+import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.JXTextField;
 import org.jdesktop.swingx.plaf.basic.CalendarHeaderHandler;
 import org.jdesktop.swingx.plaf.basic.SpinningCalendarHeaderHandler;
@@ -29,52 +43,22 @@ import com.google.common.base.Strings;
 import leamon.erp.component.helper.LeamonAutoAccountInfoTextFieldSuggestor;
 import leamon.erp.db.AccountDaoImpl;
 import leamon.erp.db.InvoiceDaoImpl;
+import leamon.erp.db.OpeningBalanceDaoImpl;
 import leamon.erp.db.PaymentInvoiceMappingDaoImpl;
 import leamon.erp.db.PaymentReceivedDaoImpl;
 import leamon.erp.model.AccountInfo;
 import leamon.erp.model.InvoiceInfo;
-import leamon.erp.model.InvoiceItemInfo;
+import leamon.erp.model.OpeningBalanceInfo;
 import leamon.erp.model.PaymentInvoiceMappingInfo;
 import leamon.erp.model.PaymentReceivedInfo;
-import leamon.erp.model.StockItem;
 import leamon.erp.ui.event.MouseClickHandler;
 import leamon.erp.ui.event.PaymentUIKeyHndler;
 import leamon.erp.ui.model.GenericModelWithSnp;
-import leamon.erp.ui.model.TableInvoiceModel;
 import leamon.erp.ui.model.TablePaymentReceivedModel;
-import leamon.erp.ui.model.TableStockListItemModel;
 import leamon.erp.util.ERPEnum;
 import leamon.erp.util.InvoicePaymentStatusEnum;
 import leamon.erp.util.LeamonERPConstants;
-import leamon.erp.util.LeamonUtil;
 import lombok.Getter;
-
-import org.apache.log4j.Logger;
-import org.apache.xpath.operations.Bool;
-import org.jdesktop.swingx.JXDatePicker;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
-
-import org.jdesktop.swingx.JXPanel;
-import javax.swing.border.BevelBorder;
-import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JScrollPane;
-import org.jdesktop.swingx.JXTable;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.JPanel;
-import javax.swing.JCheckBox;
-import javax.swing.JFormattedTextField;
 
 @Getter
 public class PaymentUI extends JInternalFrame {
@@ -122,7 +106,7 @@ public class PaymentUI extends JInternalFrame {
 	 * Create the frame.
 	 */
 	public PaymentUI() {
-		setTitle("Payment");
+		setTitle("Payment Adjustment");
 		setResizable(true);
 		setMaximizable(true);
 		setIconifiable(true);
@@ -288,10 +272,10 @@ public class PaymentUI extends JInternalFrame {
 		getContentPane().add(scrollPane);
 		
 		table = new JXTable();
-		table.setToolTipText("invoice items");
+		table.setToolTipText("invoice adjustment items");
 		table.setName(LeamonERPConstants.TABLE_PAYMENT);
 		table.setColumnControlVisible(true);
-		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		table.packAll();
 		scrollPane.setViewportView(table);
 		table.setModel(new TablePaymentReceivedModel((List<InvoiceInfo>)null));
 		table.setComponentPopupMenu(createPopup());
@@ -490,13 +474,44 @@ public class PaymentUI extends JInternalFrame {
 			return ;
 		}
 		if(chckbxWamountAdjust.isSelected()){
+
+			/*----Added from 3.3.2*/
+			textFieldRemainingAmt.setText(LeamonERPConstants.EMPTY_STR);
+			textFieldAdjAmt.setText(LeamonERPConstants.EMPTY_STR);
+			/*--End--*/
+			
 			textFieldPayment.setEditable(false);
+			
 			List<InvoiceInfo> filteredInvoiceInfo = getAllInvoice(accountInfo);
 			filteredInvoiceInfo = filterinvoiceByType(filteredInvoiceInfo, LeamonERPConstants.TYPE_AMOUNT_WITHOUT_BILL_ADJUSTMENT);
-			List<Integer> snos = IntStream.range(1, 1+filteredInvoiceInfo.size()).boxed().collect(Collectors.toList());
+			
+			/*getting list of opening balances*/
+			List<OpeningBalanceInfo> openingBalanceInfos = filterWopeningBalanceListByAccountID();
+			
+			int i=0;
+			for(OpeningBalanceInfo openingBalanceInfo : openingBalanceInfos ){
+				InvoiceInfo invoiceInfoOpeningBal = InvoiceInfo.builder()
+						.billNo(openingBalanceInfo.getBillnumber())
+						.isOpeningBalance(Boolean.TRUE)
+						.openigBalanceInfo(openingBalanceInfo)
+						
+						.build();
+				filteredInvoiceInfo.add(i, invoiceInfoOpeningBal);
+				i++;
+			}
+			
+			List<Integer> snos = IntStream.range(1, 1+filteredInvoiceInfo.size()+openingBalanceInfos.size()).boxed().collect(Collectors.toList());
+			
+			
 			GenericModelWithSnp<List<InvoiceInfo>, InvoiceInfo> paymentModel =new GenericModelWithSnp<List<InvoiceInfo>, InvoiceInfo>(filteredInvoiceInfo, snos);
 			TablePaymentReceivedModel tablePaymentReceivedModel= new TablePaymentReceivedModel(paymentModel, this,LeamonERPConstants.TYPE_AMOUNT_WITHOUT_BILL_ADJUSTMENT);
+			
 			table.setModel(tablePaymentReceivedModel);
+			
+			/*List<Integer> snos = IntStream.range(1, 1+filteredInvoiceInfo.size()).boxed().collect(Collectors.toList());
+			GenericModelWithSnp<List<InvoiceInfo>, InvoiceInfo> paymentModel =new GenericModelWithSnp<List<InvoiceInfo>, InvoiceInfo>(filteredInvoiceInfo, snos);
+			TablePaymentReceivedModel tablePaymentReceivedModel= new TablePaymentReceivedModel(paymentModel, this,LeamonERPConstants.TYPE_AMOUNT_WITHOUT_BILL_ADJUSTMENT);
+			table.setModel(tablePaymentReceivedModel);*/
 		}
 	}
 	
@@ -505,7 +520,7 @@ public class PaymentUI extends JInternalFrame {
 			bg.clearSelection();
 			return ;
 		}
-		
+
 		/*checking for payment*/
 		TablePaymentReceivedModel model  = (TablePaymentReceivedModel)table.getModel();
 		if(model!=null && LeamonERPConstants.TYPE_AMOUNT_WITHOUT_BILL_ADJUSTMENT.equals(model.getType()) 
@@ -517,11 +532,30 @@ public class PaymentUI extends JInternalFrame {
 		
 		
 		if(chckbxAdjustBillAmount.isSelected()){
-			
+			/*----Added from 3.3.2*/
+			textFieldRemainingAmt.setText(LeamonERPConstants.EMPTY_STR);
+			textFieldAdjAmt.setText(LeamonERPConstants.EMPTY_STR);
+			/*--End--*/
 			textFieldPayment.setEditable(false);
 			
 			List<InvoiceInfo> filteredInvoiceInfo = getAllInvoice(accountInfo);
 			filteredInvoiceInfo = filterinvoiceByType(filteredInvoiceInfo, LeamonERPConstants.TYPE_BILL_AMOUNT_ADJUSTMENT);
+			/*Release 3.3.2*/
+			/*getting list of opening balances*/
+			List<OpeningBalanceInfo> openingBalanceInfos = filterBopeningBalanceListByAccountID();
+			
+			int i=0;
+			for(OpeningBalanceInfo openingBalanceInfo : openingBalanceInfos ){
+				InvoiceInfo invoiceInfoOpeningBal = InvoiceInfo.builder()
+						.billNo(openingBalanceInfo.getBillnumber())
+						.isOpeningBalance(Boolean.TRUE)
+						.openigBalanceInfo(openingBalanceInfo)
+						
+						.build();
+				filteredInvoiceInfo.add(i, invoiceInfoOpeningBal);
+				i++;
+			}
+			/*--end--*/
 			List<Integer> snos = IntStream.range(1, 1+filteredInvoiceInfo.size()).boxed().collect(Collectors.toList());
 			GenericModelWithSnp<List<InvoiceInfo>, InvoiceInfo> paymentModel =new GenericModelWithSnp<List<InvoiceInfo>, InvoiceInfo>(filteredInvoiceInfo, snos);
 			TablePaymentReceivedModel tablePaymentReceivedModel= new TablePaymentReceivedModel(paymentModel, this,LeamonERPConstants.TYPE_BILL_AMOUNT_ADJUSTMENT);
@@ -648,7 +682,7 @@ public class PaymentUI extends JInternalFrame {
 			}
 			
 			if(isSaved){
-				JOptionPane.showMessageDialog(this, "adjustment saved.", "Leamon-ERP Error Meesage", JOptionPane.PLAIN_MESSAGE);
+				JOptionPane.showMessageDialog(this, "adjustment saved.", "Leamon-ERP Meesage", JOptionPane.PLAIN_MESSAGE);
 				clear();
 			}else{
 				JOptionPane.showMessageDialog(this, "Failed to save adjustment", "Leamon-ERP Error Meesage", JOptionPane.ERROR_MESSAGE);
@@ -809,5 +843,55 @@ public class PaymentUI extends JInternalFrame {
 	}
 	private void btnRefreshClick(ActionEvent e){
 		clear();
+	}
+	
+	/**
+	 * @since Release : 3.3.2
+	 * @author Manish Kumar Mishra
+	 * @date JAN 28,2018
+	 * @return <code>List<OpeningBalanceInfo></code>
+	 */
+	private List<OpeningBalanceInfo> filterWopeningBalanceListByAccountID(){
+		List<OpeningBalanceInfo> openingBalanceInfos = new ArrayList<OpeningBalanceInfo>();
+		try{
+			openingBalanceInfos = OpeningBalanceDaoImpl.getInstance().getItemList();
+			if(accountInfo == null){
+				return openingBalanceInfos;
+			}
+			openingBalanceInfos= openingBalanceInfos.stream().filter(e->e.getPartyinfoid()
+																		.equals(accountInfo.getId()) 
+																		&& e.getType().equals(ERPEnum.TYPE_PAYMENT_WITHOUT_BILL.name())
+																		&& !e.getStatus().equals(InvoicePaymentStatusEnum.ALL_CLEAR.name())
+																).collect(Collectors.toList());
+			return openingBalanceInfos;
+		}catch(Exception exp){
+			LOGGER.error(exp);
+		}
+		return openingBalanceInfos;
+	}
+	
+	/**
+	 * @author Manish Kumar Mishra
+	 * @date JAN 28,2018
+	 * @since Reelase 3.3.2
+	 * @return
+	 */
+	private List<OpeningBalanceInfo> filterBopeningBalanceListByAccountID(){
+		List<OpeningBalanceInfo> openingBalanceInfos = new ArrayList<OpeningBalanceInfo>();
+		try{
+			openingBalanceInfos = OpeningBalanceDaoImpl.getInstance().getItemList();
+			if(accountInfo == null){
+				return openingBalanceInfos;
+			}
+			openingBalanceInfos= openingBalanceInfos.stream().filter(e->e.getPartyinfoid()
+																		.equals(accountInfo.getId()) 
+																		&& e.getType().equals(ERPEnum.TYPE_PAYMENT_WITH_BILL.name())
+																		&& !e.getStatus().equals(InvoicePaymentStatusEnum.ALL_CLEAR.name())
+																).collect(Collectors.toList());
+			return openingBalanceInfos;
+		}catch(Exception exp){
+			LOGGER.error(exp);
+		}
+		return openingBalanceInfos;
 	}
 }

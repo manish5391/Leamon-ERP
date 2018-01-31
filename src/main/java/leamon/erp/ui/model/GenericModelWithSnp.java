@@ -1,6 +1,5 @@
 package leamon.erp.ui.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;

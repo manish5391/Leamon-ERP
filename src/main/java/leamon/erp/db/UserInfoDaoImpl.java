@@ -1,7 +1,5 @@
 package leamon.erp.db;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
@@ -9,7 +7,6 @@ import org.apache.log4j.Logger;
 
 import leamon.erp.db.mapper.UserInfoMapper;
 import leamon.erp.db.util.MyBatsUtil;
-import leamon.erp.model.UserInfo;
 import leamon.erp.model.UserInfo;
 import lombok.Getter;
 /**

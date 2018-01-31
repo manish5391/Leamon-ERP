@@ -202,7 +202,7 @@ public interface LeamonERPConstants {
 	String TABLE_HEADER_W_RECEIVED_AMOUNT="W Rec. Amt";
 	String TABLE_HEADER_B_REMARK="B Remark";
 	String TABLE_HEADER_W_REMARK="W Remark";
-	
+	String TABLE_HEADER_DESC="Desc";
 	
 	String ACTION_COMMAND_="DESCRIPTIONS";
 	
@@ -234,6 +234,7 @@ public interface LeamonERPConstants {
 	String TEXTFIELD_INVOICE_ADDRESS = "textFieldADDRESS";
 	
 	String TABLE_PAYMENT = "TablePayment";
+	String TABLE_PAYMENT_RECEIVED_SUMMARY = "TablePaymentSummary";
 	
 	
 	String CITY_PROMPT_MSG = "- - Select City - -";

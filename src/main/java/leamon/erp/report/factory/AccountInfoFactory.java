@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import leamon.erp.model.AccountInfo;
-import leamon.erp.model.CompanyInfo;
 
 public class AccountInfoFactory {
 

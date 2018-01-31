@@ -1,24 +1,26 @@
 package leamon.erp.ui.legal;
 
-import java.awt.EventQueue;
-
-import javax.swing.JInternalFrame;
-import org.jdesktop.swingx.JXPanel;
 import java.awt.Color;
-import javax.swing.border.LineBorder;
-import javax.swing.JLabel;
+import java.awt.EventQueue;
 import java.awt.Font;
-import org.jdesktop.swingx.JXTextField;
-import leamon.erp.util.LeamonERPConstants;
-import org.jdesktop.swingx.JXLabel;
-import org.jdesktop.swingx.JXDatePicker;
-import java.util.Date;
-import javax.swing.JScrollPane;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-import org.jdesktop.swingx.JXButton;
 import java.awt.event.KeyEvent;
+import java.util.Date;
+
 import javax.swing.JComboBox;
+import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.SwingConstants;
+import javax.swing.border.LineBorder;
+
+import org.jdesktop.swingx.JXButton;
+import org.jdesktop.swingx.JXDatePicker;
+import org.jdesktop.swingx.JXLabel;
+import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.JXTextField;
+
+import leamon.erp.util.LeamonERPConstants;
 
 public class InvoiceLegal extends JInternalFrame {
 

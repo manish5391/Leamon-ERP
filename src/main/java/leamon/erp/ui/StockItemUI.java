@@ -3,7 +3,6 @@ package leamon.erp.ui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
-import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -19,8 +18,6 @@ import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -34,7 +31,6 @@ import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
-import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -47,7 +43,6 @@ import javax.swing.plaf.BorderUIResource;
 import javax.swing.table.TableCellRenderer;
 
 import org.apache.log4j.Logger;
-import org.apache.poi.xslf.model.TextBodyPropertyFetcher;
 
 import com.google.common.base.Strings;
 

@@ -3,7 +3,6 @@ package leamon.erp.ui;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -12,15 +11,15 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -42,7 +41,6 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.text.NumberFormatter;
 
 import org.apache.log4j.Logger;
-import org.apache.xpath.operations.Bool;
 import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXDatePicker;
 import org.jdesktop.swingx.JXLabel;
@@ -54,7 +52,6 @@ import org.jdesktop.swingx.plaf.basic.CalendarHeaderHandler;
 import org.jdesktop.swingx.plaf.basic.SpinningCalendarHeaderHandler;
 
 import com.google.common.base.Strings;
-import com.lowagie.text.xml.SAXiTextHandler;
 
 import leamon.erp.component.helper.LeamonAutoAccountInfoTextFieldSuggestor;
 import leamon.erp.component.helper.LeamonAutoCityFieldSuggestor;
@@ -81,13 +78,8 @@ import leamon.erp.ui.event.InvoiceUiEventHandler;
 import leamon.erp.ui.model.TableInvoiceModel;
 import leamon.erp.util.InvoicePaymentStatusEnum;
 import leamon.erp.util.LeamonERPConstants;
-import leamon.erp.util.LeamonUtil;
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.DefaultComboBoxModel;
 
 @Getter
 @Setter

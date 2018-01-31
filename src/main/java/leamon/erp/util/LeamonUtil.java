@@ -7,7 +7,6 @@ import java.text.DecimalFormat;
 import java.util.List;
 
 import javax.swing.JComboBox;
-import javax.swing.JTable;
 import javax.swing.JTextField;
 
 import org.apache.log4j.Logger;
@@ -18,9 +17,6 @@ import com.google.common.base.Strings;
 
 import leamon.erp.model.InvoiceInfo;
 import leamon.erp.model.InvoiceItemInfo;
-import leamon.erp.ui.InvoiceUI;
-import leamon.erp.ui.model.TableInvoiceModel;
-import leamon.erp.ui.model.TablePaymentReceivedModel;
 
 public class LeamonUtil {
 	

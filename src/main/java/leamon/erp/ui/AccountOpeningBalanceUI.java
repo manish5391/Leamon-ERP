@@ -2,47 +2,48 @@ package leamon.erp.ui;
 
 import java.awt.Color;
 import java.awt.EventQueue;
-
-import javax.swing.JInternalFrame;
-import org.jdesktop.swingx.JXPanel;
-import javax.swing.border.BevelBorder;
-import org.jdesktop.swingx.JXLabel;
 import java.awt.Font;
-
-import org.apache.log4j.Logger;
-import org.jdesktop.swingx.JXDatePicker;
-
+import java.awt.event.ActionEvent;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.UIManager;
+import javax.swing.border.BevelBorder;
+
+import org.apache.log4j.Logger;
+import org.jdesktop.swingx.JXDatePicker;
+import org.jdesktop.swingx.JXLabel;
+import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTextField;
 import org.jdesktop.swingx.plaf.basic.CalendarHeaderHandler;
 import org.jdesktop.swingx.plaf.basic.SpinningCalendarHeaderHandler;
 
+import com.google.common.base.Strings;
+
 import leamon.erp.component.helper.LeamonAutoAccountInfoTextFieldSuggestor;
 import leamon.erp.db.AccountDaoImpl;
+import leamon.erp.db.OpeningBalanceDaoImpl;
 import leamon.erp.model.AccountInfo;
+import leamon.erp.model.OpeningBalanceInfo;
+import leamon.erp.ui.event.AccountOpeningBalanceUIKeyHandler;
+import leamon.erp.util.ERPEnum;
+import leamon.erp.util.InvoicePaymentStatusEnum;
 import leamon.erp.util.LeamonERPConstants;
 import lombok.Getter;
 
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
-import javax.swing.UIManager;
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import java.awt.event.KeyEvent;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-
 @Getter
-public class AccountOpeningBalanceUI extends JInternalFrame {
+public class AccountOpeningBalanceUI extends JInternalFrame  {
 
 	private static final String CLASS_NAME="AccountOpeningBalanceUI";
 	private static final Logger LOGGER = Logger.getLogger(AccountOpeningBalanceUI.class);
@@ -58,6 +59,10 @@ public class AccountOpeningBalanceUI extends JInternalFrame {
 	private JXDatePicker datePickerBillDate;
 	
 	private ButtonGroup bg;
+	
+	private JButton btnSave;
+	private JButton buttonRefresh;
+	private JButton buttonClose;
 	
 	private LeamonAutoAccountInfoTextFieldSuggestor<List<AccountInfo>, AccountInfo> leamonAutoAccountIDTextFieldSuggestor;
 	
@@ -86,7 +91,7 @@ public class AccountOpeningBalanceUI extends JInternalFrame {
 		setIconifiable(true);
 		setClosable(true);
 		getContentPane().setBackground(Color.WHITE);
-		setBounds(230, 30, 585, 299);
+		setBounds(230, 30, 588, 299);
 		getContentPane().setLayout(null);
 		
 		JXPanel panel = new JXPanel();
@@ -107,20 +112,21 @@ public class AccountOpeningBalanceUI extends JInternalFrame {
 		label_2.setText("*");
 		label_2.setForeground(Color.RED);
 		label_2.setFont(new Font("Trebuchet MS", Font.BOLD, 13));
-		label_2.setBounds(73, 80, 6, 16);
+		label_2.setBounds(322, 45, 6, 16);
 		panel.add(label_2);
 		
 		UIManager.put(CalendarHeaderHandler.uiControllerID, SpinningCalendarHeaderHandler.class.getName());
 		DateFormat df = new SimpleDateFormat("EEE dd/MM/yyyy");
-		datePickerBillDate = new JXDatePicker((Date) null);
+		datePickerBillDate = new JXDatePicker(new Date());
 		datePickerBillDate.setFormats(df);
 		datePickerBillDate.getEditor().setEnabled(true);
-		datePickerBillDate.setBounds(148, 78, 145, 22);
+		datePickerBillDate.setBounds(340, 43, 145, 22);
+		datePickerBillDate.getMonthView().setZoomable(true);
 		panel.add(datePickerBillDate);
 		
 		textFieldRemark = new JXTextField();
 		textFieldRemark.setPrompt("Remark");
-		textFieldRemark.setName("txtFieldBRemark");
+		textFieldRemark.setName("textFieldRemark");
 		textFieldRemark.setFont(new Font("DialogInput", Font.PLAIN, 16));
 		textFieldRemark.setEnabled(true);
 		textFieldRemark.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
@@ -129,7 +135,7 @@ public class AccountOpeningBalanceUI extends JInternalFrame {
 		
 		textFieldOpeningBalance = new JXTextField();
 		textFieldOpeningBalance.setPrompt("Opening Balance");
-		textFieldOpeningBalance.setName("txtFieldPayment");
+		textFieldOpeningBalance.setName("textFieldOpeningBalance");
 		textFieldOpeningBalance.setFont(new Font("DialogInput", Font.PLAIN, 16));
 		textFieldOpeningBalance.setEnabled(true);
 		textFieldOpeningBalance.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
@@ -138,7 +144,7 @@ public class AccountOpeningBalanceUI extends JInternalFrame {
 		
 		textFieldPartyName = new JXTextField();
 		textFieldPartyName.setPrompt("Select Party Name");
-		textFieldPartyName.setName("txtPartyName");
+		textFieldPartyName.setName("textFieldPartyName");
 		textFieldPartyName.setFont(new Font("DialogInput", Font.PLAIN, 16));
 		textFieldPartyName.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
 		textFieldPartyName.setBounds(148, 11, 406, 23);
@@ -169,8 +175,8 @@ public class AccountOpeningBalanceUI extends JInternalFrame {
 		JXLabel lblBillDate = new JXLabel();
 		lblBillDate.setText("Bill Date");
 		lblBillDate.setForeground(Color.BLACK);
-		lblBillDate.setFont(new Font("Trebuchet MS", Font.BOLD, 15));
-		lblBillDate.setBounds(10, 78, 67, 25);
+		lblBillDate.setFont(new Font("Trebuchet MS", Font.BOLD, 13));
+		lblBillDate.setBounds(268, 42, 67, 25);
 		panel.add(lblBillDate);
 		
 		JXLabel label_7 = new JXLabel();
@@ -200,7 +206,7 @@ public class AccountOpeningBalanceUI extends JInternalFrame {
 		
 		textFieldBillNo = new JXTextField();
 		textFieldBillNo.setPrompt("Bill No.");
-		textFieldBillNo.setName("txtFieldPayment");
+		textFieldBillNo.setName("textFieldBillNo");
 		textFieldBillNo.setFont(new Font("DialogInput", Font.PLAIN, 16));
 		textFieldBillNo.setEnabled(true);
 		textFieldBillNo.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
@@ -235,20 +241,22 @@ public class AccountOpeningBalanceUI extends JInternalFrame {
 		label.setBounds(33, 114, 6, 16);
 		panel.add(label);
 		
-		JButton btnSave = new JButton("Save");
+		btnSave = new JButton("Save");
 		btnSave.setBounds(292, 239, 82, 23);
 		getContentPane().add(btnSave);
+		btnSave.addActionListener( e -> btnSaveClick(e));
 		
-		JButton buttonRefresh = new JButton("Refresh");
+		buttonRefresh = new JButton("Refresh");
 		buttonRefresh.addActionListener(e -> buttonRefreshClick(e));
 		buttonRefresh.setBounds(382, 239, 94, 23);
 		getContentPane().add(buttonRefresh);
 		
-		JButton buttonClose = new JButton("Close");
+		buttonClose = new JButton("Close");
 		buttonClose.addActionListener(e -> buttonCloseClick(e));
 		buttonClose.setBounds(486, 239, 94, 23);
 		getContentPane().add(buttonClose);
-
+		
+		registerKeyEventHandler();
 	}
 	
 	private void buttonCloseClick(ActionEvent e){
@@ -256,13 +264,17 @@ public class AccountOpeningBalanceUI extends JInternalFrame {
 	}
 	
 	private void buttonRefreshClick(ActionEvent e){
+		clear();
+	}
+	
+	private void clear(){
 		textFieldPartyName.setText(LeamonERPConstants.EMPTY_STR);
 		textFieldBillNo.setText(LeamonERPConstants.EMPTY_STR);
 		textFieldOpeningBalance.setText(LeamonERPConstants.EMPTY_STR);
 		textFieldRemark.setText(LeamonERPConstants.EMPTY_STR);
+		accountInfo = null;
 		bg.clearSelection();
 	}
-	
 	public void setAccountInfo(AccountInfo info){
 		accountInfo = info;
 		textFieldPartyName.setText(info.getName());
@@ -283,5 +295,102 @@ public class AccountOpeningBalanceUI extends JInternalFrame {
 		= new LeamonAutoAccountInfoTextFieldSuggestor<List<AccountInfo>, AccountInfo>(textField, this);
 		leamonAutoAccountIDTextFieldSuggestor.setItems(accountInfos);
 		LOGGER.info(CLASS_NAME+"["+methodName+"] end");
+	}
+	
+	private void registerKeyEventHandler(){
+		textFieldBillNo.addKeyListener(new AccountOpeningBalanceUIKeyHandler(chckbxBAmount));
+		//datePickerBillDate.getEditor().addKeyListener(new AccountOpeningBalanceUIKeyHandler(chckbxBAmount));
+		chckbxBAmount.addKeyListener(new AccountOpeningBalanceUIKeyHandler(chckbxWAmount));
+		chckbxWAmount.addKeyListener(new AccountOpeningBalanceUIKeyHandler(textFieldOpeningBalance));
+		textFieldOpeningBalance.addKeyListener(new AccountOpeningBalanceUIKeyHandler(textFieldRemark));
+		textFieldRemark.addKeyListener(new AccountOpeningBalanceUIKeyHandler(btnSave));
+	}
+	
+	private boolean isValidated(){
+		
+		if(Strings.isNullOrEmpty(textFieldPartyName.getText())){
+			JOptionPane.showMessageDialog(this, "Party name can't be left blank", "Leamon-ERP Error Message", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		
+		if(accountInfo == null){
+			JOptionPane.showMessageDialog(this, "Account Info not found", "Leamon-ERP Error Message", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		
+		if(Strings.isNullOrEmpty(textFieldBillNo.getText())){
+			JOptionPane.showMessageDialog(this, "Bill number can't be left blank", "Leamon-ERP Error Message", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		
+		if(Strings.isNullOrEmpty(textFieldOpeningBalance.getText())){
+			JOptionPane.showMessageDialog(this, "Opening balance can't be left blank", "Leamon-ERP Error Message", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}else{
+			try{
+				Double.parseDouble(textFieldOpeningBalance.getText());
+			 }catch(Exception exp){
+				 JOptionPane.showMessageDialog(this, "Opening balance : Only numeric accepted", "Leamon-ERP Error Message", JOptionPane.ERROR_MESSAGE);
+				 textFieldOpeningBalance.setText(LeamonERPConstants.EMPTY_STR);
+				return false; 
+			 }
+		}
+		
+		if("No Selected".equals(getType())){
+			JOptionPane.showMessageDialog(this, "W/B is not selected", "Leamon-ERP Error Message", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		return true;
+	}
+	private void btnSaveClick(ActionEvent e){
+		if(!isValidated()){
+			return ;
+		}
+		save();
+	}
+	
+	private String getType(){
+		if(chckbxBAmount.isSelected()){
+			return ERPEnum.TYPE_PAYMENT_WITH_BILL.name();
+		}
+		
+		if(chckbxWAmount.isSelected()){
+			return ERPEnum.TYPE_PAYMENT_WITHOUT_BILL.name();
+		}
+		
+		return "No Selected";
+	}
+	private void save(){
+		Integer accountID = accountInfo.getId();
+		String billNo  = textFieldBillNo.getText();
+		String billdate = datePickerBillDate.getEditor().getText();
+		String type = getType();
+		String openingBal = textFieldOpeningBalance.getText();
+		String remark = textFieldRemark.getText();
+		
+		OpeningBalanceInfo openingBalanceInfo = OpeningBalanceInfo.builder()
+				.partyinfoid(accountID)
+				.billnumber(billNo)
+				.billdate(billdate)
+				.type(type)
+				.openingbalanceamount(openingBal)
+				.remark(remark)
+				
+				.receivedopeningbalanceamount(String.valueOf("0"))
+				.remainingopeningbalanceamount(openingBal)
+				.status(InvoicePaymentStatusEnum.NOTHING_PAID.name())
+				
+				.createdDate(new Timestamp(System.currentTimeMillis()))
+				.lastUpdated(new Timestamp(System.currentTimeMillis()))
+				.isEnable(Boolean.TRUE)
+				.build();
+		try{
+			OpeningBalanceDaoImpl.getInstance().save(openingBalanceInfo);
+			JOptionPane.showMessageDialog(this, "saved.", "Leamon-ERP Meesage", JOptionPane.PLAIN_MESSAGE);
+			clear();
+		}catch(Exception exp){
+			LOGGER.error(exp);
+			JOptionPane.showMessageDialog(this, "Failed to save!.", "Leamon-ERP Meesage", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 }
