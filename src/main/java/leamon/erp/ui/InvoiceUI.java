@@ -83,12 +83,14 @@ import leamon.erp.util.InvoicePaymentStatusEnum;
 import leamon.erp.util.LeamonERPConstants;
 import leamon.erp.util.LeamonUtil;
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.DefaultComboBoxModel;
 
 @Getter
+@Setter
 public class InvoiceUI extends JInternalFrame {
 
 	private static final String CLASS_NAME="InvoiceUI";
@@ -1400,10 +1402,12 @@ public class InvoiceUI extends JInternalFrame {
 			uniqueStockIds.add(invoiceItemInfos.get(i).getStockItemId());
 		}
 		
-		for (Integer si : uniqueStockIds){
-			int totalOrderedQuantity = invoiceItemInfos.stream().filter(e -> (null !=e.getStockItemId())
-					&& e.getStockItemId() == si).map(InvoiceItemInfo::getQty)
-					.mapToInt(Integer::parseInt).sum();
+		//3.3.2 Ghanshyam code data type changed from Integer to double
+				for (Integer si : uniqueStockIds){
+					double totalOrderedQuantity = invoiceItemInfos.stream().filter(e -> (null !=e.getStockItemId())
+							&& e.getStockItemId() == si).map(InvoiceItemInfo::getQty)
+							.mapToDouble(Double::parseDouble).sum();
+				//3.3.2 end of ghanshyam code
 			
 			/*fetch quantity from DB to update*/
 			List<StockItemQuantity> stockItemQuantities =new ArrayList<StockItemQuantity>();
@@ -1413,10 +1417,10 @@ public class InvoiceUI extends JInternalFrame {
 				LOGGER.error(exp);
 			}
 			StockItemQuantity matchedItemQuantity = stockItemQuantities.stream()
-					.filter(s -> s.getStokItemid() == si)
+					.filter(s -> s.getStokItemid().equals(si))
 					.findFirst().orElse(null);
 			if(matchedItemQuantity != null){
-				int fetchedQuantity = 0;
+				double fetchedQuantity = 0;// 3.3.2 ghanshyam code data type changed from int to double
 				try{
 					fetchedQuantity = Integer.valueOf(matchedItemQuantity.getQuantity());
 					if(fetchedQuantity >= totalOrderedQuantity){

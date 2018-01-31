@@ -237,4 +237,6 @@ public interface LeamonERPConstants {
 	
 	
 	String CITY_PROMPT_MSG = "- - Select City - -";
+	
+	public static final String STOCK_UNIT="doz"; 
 }

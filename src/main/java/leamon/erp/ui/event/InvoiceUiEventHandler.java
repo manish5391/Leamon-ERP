@@ -12,9 +12,9 @@ import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
@@ -35,7 +35,6 @@ import leamon.erp.model.StockItemQuantity;
 import leamon.erp.ui.InvoiceUI;
 import leamon.erp.ui.LeamonERP;
 import leamon.erp.ui.model.TableInvoiceModel;
-import leamon.erp.ui.model.TableStockListItemModel;
 import leamon.erp.util.LeamonERPConstants;
 import lombok.Getter;
 
@@ -47,6 +46,11 @@ public class InvoiceUiEventHandler implements KeyListener, ActionListener, Mouse
 	private JXButton nextBtnComponent;
 	private InvoiceUI invoiceUI; 
 	private JTextArea nextTextAreaComponent;
+	
+
+	//3.3.2 Ghanshyam code
+	public static int INVOICE_UI_EVENT_HANDLER_MAGIC_COUNT=0;
+	//3.3.2 end of ghanshyam code
 	
 	public InvoiceUiEventHandler(JXTextField nextComponent){
 		this.nextComponent = nextComponent;
@@ -294,9 +298,11 @@ public class InvoiceUiEventHandler implements KeyListener, ActionListener, Mouse
 			return;
 		}
 		
-		Integer qtyValue  = 0;
+		//Integer qtyValue  = 0;
+		Double qtyValue=0d;
 		try{
-			qtyValue = Integer.valueOf(qtyStr);
+			//qtyValue = Integer.valueOf(qtyStr);
+			qtyValue = Double.valueOf(qtyStr);
 		}catch(Exception exp){
 			invoiceUI.getTextFieldProductQty().setText("0");
 		}
@@ -355,6 +361,17 @@ public class InvoiceUiEventHandler implements KeyListener, ActionListener, Mouse
 				LOGGER.error(e);
 			}
 		}
+		
+		//3.3.2 Ghanshyam code
+		//saving new item in stock database
+		if(!stockItemExist()){
+			if(saveStockItem()) {
+			}else {
+				JOptionPane.showMessageDialog(invoiceUI, "Item can not be saved connect with technical team","Leamon-ERP",JOptionPane.ERROR_MESSAGE);
+				invoiceUI.getTextFieldProductDesc().requestFocusInWindow();
+			}
+		}
+		//3.3.2 End of ghanshyam code
 		
 		InvoiceItemInfo info = InvoiceItemInfo.builder()
 				.description(productDescValue)
@@ -699,9 +716,17 @@ public class InvoiceUiEventHandler implements KeyListener, ActionListener, Mouse
 	
 	private boolean invoiceProductQtyHandler(JTextField textField){
 		String qty = textField.getText();
-		int qtyVal = 0;
-		try{
-			qtyVal =Integer.parseInt(qty);
+		// 3.3.2 Ghanshyam code to accept quantity in decimal for stock unit in DOZ
+		String unit = invoiceUI.getTextFieldProductUnit().getText();
+		if (qty.contains(".") && !Strings.isNullOrEmpty(unit)
+				&& !unit.equalsIgnoreCase(LeamonERPConstants.STOCK_UNIT)) {
+			JOptionPane.showMessageDialog(invoiceUI, "Please enter valid value for quantity", "Leamon-ERP",
+					JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		double qtyVal = 0; // 3.3.2 ghanshyam code data type changed from int to double
+		try {
+			qtyVal =Double.parseDouble(qty);
 		}catch(Exception exp){
 			LOGGER.equals(exp);
 		}
@@ -712,28 +737,39 @@ public class InvoiceUiEventHandler implements KeyListener, ActionListener, Mouse
 		} catch (Exception exp) {
 			LOGGER.error(exp);
 		}
-		if(Strings.isNullOrEmpty(invoiceUI.getHiddenLabelStockId().getText())){
-			return false;
+		if (Strings.isNullOrEmpty(invoiceUI.getHiddenLabelStockId().getText())) {
+			// 3.3.2 Ghanshyam code to add new item in stock
+			InvoiceUiEventHandler.INVOICE_UI_EVENT_HANDLER_MAGIC_COUNT++;
+			if (InvoiceUiEventHandler.INVOICE_UI_EVENT_HANDLER_MAGIC_COUNT > 1) {
+				if (saveStockItem()) {
+					InvoiceUiEventHandler.INVOICE_UI_EVENT_HANDLER_MAGIC_COUNT = 0;
+				} else {
+					JOptionPane.showMessageDialog(invoiceUI, "Item can not be saved connect with technical team",
+							"Leamon-ERP", JOptionPane.ERROR_MESSAGE);
+					nextComponent.requestFocus();
+				}
+			} else {
+				return false;
+			} // 3.3.2 ghanshyam code end
+			
 		}
 
 		StockItemQuantity matchedItemQuantity = stockItemQuantities.stream()
 				.filter(s -> s.getStokItemid() == (Integer.parseInt(invoiceUI.getHiddenLabelStockId().getText())))
 				.findFirst().orElse(null);
 
-		if(matchedItemQuantity != null){
-			int fetchedQuantity = 0;
-			try{
-				fetchedQuantity = Integer.valueOf(matchedItemQuantity.getQuantity());
-
+		if (matchedItemQuantity != null) {
+			double fetchedQuantity = 0;
+			try {
+				fetchedQuantity = Double.valueOf(matchedItemQuantity.getQuantity());
 				TableInvoiceModel model = (TableInvoiceModel) invoiceUI.getTableInvoice().getModel();
-				List<InvoiceItemInfo> invoiceItemInfos =  model.getInvoiceItemInfos();
-				int totalOrderedQuantity = 0;
+				List<InvoiceItemInfo> invoiceItemInfos = model.getInvoiceItemInfos();
+				double totalOrderedQuantity = 0;
 				totalOrderedQuantity = invoiceItemInfos.stream().filter(e -> (null !=e.getStockItemId())
 						&& e.getStockItemId() == matchedItemQuantity.getStokItemid()).map(InvoiceItemInfo::getQty)
-						.mapToInt(Integer::parseInt).sum();
+						.mapToDouble(Double::parseDouble).sum();
 
-				
-				int maxTotalQty = totalOrderedQuantity + qtyVal;
+				double maxTotalQty = totalOrderedQuantity + qtyVal;
 				if(maxTotalQty > fetchedQuantity){
 					//JOptionPane.showMessageDialog(invoiceUI, "insufficient storage. Please add stock","Leamon-ERP : Stock",JOptionPane.ERROR_MESSAGE);
 					int option  = JOptionPane.showConfirmDialog(invoiceUI, "insufficient storage. \nDo you want to add stock?",
@@ -770,4 +806,51 @@ public class InvoiceUiEventHandler implements KeyListener, ActionListener, Mouse
 		}
 		
 	}
+	
+	//3.3.2 Ghanshyam code
+	//checking if item already exist in stock
+	private boolean stockItemExist() {
+		try {
+			
+			List<StockItem> stockItems = StockDaoImpl.getInstance().getItemList();
+			StockItem stockItemPresent = stockItems.stream().filter(e ->
+			!Strings.isNullOrEmpty(e.getName()) && e.getName().equals(invoiceUI.getTextFieldProductDesc().getText()) 
+			&& (!Strings.isNullOrEmpty(e.getSize())  && e.getSize().equals(invoiceUI.getTextFieldProductSize().getText()))
+			&& (!Strings.isNullOrEmpty(e.getSaleunit())  && e.getSaleunit().equals(invoiceUI.getTextFieldProductUnit().getText()))		
+					).findAny().orElse(null);
+			if(null==stockItemPresent) {
+				return false;
+			}else {
+				return true;
+			}
+			
+		} catch (Exception e) {
+			LOGGER.error(e);
+			JOptionPane.showMessageDialog(invoiceUI, "Exception while checking stock item in database connect with technical team","Leamon-ERP",JOptionPane.ERROR_MESSAGE);
+			invoiceUI.getTextFieldProductDesc().requestFocusInWindow();
+			return true;
+		}
+		
+	}
+
+	//saving new item in stock database
+	public boolean saveStockItem() {
+		StockItem stockItem = StockItem.builder().name(invoiceUI.getTextFieldProductDesc().getText())
+				.size(invoiceUI.getTextFieldProductSize().getText())
+				.saleunit(invoiceUI.getTextFieldProductUnit().getText()).isEnable(true)
+				.build();
+		try {
+			StockDaoImpl.getInstance().save(stockItem);
+			JLabel jlabel=new JLabel();
+			jlabel.setText(String.valueOf(stockItem.getId()));
+			invoiceUI.setHiddenLabelStockId(jlabel);
+			LeamonERP.stockItemList.refreshStockTable();
+			return true;
+		} catch (Exception e) {
+			LOGGER.error(e);
+			JOptionPane.showMessageDialog(invoiceUI, "Exception while saving stock item in database connect with technical team","Leamon-ERP",JOptionPane.ERROR_MESSAGE);
+			invoiceUI.getTextFieldProductDesc().requestFocusInWindow();
+			return false;
+		}
+	}//3.3.2 end of ghanshyam code
 }
