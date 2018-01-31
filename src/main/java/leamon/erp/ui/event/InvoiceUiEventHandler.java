@@ -720,7 +720,7 @@ public class InvoiceUiEventHandler implements KeyListener, ActionListener, Mouse
 		String unit = invoiceUI.getTextFieldProductUnit().getText();
 		if (qty.contains(".") && !Strings.isNullOrEmpty(unit)
 				&& !unit.equalsIgnoreCase(LeamonERPConstants.STOCK_UNIT)) {
-			JOptionPane.showMessageDialog(invoiceUI, "Please enter valid value for quantity", "Leamon-ERP",
+			JOptionPane.showMessageDialog(invoiceUI, "Please enter valid value for quantity decimal accept only for stock unit doz", "Leamon-ERP",
 					JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
