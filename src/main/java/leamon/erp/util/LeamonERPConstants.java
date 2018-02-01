@@ -239,5 +239,12 @@ public interface LeamonERPConstants {
 	
 	String CITY_PROMPT_MSG = "- - Select City - -";
 	
+	//3.4 ghanshyam code
 	public static final String STOCK_UNIT="doz"; 
+	String TEXTFIELD_INVOICE_TEXT_FIELD_COL1="textFieldCol1";
+	String TEXTFIELD_INVOICE_TEXT_FIELD_COL2="textFieldCol2";
+	String TEXTFIELD_INVOICE_TEXT_FIELD_COL1_VAL="textFieldCol1Val";
+	String TEXTFIELD_INVOICE_TEXT_FIELD_COL2_VAL="textFieldCol2Val";
+	String INVOICE_UI_COL1_COL2_OPERATION="+";
+	//3.4 end of ghanshyam code
 }

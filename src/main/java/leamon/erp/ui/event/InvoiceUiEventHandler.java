@@ -27,9 +27,11 @@ import org.jdesktop.swingx.JXTextField;
 
 import com.google.common.base.Strings;
 
+import leamon.erp.db.OperationInfoDaoImpl;
 import leamon.erp.db.StockDaoImpl;
 import leamon.erp.db.StockQuantityDaoImpl;
 import leamon.erp.model.InvoiceItemInfo;
+import leamon.erp.model.OperationInfo;
 import leamon.erp.model.StockItem;
 import leamon.erp.model.StockItemQuantity;
 import leamon.erp.ui.InvoiceUI;
@@ -197,9 +199,45 @@ public class InvoiceUiEventHandler implements KeyListener, ActionListener, Mouse
 				}else if(textField.getName().equals(LeamonERPConstants.TEXTFIELD_INVOICE_PACKET2)){
 					copyPacket2(invoiceUI);
 					nextComponent.requestFocus();
-				}
-				else{
-					if(nextComponent!=null){
+				}else if(textField.getName().equals(LeamonERPConstants.TEXTFIELD_INVOICE_TEXT_FIELD_COL1)) {
+					nextComponent.requestFocus();
+				} else if (textField.getName().equals(LeamonERPConstants.TEXTFIELD_INVOICE_TEXT_FIELD_COL1_VAL)) {
+					if (validateCol1Name()) {
+						if (validateCol1Val()) {
+							calcGrandTotal(invoiceUI);
+							nextComponent.requestFocus();
+						} else {
+							JOptionPane.showMessageDialog(invoiceUI, "Please enter valid value", "Leamon-ERP",
+									JOptionPane.ERROR_MESSAGE);
+							invoiceUI.getTextFieldCol1Val().requestFocusInWindow();
+						}
+
+					} else {
+						JOptionPane.showMessageDialog(invoiceUI, "Col1 Field can not be blank", "Leamon-ERP",
+								JOptionPane.ERROR_MESSAGE);
+						invoiceUI.getTextFieldCol1().requestFocusInWindow();
+					}
+				} else if (textField.getName().equals(LeamonERPConstants.TEXTFIELD_INVOICE_TEXT_FIELD_COL2)) {
+					nextComponent.requestFocus();
+				} else if (textField.getName().equals(LeamonERPConstants.TEXTFIELD_INVOICE_TEXT_FIELD_COL2_VAL)) {
+					if (validateCol2Name()) {
+						if (validateCol2Val()) {
+							calcGrandTotal(invoiceUI);
+							nextComponent.requestFocus();
+						} else {
+							JOptionPane.showMessageDialog(invoiceUI, "Please enter valid value", "Leamon-ERP",
+									JOptionPane.ERROR_MESSAGE);
+							invoiceUI.getTextFieldCol2Val().requestFocusInWindow();
+						}
+
+					} else {
+						JOptionPane.showMessageDialog(invoiceUI, "Col2 Field can not be blank", "Leamon-ERP",
+								JOptionPane.ERROR_MESSAGE);
+						invoiceUI.getTextFieldCol2().requestFocusInWindow();
+					}
+				} else {
+					if (nextComponent != null) {
+						System.out.println(textField.getName());
 						nextComponent.requestFocus();
 					}
 					if(nextTextAreaComponent!=null && nextTextAreaComponent.getName().equals(LeamonERPConstants.TEXTFIELD_INVOICE_ADDRESS)){
@@ -562,6 +600,37 @@ public class InvoiceUiEventHandler implements KeyListener, ActionListener, Mouse
 		double grandTotal = taxableAmt+taxVal;
 		/*BigDecimal bd = new BigDecimal(grandTotal);
 		bd = bd.setScale(2, BigDecimal.ROUND_HALF_EVEN);*/
+		//3.4 ghanshyam code
+		List<OperationInfo> operationInfo=new ArrayList<OperationInfo>();
+		try {
+			operationInfo = OperationInfoDaoImpl.getInstance().getItemList();
+			String col1ValName = ui.getTextFieldCol1Val().getName();
+			String col2ValName = ui.getTextFieldCol2Val().getName();
+			if (!Strings.isNullOrEmpty(col1ValName)
+					&& col1ValName.equals(LeamonERPConstants.TEXTFIELD_INVOICE_TEXT_FIELD_COL1_VAL)) {
+				OperationInfo operationInfoAction = operationInfo.stream().filter(
+						s -> s.getPropertyname().equals(LeamonERPConstants.TEXTFIELD_INVOICE_TEXT_FIELD_COL1_VAL))
+						.findFirst().orElse(null);
+				if (operationInfoAction.getPropertyvalue().equals(LeamonERPConstants.INVOICE_UI_COL1_COL2_OPERATION)) {
+					grandTotal = grandTotal + Double.parseDouble(ui.getTextFieldCol1Val().getText());
+				} else {
+					grandTotal = grandTotal - Double.parseDouble(ui.getTextFieldCol1Val().getText());
+				}
+			}
+			if (!Strings.isNullOrEmpty(col2ValName)
+					&& col2ValName.equals(LeamonERPConstants.TEXTFIELD_INVOICE_TEXT_FIELD_COL2_VAL)) {
+				OperationInfo operationInfoAction = operationInfo.stream().filter(
+						s -> s.getPropertyname().equals(LeamonERPConstants.TEXTFIELD_INVOICE_TEXT_FIELD_COL2_VAL))
+						.findFirst().orElse(null);
+				if (operationInfoAction.getPropertyvalue().equals(LeamonERPConstants.INVOICE_UI_COL1_COL2_OPERATION)) {
+					grandTotal = grandTotal + Double.parseDouble(ui.getTextFieldCol2Val().getText());
+				} else {
+					grandTotal = grandTotal - Double.parseDouble(ui.getTextFieldCol2Val().getText());
+				}
+			}
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}//3.4 end of ghanshyam code
 		ui.getTextFieldGTotal1().setText(String.valueOf(getRoundff(grandTotal)));
 		ui.getTextFieldGtotal2().setText(String.valueOf(getRoundff(grandTotal)));
 	}
@@ -853,4 +922,54 @@ public class InvoiceUiEventHandler implements KeyListener, ActionListener, Mouse
 			return false;
 		}
 	}//3.3.2 end of ghanshyam code
+	
+	//3.4 ghanshyam code to validate col1val and col2val
+	private boolean validateCol1Name() {
+		if (invoiceUI == null) {
+			return false;
+		}
+		if (!Strings.isNullOrEmpty(invoiceUI.getTextFieldCol1Val().getText())
+				&& Strings.isNullOrEmpty(invoiceUI.getTextFieldCol1().getText())) {
+			return false;
+		}
+		return true;
+	}
+
+	private boolean validateCol2Name() {
+		if (invoiceUI == null) {
+			return false;
+		}
+		if (!Strings.isNullOrEmpty(invoiceUI.getTextFieldCol2Val().getText())
+				&& Strings.isNullOrEmpty(invoiceUI.getTextFieldCol2().getText())) {
+			return false;
+		}
+		return true;
+	}
+	
+	private boolean validateCol1Val() {
+		Double col1Val = 0d;
+		try {
+			if (!Strings.isNullOrEmpty(invoiceUI.getTextFieldCol1Val().getText())) {
+				col1Val = Double.parseDouble(invoiceUI.getTextFieldCol1Val().getText());
+				return true;
+			}
+		} catch (Exception exp) {
+			return false;
+		}
+		return true;
+	}
+
+	private boolean validateCol2Val() {
+		Double col2Val = 0d;
+		try {
+			if (!Strings.isNullOrEmpty(invoiceUI.getTextFieldCol2Val().getText())) {
+				col2Val = Double.parseDouble(invoiceUI.getTextFieldCol2Val().getText());
+				return true;
+			}
+		} catch (Exception exp) {
+			return false;
+		}
+		return true;
+	}
+	//3.4 end of ghanshyam code
 }

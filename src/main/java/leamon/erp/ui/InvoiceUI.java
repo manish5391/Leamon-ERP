@@ -579,18 +579,24 @@ public class InvoiceUI extends JInternalFrame {
 		
 		textFieldCol1 = new JXTextField();
 		textFieldCol1.setBounds(514, 11, 71, 26);
+		textFieldCol1.setName(LeamonERPConstants.TEXTFIELD_INVOICE_TEXT_FIELD_COL1);
+		textFieldCol1.setPrompt("Col1");
 		panel_7.add(textFieldCol1);
 		
 		textFieldCol1Val = new JXTextField();
 		textFieldCol1Val.setBounds(514, 43, 71, 26);
+		textFieldCol1Val.setName(LeamonERPConstants.TEXTFIELD_INVOICE_TEXT_FIELD_COL1_VAL);
 		panel_7.add(textFieldCol1Val);
 		
 		textFieldCol2 = new JXTextField();
 		textFieldCol2.setBounds(596, 11, 71, 25);
+		textFieldCol2.setName(LeamonERPConstants.TEXTFIELD_INVOICE_TEXT_FIELD_COL2);
+		textFieldCol2.setPrompt("Col2");
 		panel_7.add(textFieldCol2);
 		
 		textFieldCol2Val = new JXTextField();
 		textFieldCol2Val.setBounds(596, 42, 71, 26);
+		textFieldCol2Val.setName(LeamonERPConstants.TEXTFIELD_INVOICE_TEXT_FIELD_COL2_VAL);
 		panel_7.add(textFieldCol2Val);
 		panel.add(panel_6);
 		panel_6.setLayout(null);
@@ -1003,9 +1009,9 @@ public class InvoiceUI extends JInternalFrame {
 		//textFieldPartyName.addKeyListener(new InvoiceUiEventHandler(textAreaPartyAddress));
 		//textAreaPartyAddress.addKeyListener(new InvoiceUiEventHandler(textFieldPartyState));
 		textFieldCol1.addKeyListener(new InvoiceUiEventHandler(textFieldCol1Val));
-		textFieldCol1Val.addKeyListener(new InvoiceUiEventHandler(textFieldCol2));
+		textFieldCol1Val.addKeyListener(new InvoiceUiEventHandler(textFieldCol2,this));
 		textFieldCol2.addKeyListener(new InvoiceUiEventHandler(textFieldCol2Val));
-		textFieldCol2Val.addKeyListener(new InvoiceUiEventHandler(textFieldBillAmount));
+		textFieldCol2Val.addKeyListener(new InvoiceUiEventHandler(textFieldBillAmount,this));
 		
 		textFieldBillNo.addKeyListener(new InvoiceUiEventHandler(textFieldGrNumber));
 		textFieldGrNumber.addKeyListener(new InvoiceUiEventHandler(textFieldPartyGST));
@@ -1713,6 +1719,13 @@ public class InvoiceUI extends JInternalFrame {
 		String partyAddress 		=   textAreaPartyAddress.getText();
 		String partyState			=	textFieldPartyState.getText();
 		
+		//3.4 ghanshyam code for col1 and col2 validation
+		String col1Name=textFieldCol1.getText();
+		String col1Val= textFieldCol1Val.getText();
+		String col2Name=textFieldCol2.getText();
+		String col2Val=textFieldCol2Val.getText();
+		//3.4 end of ghanshyam code
+
 		if(Strings.isNullOrEmpty(invoiceNum)){
 			JOptionPane.showMessageDialog(this, "Invoice Number can not be left blank.", "Validation fails",JOptionPane.ERROR_MESSAGE);
 			return false;
@@ -1750,6 +1763,17 @@ public class InvoiceUI extends JInternalFrame {
 			JOptionPane.showMessageDialog(this, "No invoice entry.", "Validation fails",JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
+		// 3.4 ghanshyam code to validate col1 and col2
+		if (!Strings.isNullOrEmpty(col1Val) && Strings.isNullOrEmpty(col1Name)) {
+			JOptionPane.showMessageDialog(this, "Col1 field name can not be blank", "Validation fails", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		if (!Strings.isNullOrEmpty(col2Val) && Strings.isNullOrEmpty(col2Name)) {
+			JOptionPane.showMessageDialog(this, "Col2 field name can not be blank", "Validation fails", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		// 3.4 end of ghanshyam code
+
 		return true;
 	}
 	
