@@ -29,8 +29,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumnModel;
 
 import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXButton;
@@ -219,6 +222,7 @@ public class PaymentReceivedSummaryUI extends JInternalFrame {
 		table.packAll();
 		scrollPane.setViewportView(table);
 		table.addMouseListener(new MouseClickHandler());
+		
 
 		JPanel panel_3 = new JPanel();
 		panel_3.setBackground(new Color(255, 255, 204));
@@ -901,6 +905,7 @@ public class PaymentReceivedSummaryUI extends JInternalFrame {
 		TablePaymentReceivedSummaryModel tablePaymentReceivedSummaryModel = 
 				new TablePaymentReceivedSummaryModel(invoicePaymentSummaryModel);
 		table.setModel(tablePaymentReceivedSummaryModel);
+		setAmountAlignment(table);//3.5 Ghanshyam code for amount alignment
 		table.packAll();
 	}
 	private void btnSearchClick(ActionEvent e){
@@ -1336,4 +1341,23 @@ public class PaymentReceivedSummaryUI extends JInternalFrame {
 		SwingUtilities.updateComponentTreeUI(this);
 		LOGGER.info("PaymentReceivedSummaryUI[openInvoice] end");
 	}
+	
+	// 3.5 Ghanshyam code for amount alignment
+	private void setAmountAlignment(JXTable table) {
+		table.setAutoResizeMode(JXTable.AUTO_RESIZE_OFF);
+		TableColumnModel columnModel = table.getColumnModel();
+		DefaultTableCellRenderer dtcrBamt = new DefaultTableCellRenderer();
+		dtcrBamt.setHorizontalAlignment(SwingConstants.RIGHT);
+		columnModel.getColumn(5).setCellRenderer(dtcrBamt);
+
+		DefaultTableCellRenderer dtcrWamt = new DefaultTableCellRenderer();
+		dtcrWamt.setHorizontalAlignment(SwingConstants.RIGHT);
+		columnModel.getColumn(6).setCellRenderer(dtcrWamt);
+
+		DefaultTableCellRenderer dtcrGtotal = new DefaultTableCellRenderer();
+		dtcrGtotal.setHorizontalAlignment(SwingConstants.RIGHT);
+		columnModel.getColumn(7).setCellRenderer(dtcrGtotal);
+
+	}
+	// 3.5 end of code
 }
