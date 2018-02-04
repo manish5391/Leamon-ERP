@@ -19,11 +19,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -112,9 +107,8 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 	private JLabel label_3;
 	private JLabel lblCode;
 
-	//3.4 Ghanshyam code auto auto name suggestion
+	//3.4 Ghanshyam code for account name auto suggestor
 	private LeamonAutoAccountInfoTextFieldSuggestor<List<AccountInfo>, AccountInfo> leamonAutoAccountIDTextFieldSuggestor;
-	//private LeamonAutoAccountInfoTextFieldSuggestor<List<String>, String> leamonAutoTransportNameFieldSuggestor;
 	//3.4 end of ghanshyam code 
 
 	public AccountInfoUI() {
@@ -227,9 +221,6 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		txtTransport.setFont(new Font("DialogInput", Font.PLAIN, 16));
 		txtTransport.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
 		txtTransport.addKeyListener(new AccountInfoKeyListener());
-		//3.4 Ghanshyam code for autoNamesuggestor
-		autoTransportNameSuggestor(txtTransport);
-		//3.4 end of ghanshyam code
 
 		txtPhone = new JXTextField();
 		txtPhone.setBounds(246, 248, 244, 23);
@@ -1220,7 +1211,7 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		return editAction;
 	}
 
-	// 3.4 Ghanshyam code for autoNamesuggestor
+	// 3.4 Ghanshyam code for account name auto suggestor
 	private void autoNameSuggestor(JTextField txtName) {
 		List<AccountInfo> accountInfos = new ArrayList<>();
 		try {
@@ -1228,35 +1219,9 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
-		leamonAutoAccountIDTextFieldSuggestor 
-		= new LeamonAutoAccountInfoTextFieldSuggestor<List<AccountInfo>, AccountInfo>(txtName, this);
+		leamonAutoAccountIDTextFieldSuggestor = new LeamonAutoAccountInfoTextFieldSuggestor<List<AccountInfo>, AccountInfo>(
+				txtName, this);
 		leamonAutoAccountIDTextFieldSuggestor.setItems(accountInfos);
 	}
-	
-	private void autoTransportNameSuggestor(JTextField txtTransport) {
-		List<AccountInfo> accountInfos = new ArrayList<>();
-		List<AccountInfo> uniqueAccountInfo=new ArrayList<>();
-		//List<String> transportName=new ArrayList<>();
-		try {
-			accountInfos = AccountDaoImpl.getInstance().getItemList();
-			uniqueAccountInfo= accountInfos.stream().filter(distinctByKey(p -> p.getTransport()))
-					.collect(Collectors.toList());
-			/*transportName = 
-					uniqueAccountInfo.stream()
-				              .map(AccountInfo::getTransport)
-				              .collect(Collectors.toList());*/
-		} catch (Exception e) {
-			LOGGER.error(e);
-		}
-		leamonAutoAccountIDTextFieldSuggestor 
-		= new LeamonAutoAccountInfoTextFieldSuggestor<List<AccountInfo>, AccountInfo>(txtTransport, this);
-		leamonAutoAccountIDTextFieldSuggestor.setItems(uniqueAccountInfo);
-	}
-	
-	public static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
-		Map<Object, Boolean> map = new ConcurrentHashMap<>();
-		return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
-	}
-	
-	//3.4 end of ghanshyam code
+	// 3.4 end of ghanshyam code
 }
