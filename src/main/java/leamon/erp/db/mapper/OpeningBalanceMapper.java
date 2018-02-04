@@ -39,7 +39,7 @@ public interface OpeningBalanceMapper {
 			+ "RECEIVEDOPENINGBALANCEAMOUNT = #{receivedopeningbalanceamount}, "
 			+ "REMAININGOPENINGBALANCEAMOUNT = #{remainingopeningbalanceamount}, REMARK = #{remark}, TYPE = #{type}, "
 			+ " STATUS = #{status}, "
-			+ "LASTUPDATEDDATE = #{lastUpdated}  WHERE ID = #{id}";
+			+ "LASTUPDATED = #{lastUpdated}  WHERE ID = #{id}";
 	
 	final String deleteById = "DELETE from OPENING_BALANCE_INFO WHERE ID = #{id}";
 	
