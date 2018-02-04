@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import com.google.common.base.Strings;
 
 import leamon.erp.model.InvoiceInfo;
+import leamon.erp.model.OpeningBalanceInfo;
 import leamon.erp.ui.PaymentUI;
 import leamon.erp.util.ERPEnum;
 import leamon.erp.util.LeamonERPConstants;
@@ -274,7 +275,8 @@ public class TablePaymentReceivedModel extends AbstractTableModel{
 			return ;
 		}
 
-		if(Strings.isNullOrEmpty(invoiceInfos.get(rowIndex).getRemainingBillAmount())){
+		
+		if(Strings.isNullOrEmpty(invoiceInfos.get(rowIndex).getRemainingBillAmount()) && !invoiceInfos.get(rowIndex).isOpeningBalance()){
 			JOptionPane.showMessageDialog(paymentUI, "Billing amount is N/A hence Can't be adjusted ", "Leamon-ERP-Payment", JOptionPane.ERROR_MESSAGE);
 			isBAmount.set(rowIndex, Boolean.FALSE);
 			return ;
@@ -282,97 +284,22 @@ public class TablePaymentReceivedModel extends AbstractTableModel{
 
 		if(isChecked){
 			InvoiceInfo info =  invoiceInfos.get(rowIndex);
-			double billAmt = 0;
-			try{
-				billAmt = Double.parseDouble(info.getRemainingBillAmount());
-			}catch(Exception e){ LOGGER.error(e); }
-
-			if(Strings.isNullOrEmpty(paymentUI.getTextFieldAdjAmt().getText())){
-
-				if(billAmt > amount){
-					double totalBillAdjustment =  billAmt - amount;
-					receivedBillAmount.set(rowIndex, amount);
-					remainingBillingBalance.set(rowIndex, totalBillAdjustment);
-
-					paymentUI.getTextFieldAdjAmt().setText(String.valueOf(amount));
-					paymentUI.getTextFieldRemainingAmt().setText(String.valueOf("0.0"));
-				}else{
-					double remainingBal =    amount - billAmt;
-					receivedBillAmount.set(rowIndex, billAmt);
-					remainingBillingBalance.set(rowIndex, 0.0);
-					paymentUI.getTextFieldAdjAmt().setText(String.valueOf(billAmt));
-					paymentUI.getTextFieldRemainingAmt().setText(String.valueOf(remainingBal));
-				}
+			
+			/*Release 3.4*/
+			if(info.isOpeningBalance() &&  info.getOpenigBalanceInfo().getType().equals(ERPEnum.TYPE_PAYMENT_WITH_BILL.name())){
+				checkBCalculationOpeningBal(info, rowIndex, columnIndex,isChecked, amount);
 			}else{
-				String adjustedAmountVal = paymentUI.getTextFieldAdjAmt().getText();
-				String remainingAmtVal = paymentUI.getTextFieldRemainingAmt().getText();
-
-				double remainingAmt = 0;
-				try{
-					remainingAmt = Double.parseDouble(remainingAmtVal);
-				}catch(Exception e){ LOGGER.error(e); }
-
-				if(Strings.isNullOrEmpty(remainingAmtVal) ||  remainingAmt == 0){
-					JOptionPane.showMessageDialog(paymentUI, "Left ZERO so can't be adjusted ", "Leamon-ERP-Payment", JOptionPane.ERROR_MESSAGE);
-					isBAmount.set(rowIndex, Boolean.FALSE);
-					return ;
-				}
-
-				double adjustedAmount = 0;
-				try{
-					adjustedAmount = Double.parseDouble(adjustedAmountVal);
-				}catch(Exception e){ LOGGER.error(e); }
-
-				if(billAmt > remainingAmt){
-					double totalBillAdjustment =  billAmt - remainingAmt;
-					receivedBillAmount.set(rowIndex, remainingAmt);
-					remainingBillingBalance.set(rowIndex, totalBillAdjustment);
-
-					paymentUI.getTextFieldAdjAmt().setText(String.valueOf(adjustedAmount+remainingAmt));
-					paymentUI.getTextFieldRemainingAmt().setText(String.valueOf("0.0"));
-				}else{
-					double remainingBal =    remainingAmt - billAmt;
-					receivedBillAmount.set(rowIndex, billAmt);
-					remainingBillingBalance.set(rowIndex, 0.0);
-					paymentUI.getTextFieldAdjAmt().setText(String.valueOf(adjustedAmount+billAmt));
-					paymentUI.getTextFieldRemainingAmt().setText(String.valueOf(remainingBal));
-				}
+				checkBCalculation(info, rowIndex, columnIndex,isChecked, amount);
 			}
-
-
+			/*End*/
 		}else if(!isChecked){
 			InvoiceInfo info =  invoiceInfos.get(rowIndex);
-			double receivedAmount =  receivedBillAmount.get(rowIndex);
-			double billAmt = 0;
-
-			try{
-				billAmt = Double.parseDouble(info.getRemainingBillAmount());
-			}catch(Exception e){
-				LOGGER.error(e);
-			}
-
-			if(Strings.isNullOrEmpty(paymentUI.getTextFieldAdjAmt().getText())){
-				paymentUI.getTextFieldAdjAmt().setText("0.0");
+			if(info.isOpeningBalance() && info.getOpenigBalanceInfo().getType().equals(ERPEnum.TYPE_PAYMENT_WITH_BILL.name())){
+				unCheckBCalculationOpeningBal(info, rowIndex, columnIndex, isChecked);
 			}else{
-				double val = 0;
-				try{
-					val = Double.parseDouble(paymentUI.getTextFieldAdjAmt().getText());
-				}catch(Exception e){LOGGER.error(e);}
-
-				paymentUI.getTextFieldAdjAmt().setText(String.valueOf(val-receivedAmount));
-				receivedBillAmount.set(rowIndex, 0.0);
-				remainingBillingBalance.set(rowIndex, 0.0);
-
-				double val2=0;
-				try{
-					val2 = Double.parseDouble(paymentUI.getTextFieldRemainingAmt().getText());
-				}catch(Exception e){
-					LOGGER.error(e);
-				}
-				paymentUI.getTextFieldRemainingAmt().setText(String.valueOf(val2+receivedAmount));
+				unCheckBCalculation(info, rowIndex, columnIndex, isChecked);
 			}
-
-
+			
 		}// end if
 	}
 
@@ -390,7 +317,9 @@ public class TablePaymentReceivedModel extends AbstractTableModel{
 			return ;
 		}
 
-		if(Strings.isNullOrEmpty(invoiceInfos.get(rowIndex).getRemainingWithoutBillAmount())){
+		if(!invoiceInfos.get(rowIndex).isOpeningBalance()  &&
+				Strings.isNullOrEmpty(invoiceInfos.get(rowIndex).getRemainingWithoutBillAmount())
+				){
 			JOptionPane.showMessageDialog(paymentUI, "W amount is N/A hence Can't be adjusted ", "Leamon-ERP-Payment", JOptionPane.ERROR_MESSAGE);
 			isWAmount.set(rowIndex, Boolean.FALSE);
 			return ;
@@ -398,97 +327,411 @@ public class TablePaymentReceivedModel extends AbstractTableModel{
 
 		if(isChecked){
 			InvoiceInfo info =  invoiceInfos.get(rowIndex);
-			double billAmt = 0;
-			try{
-				billAmt = Double.parseDouble(info.getRemainingWithoutBillAmount());
-			}catch(Exception e){ LOGGER.error(e); }
-
-			if(Strings.isNullOrEmpty(paymentUI.getTextFieldAdjAmt().getText())){
-
-				if(billAmt > amount){
-					double totalBillAdjustment =  billAmt - amount;
-					receivedWithOutBillAmount.set(rowIndex, amount);
-					remainingWithOutBillBalance.set(rowIndex, totalBillAdjustment);
-
-					paymentUI.getTextFieldAdjAmt().setText(String.valueOf(amount));
-					paymentUI.getTextFieldRemainingAmt().setText(String.valueOf("0.0"));
-				}else{
-					double remainingBal =    amount - billAmt;
-					receivedWithOutBillAmount.set(rowIndex, billAmt);
-					remainingWithOutBillBalance.set(rowIndex, 0.0);
-					paymentUI.getTextFieldAdjAmt().setText(String.valueOf(billAmt));
-					paymentUI.getTextFieldRemainingAmt().setText(String.valueOf(remainingBal));
-				}
+			
+			if(info.isOpeningBalance() && info.getOpenigBalanceInfo().getType().equals(ERPEnum.TYPE_PAYMENT_WITHOUT_BILL.name())){
+				checkWithoutBillAmtAdjustmentOpeningBalance(info, rowIndex, columnIndex, isChecked, amount);
 			}else{
-				String adjustedAmountVal = paymentUI.getTextFieldAdjAmt().getText();
-				String remainingAmtVal = paymentUI.getTextFieldRemainingAmt().getText();
-
-				double remainingAmt = 0;
-				try{
-					remainingAmt = Double.parseDouble(remainingAmtVal);
-				}catch(Exception e){ LOGGER.error(e); }
-
-				if(Strings.isNullOrEmpty(remainingAmtVal) ||  remainingAmt == 0){
-					JOptionPane.showMessageDialog(paymentUI, "Left ZERO so can't be adjusted ", "Leamon-ERP-Payment", JOptionPane.ERROR_MESSAGE);
-					isWAmount.set(rowIndex, Boolean.FALSE);
-					return ;
-				}
-
-				double adjustedAmount = 0;
-				try{
-					adjustedAmount = Double.parseDouble(adjustedAmountVal);
-				}catch(Exception e){ LOGGER.error(e); }
-
-				if(billAmt > remainingAmt){
-					double totalBillAdjustment =  billAmt - remainingAmt;
-					receivedWithOutBillAmount.set(rowIndex, remainingAmt);
-					remainingWithOutBillBalance.set(rowIndex, totalBillAdjustment);
-
-					paymentUI.getTextFieldAdjAmt().setText(String.valueOf(adjustedAmount+remainingAmt));
-					paymentUI.getTextFieldRemainingAmt().setText(String.valueOf("0.0"));
-				}else{
-					double remainingBal =    remainingAmt - billAmt;
-					receivedWithOutBillAmount.set(rowIndex, billAmt);
-					remainingWithOutBillBalance.set(rowIndex, 0.0);
-					paymentUI.getTextFieldAdjAmt().setText(String.valueOf(adjustedAmount+billAmt));
-					paymentUI.getTextFieldRemainingAmt().setText(String.valueOf(remainingBal));
-				}
+				checkWithoutBillAmtAdjustment(info, rowIndex, columnIndex, isChecked, amount);
 			}
-
 		}else if(!isChecked){
 			InvoiceInfo info =  invoiceInfos.get(rowIndex);
-			double receivedAmount =  receivedWithOutBillAmount.get(rowIndex);
-			double billAmt = 0;
+			if(info.isOpeningBalance() && info.getOpenigBalanceInfo().getType().equals(ERPEnum.TYPE_PAYMENT_WITHOUT_BILL.name())){
+				
+			}else{
+				unCheckWithoutBillAmtAdjustment(info, rowIndex, columnIndex, isChecked, amount);
+			}
+		}// end if
+	}//end method
+	
+	public void checkWithoutBillAmtAdjustment(InvoiceInfo info, int rowIndex, int columnIndex, Boolean isChecked, double amount){
+		double billAmt = 0;
+		try{
+			billAmt = Double.parseDouble(info.getRemainingWithoutBillAmount());
+		}catch(Exception e){ LOGGER.error(e); }
 
+		if(Strings.isNullOrEmpty(paymentUI.getTextFieldAdjAmt().getText())){
+
+			if(billAmt > amount){
+				double totalBillAdjustment =  billAmt - amount;
+				receivedWithOutBillAmount.set(rowIndex, amount);
+				remainingWithOutBillBalance.set(rowIndex, totalBillAdjustment);
+
+				paymentUI.getTextFieldAdjAmt().setText(String.valueOf(amount));
+				paymentUI.getTextFieldRemainingAmt().setText(String.valueOf("0.0"));
+			}else{
+				double remainingBal =    amount - billAmt;
+				receivedWithOutBillAmount.set(rowIndex, billAmt);
+				remainingWithOutBillBalance.set(rowIndex, 0.0);
+				paymentUI.getTextFieldAdjAmt().setText(String.valueOf(billAmt));
+				paymentUI.getTextFieldRemainingAmt().setText(String.valueOf(remainingBal));
+			}
+		}else{
+			String adjustedAmountVal = paymentUI.getTextFieldAdjAmt().getText();
+			String remainingAmtVal = paymentUI.getTextFieldRemainingAmt().getText();
+
+			double remainingAmt = 0;
 			try{
-				billAmt = Double.parseDouble(info.getRemainingWithoutBillAmount());
+				remainingAmt = Double.parseDouble(remainingAmtVal);
+			}catch(Exception e){ LOGGER.error(e); }
+
+			if(Strings.isNullOrEmpty(remainingAmtVal) ||  remainingAmt == 0){
+				JOptionPane.showMessageDialog(paymentUI, "Left ZERO so can't be adjusted ", "Leamon-ERP-Payment", JOptionPane.ERROR_MESSAGE);
+				isWAmount.set(rowIndex, Boolean.FALSE);
+				return ;
+			}
+
+			double adjustedAmount = 0;
+			try{
+				adjustedAmount = Double.parseDouble(adjustedAmountVal);
+			}catch(Exception e){ LOGGER.error(e); }
+
+			if(billAmt > remainingAmt){
+				double totalBillAdjustment =  billAmt - remainingAmt;
+				receivedWithOutBillAmount.set(rowIndex, remainingAmt);
+				remainingWithOutBillBalance.set(rowIndex, totalBillAdjustment);
+
+				paymentUI.getTextFieldAdjAmt().setText(String.valueOf(adjustedAmount+remainingAmt));
+				paymentUI.getTextFieldRemainingAmt().setText(String.valueOf("0.0"));
+			}else{
+				double remainingBal =    remainingAmt - billAmt;
+				receivedWithOutBillAmount.set(rowIndex, billAmt);
+				remainingWithOutBillBalance.set(rowIndex, 0.0);
+				paymentUI.getTextFieldAdjAmt().setText(String.valueOf(adjustedAmount+billAmt));
+				paymentUI.getTextFieldRemainingAmt().setText(String.valueOf(remainingBal));
+			}
+		}
+	}
+	
+	
+	public void checkWithoutBillAmtAdjustmentOpeningBalance(InvoiceInfo invoceInfo, int rowIndex, int columnIndex, Boolean isChecked, double amount){
+		
+		OpeningBalanceInfo info = invoceInfo.getOpenigBalanceInfo();
+		double billAmt = 0;
+		try{
+			billAmt = Double.parseDouble(info.getRemainingopeningbalanceamount());
+		}catch(Exception e){ LOGGER.error(e); }
+
+		if(Strings.isNullOrEmpty(paymentUI.getTextFieldAdjAmt().getText())){
+
+			if(billAmt > amount){
+				double totalBillAdjustment =  billAmt - amount;
+				receivedWithOutBillAmount.set(rowIndex, amount);
+				remainingWithOutBillBalance.set(rowIndex, totalBillAdjustment);
+
+				paymentUI.getTextFieldAdjAmt().setText(String.valueOf(amount));
+				paymentUI.getTextFieldRemainingAmt().setText(String.valueOf("0.0"));
+			}else{
+				double remainingBal =    amount - billAmt;
+				receivedWithOutBillAmount.set(rowIndex, billAmt);
+				remainingWithOutBillBalance.set(rowIndex, 0.0);
+				paymentUI.getTextFieldAdjAmt().setText(String.valueOf(billAmt));
+				paymentUI.getTextFieldRemainingAmt().setText(String.valueOf(remainingBal));
+			}
+		}else{
+			String adjustedAmountVal = paymentUI.getTextFieldAdjAmt().getText();
+			String remainingAmtVal = paymentUI.getTextFieldRemainingAmt().getText();
+
+			double remainingAmt = 0;
+			try{
+				remainingAmt = Double.parseDouble(remainingAmtVal);
+			}catch(Exception e){ LOGGER.error(e); }
+
+			if(Strings.isNullOrEmpty(remainingAmtVal) ||  remainingAmt == 0){
+				JOptionPane.showMessageDialog(paymentUI, "Left ZERO so can't be adjusted ", "Leamon-ERP-Payment", JOptionPane.ERROR_MESSAGE);
+				isWAmount.set(rowIndex, Boolean.FALSE);
+				return ;
+			}
+
+			double adjustedAmount = 0;
+			try{
+				adjustedAmount = Double.parseDouble(adjustedAmountVal);
+			}catch(Exception e){ LOGGER.error(e); }
+
+			if(billAmt > remainingAmt){
+				double totalBillAdjustment =  billAmt - remainingAmt;
+				receivedWithOutBillAmount.set(rowIndex, remainingAmt);
+				remainingWithOutBillBalance.set(rowIndex, totalBillAdjustment);
+
+				paymentUI.getTextFieldAdjAmt().setText(String.valueOf(adjustedAmount+remainingAmt));
+				paymentUI.getTextFieldRemainingAmt().setText(String.valueOf("0.0"));
+			}else{
+				double remainingBal =    remainingAmt - billAmt;
+				receivedWithOutBillAmount.set(rowIndex, billAmt);
+				remainingWithOutBillBalance.set(rowIndex, 0.0);
+				paymentUI.getTextFieldAdjAmt().setText(String.valueOf(adjustedAmount+billAmt));
+				paymentUI.getTextFieldRemainingAmt().setText(String.valueOf(remainingBal));
+			}
+		}
+	}
+	
+	public void unCheckWithoutBillAmtAdjustment(InvoiceInfo info, int rowIndex, int columnIndex, Boolean isChecked, double amount){
+		double receivedAmount =  receivedWithOutBillAmount.get(rowIndex);
+		double billAmt = 0;
+
+		try{
+			billAmt = Double.parseDouble(info.getRemainingWithoutBillAmount());
+		}catch(Exception e){
+			LOGGER.error(e);
+		}
+
+		if(Strings.isNullOrEmpty(paymentUI.getTextFieldAdjAmt().getText())){
+			paymentUI.getTextFieldAdjAmt().setText("0.0");
+		}else{
+			double val = 0;
+			try{
+				val = Double.parseDouble(paymentUI.getTextFieldAdjAmt().getText());
+			}catch(Exception e){LOGGER.error(e);}
+
+			paymentUI.getTextFieldAdjAmt().setText(String.valueOf(val-receivedAmount));
+			receivedWithOutBillAmount.set(rowIndex, 0.0);
+			remainingWithOutBillBalance.set(rowIndex, 0.0);
+
+			double val2=0;
+			try{
+				val2 = Double.parseDouble(paymentUI.getTextFieldRemainingAmt().getText());
 			}catch(Exception e){
 				LOGGER.error(e);
 			}
+			paymentUI.getTextFieldRemainingAmt().setText(String.valueOf(val2+receivedAmount));
+		}
+	}
+	
+	public void unCheckWithoutBillAmtAdjustmentOpeningBal(InvoiceInfo invoiceInfo, int rowIndex, int columnIndex, Boolean isChecked, double amount){
+		
+		OpeningBalanceInfo info = invoiceInfo.getOpenigBalanceInfo();
+		
+		double receivedAmount =  receivedWithOutBillAmount.get(rowIndex);
+		double billAmt = 0;
 
-			if(Strings.isNullOrEmpty(paymentUI.getTextFieldAdjAmt().getText())){
-				paymentUI.getTextFieldAdjAmt().setText("0.0");
+		try{
+			billAmt = Double.parseDouble(info.getRemainingopeningbalanceamount());
+		}catch(Exception e){
+			LOGGER.error(e);
+		}
+
+		if(Strings.isNullOrEmpty(paymentUI.getTextFieldAdjAmt().getText())){
+			paymentUI.getTextFieldAdjAmt().setText("0.0");
+		}else{
+			double val = 0;
+			try{
+				val = Double.parseDouble(paymentUI.getTextFieldAdjAmt().getText());
+			}catch(Exception e){LOGGER.error(e);}
+
+			paymentUI.getTextFieldAdjAmt().setText(String.valueOf(val-receivedAmount));
+			receivedWithOutBillAmount.set(rowIndex, 0.0);
+			remainingWithOutBillBalance.set(rowIndex, 0.0);
+
+			double val2=0;
+			try{
+				val2 = Double.parseDouble(paymentUI.getTextFieldRemainingAmt().getText());
+			}catch(Exception e){
+				LOGGER.error(e);
+			}
+			paymentUI.getTextFieldRemainingAmt().setText(String.valueOf(val2+receivedAmount));
+		}
+	}
+	
+	/**
+	 * @author Manish Kumar Mishra
+	 * @date Feb 04,2018
+	 * @since Release 3.4
+	 * @param info
+	 * @param rowIndex
+	 * @param columnIndex
+	 * @param isChecked
+	 */
+	private void checkBCalculation(InvoiceInfo info, int rowIndex, int columnIndex, Boolean isChecked, double amount){
+		double billAmt = 0;
+		try{
+			billAmt = Double.parseDouble(info.getRemainingBillAmount());
+		}catch(Exception e){ LOGGER.error(e); }
+
+		if(Strings.isNullOrEmpty(paymentUI.getTextFieldAdjAmt().getText())){
+
+			if(billAmt > amount){
+				double totalBillAdjustment =  billAmt - amount;
+				receivedBillAmount.set(rowIndex, amount);
+				remainingBillingBalance.set(rowIndex, totalBillAdjustment);
+
+				paymentUI.getTextFieldAdjAmt().setText(String.valueOf(amount));
+				paymentUI.getTextFieldRemainingAmt().setText(String.valueOf("0.0"));
 			}else{
-				double val = 0;
-				try{
-					val = Double.parseDouble(paymentUI.getTextFieldAdjAmt().getText());
-				}catch(Exception e){LOGGER.error(e);}
+				double remainingBal =    amount - billAmt;
+				receivedBillAmount.set(rowIndex, billAmt);
+				remainingBillingBalance.set(rowIndex, 0.0);
+				paymentUI.getTextFieldAdjAmt().setText(String.valueOf(billAmt));
+				paymentUI.getTextFieldRemainingAmt().setText(String.valueOf(remainingBal));
+			}
+		}else{
+			String adjustedAmountVal = paymentUI.getTextFieldAdjAmt().getText();
+			String remainingAmtVal = paymentUI.getTextFieldRemainingAmt().getText();
 
-				paymentUI.getTextFieldAdjAmt().setText(String.valueOf(val-receivedAmount));
-				receivedWithOutBillAmount.set(rowIndex, 0.0);
-				remainingWithOutBillBalance.set(rowIndex, 0.0);
+			double remainingAmt = 0;
+			try{
+				remainingAmt = Double.parseDouble(remainingAmtVal);
+			}catch(Exception e){ LOGGER.error(e); }
 
-				double val2=0;
-				try{
-					val2 = Double.parseDouble(paymentUI.getTextFieldRemainingAmt().getText());
-				}catch(Exception e){
-					LOGGER.error(e);
-				}
-				paymentUI.getTextFieldRemainingAmt().setText(String.valueOf(val2+receivedAmount));
+			if(Strings.isNullOrEmpty(remainingAmtVal) ||  remainingAmt == 0){
+				JOptionPane.showMessageDialog(paymentUI, "Left ZERO so can't be adjusted ", "Leamon-ERP-Payment", JOptionPane.ERROR_MESSAGE);
+				isBAmount.set(rowIndex, Boolean.FALSE);
+				return ;
 			}
 
+			double adjustedAmount = 0;
+			try{
+				adjustedAmount = Double.parseDouble(adjustedAmountVal);
+			}catch(Exception e){ LOGGER.error(e); }
 
-		}// end if
-	}//end method
+			if(billAmt > remainingAmt){
+				double totalBillAdjustment =  billAmt - remainingAmt;
+				receivedBillAmount.set(rowIndex, remainingAmt);
+				remainingBillingBalance.set(rowIndex, totalBillAdjustment);
 
+				paymentUI.getTextFieldAdjAmt().setText(String.valueOf(adjustedAmount+remainingAmt));
+				paymentUI.getTextFieldRemainingAmt().setText(String.valueOf("0.0"));
+			}else{
+				double remainingBal =    remainingAmt - billAmt;
+				receivedBillAmount.set(rowIndex, billAmt);
+				remainingBillingBalance.set(rowIndex, 0.0);
+				paymentUI.getTextFieldAdjAmt().setText(String.valueOf(adjustedAmount+billAmt));
+				paymentUI.getTextFieldRemainingAmt().setText(String.valueOf(remainingBal));
+			}
+		}
+	}
+	
+	private void checkBCalculationOpeningBal(InvoiceInfo infoInvoice, int rowIndex, int columnIndex, Boolean isChecked, double amount){
+
+		OpeningBalanceInfo info = infoInvoice.getOpenigBalanceInfo();
+		double billAmt = 0;
+		try{
+			billAmt = Double.parseDouble(info.getRemainingopeningbalanceamount());
+		}catch(Exception e){ LOGGER.error(e); }
+
+		if(Strings.isNullOrEmpty(paymentUI.getTextFieldAdjAmt().getText())){
+
+			if(billAmt > amount){
+				double totalBillAdjustment =  billAmt - amount;
+				receivedBillAmount.set(rowIndex, amount);
+				remainingBillingBalance.set(rowIndex, totalBillAdjustment);
+
+				paymentUI.getTextFieldAdjAmt().setText(String.valueOf(amount));
+				paymentUI.getTextFieldRemainingAmt().setText(String.valueOf("0.0"));
+			}else{
+				double remainingBal =    amount - billAmt;
+				receivedBillAmount.set(rowIndex, billAmt);
+				remainingBillingBalance.set(rowIndex, 0.0);
+				paymentUI.getTextFieldAdjAmt().setText(String.valueOf(billAmt));
+				paymentUI.getTextFieldRemainingAmt().setText(String.valueOf(remainingBal));
+			}
+		}else{
+			String adjustedAmountVal = paymentUI.getTextFieldAdjAmt().getText();
+			String remainingAmtVal = paymentUI.getTextFieldRemainingAmt().getText();
+
+			double remainingAmt = 0;
+			try{
+				remainingAmt = Double.parseDouble(remainingAmtVal);
+			}catch(Exception e){ LOGGER.error(e); }
+
+			if(Strings.isNullOrEmpty(remainingAmtVal) ||  remainingAmt == 0){
+				JOptionPane.showMessageDialog(paymentUI, "Left ZERO so can't be adjusted ", "Leamon-ERP-Payment", JOptionPane.ERROR_MESSAGE);
+				isBAmount.set(rowIndex, Boolean.FALSE);
+				return ;
+			}
+
+			double adjustedAmount = 0;
+			try{
+				adjustedAmount = Double.parseDouble(adjustedAmountVal);
+			}catch(Exception e){ LOGGER.error(e); }
+
+			if(billAmt > remainingAmt){
+				double totalBillAdjustment =  billAmt - remainingAmt;
+				receivedBillAmount.set(rowIndex, remainingAmt);
+				remainingBillingBalance.set(rowIndex, totalBillAdjustment);
+
+				paymentUI.getTextFieldAdjAmt().setText(String.valueOf(adjustedAmount+remainingAmt));
+				paymentUI.getTextFieldRemainingAmt().setText(String.valueOf("0.0"));
+			}else{
+				double remainingBal =    remainingAmt - billAmt;
+				receivedBillAmount.set(rowIndex, billAmt);
+				remainingBillingBalance.set(rowIndex, 0.0);
+				paymentUI.getTextFieldAdjAmt().setText(String.valueOf(adjustedAmount+billAmt));
+				paymentUI.getTextFieldRemainingAmt().setText(String.valueOf(remainingBal));
+			}
+		}
+	
+	}
+	
+	/**
+	 * @author Manish Kumar Mishra
+	 * @date Feb 04,2018
+	 * @since Release 3.4
+	 * @param info
+	 * @param rowIndex
+	 * @param columnIndex
+	 * @param isChecked
+	 */
+	private void unCheckBCalculation(InvoiceInfo info, int rowIndex, int columnIndex, Boolean isChecked){
+		double receivedAmount =  receivedBillAmount.get(rowIndex);
+		double billAmt = 0;
+
+		try{
+			billAmt = Double.parseDouble(info.getRemainingBillAmount());
+		}catch(Exception e){
+			LOGGER.error(e);
+		}
+
+		if(Strings.isNullOrEmpty(paymentUI.getTextFieldAdjAmt().getText())){
+			paymentUI.getTextFieldAdjAmt().setText("0.0");
+		}else{
+			double val = 0;
+			try{
+				val = Double.parseDouble(paymentUI.getTextFieldAdjAmt().getText());
+			}catch(Exception e){LOGGER.error(e);}
+
+			paymentUI.getTextFieldAdjAmt().setText(String.valueOf(val-receivedAmount));
+			receivedBillAmount.set(rowIndex, 0.0);
+			remainingBillingBalance.set(rowIndex, 0.0);
+
+			double val2=0;
+			try{
+				val2 = Double.parseDouble(paymentUI.getTextFieldRemainingAmt().getText());
+			}catch(Exception e){
+				LOGGER.error(e);
+			}
+			paymentUI.getTextFieldRemainingAmt().setText(String.valueOf(val2+receivedAmount));
+		}
+	}
+	
+	private void unCheckBCalculationOpeningBal(InvoiceInfo invoiceInfo, int rowIndex, int columnIndex, Boolean isChecked){
+		double receivedAmount =  receivedBillAmount.get(rowIndex);
+		double billAmt = 0;
+		
+		OpeningBalanceInfo info = invoiceInfo.getOpenigBalanceInfo();
+		try{
+			billAmt = Double.parseDouble(info.getRemainingopeningbalanceamount());
+		}catch(Exception e){
+			LOGGER.error(e);
+		}
+
+		if(Strings.isNullOrEmpty(paymentUI.getTextFieldAdjAmt().getText())){
+			paymentUI.getTextFieldAdjAmt().setText("0.0");
+		}else{
+			double val = 0;
+			try{
+				val = Double.parseDouble(paymentUI.getTextFieldAdjAmt().getText());
+			}catch(Exception e){LOGGER.error(e);}
+
+			paymentUI.getTextFieldAdjAmt().setText(String.valueOf(val-receivedAmount));
+			receivedBillAmount.set(rowIndex, 0.0);
+			remainingBillingBalance.set(rowIndex, 0.0);
+
+			double val2=0;
+			try{
+				val2 = Double.parseDouble(paymentUI.getTextFieldRemainingAmt().getText());
+			}catch(Exception e){
+				LOGGER.error(e);
+			}
+			paymentUI.getTextFieldRemainingAmt().setText(String.valueOf(val2+receivedAmount));
+		}
+	}
 }
