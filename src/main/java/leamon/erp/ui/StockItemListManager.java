@@ -22,10 +22,13 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumnModel;
 
 import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXHyperlink;
@@ -80,7 +83,9 @@ public class StockItemListManager extends JInternalFrame implements ActionListen
 		tblStockList.setAutoCreateRowSorter(true);
 		tblStockList.setColumnControlVisible(true);
 		tblStockList.packAll();
-		
+		// 3.4 ghanshyam code for stock alignment
+		setStockAlignment(tblStockList);
+		// 3.4 end of ghanshyam code
 		tblStockList.setComponentPopupMenu(createPopup());
 		tblStockList.setName(LeamonERPConstants.TABLE_STOCK_ITEMS);
 		tblStockList.addKeyListener(new KeyListenerHandler(tblStockList));
@@ -445,4 +450,17 @@ public class StockItemListManager extends JInternalFrame implements ActionListen
 		SwingUtilities.updateComponentTreeUI(this);
 		LOGGER.info("StockItemList[viewStockItem] end");
 	}
+	
+	// 3.4 ghanshyam code for stock alignment
+	private void setStockAlignment(JXTable tblStockList) {
+		tblStockList.setAutoResizeMode(JXTable.AUTO_RESIZE_OFF);
+		TableColumnModel columnModel = tblStockList.getColumnModel();
+		DefaultTableCellRenderer dtcr1 = new DefaultTableCellRenderer();
+		dtcr1.setHorizontalAlignment(SwingConstants.RIGHT);
+		columnModel.getColumn(4).setCellRenderer(dtcr1);
+		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
+		dtcr.setHorizontalAlignment(SwingConstants.LEFT);
+		columnModel.getColumn(5).setCellRenderer(dtcr);
+	}
+	// 3.4 end of ghanshyam code
 }
