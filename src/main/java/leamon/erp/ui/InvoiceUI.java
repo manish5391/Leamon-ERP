@@ -37,6 +37,7 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumnModel;
 import javax.swing.text.NumberFormatter;
 
@@ -804,7 +805,6 @@ public class InvoiceUI extends JInternalFrame {
 		textFieldProductQty.setBounds(511, 21, 77, 23);
 		textFieldProductQty.setPrompt("Qty.");
 		textFieldProductQty.setName(LeamonERPConstants.TEXTFIELD_INVOICE_QTY);
-		textFieldProductQty.setHorizontalAlignment(SwingConstants.CENTER);
 		textFieldProductQty.setFont(new Font("DialogInput", Font.PLAIN, 16));
 		textFieldProductQty.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
 
@@ -1114,6 +1114,14 @@ public class InvoiceUI extends JInternalFrame {
 		columnModel.getColumn(3).setPreferredWidth(100);
 		
 		//		columnModel.getColumn(4).setPreferredWidth(80);
+		// 3.4 Ghanshyam code to set alignment of qty and unit column
+		DefaultTableCellRenderer dtcr1 = new DefaultTableCellRenderer();
+		dtcr1.setHorizontalAlignment(SwingConstants.RIGHT);
+		columnModel.getColumn(3).setCellRenderer(dtcr1);
+		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
+		dtcr.setHorizontalAlignment(SwingConstants.LEFT);
+		columnModel.getColumn(4).setCellRenderer(dtcr);
+		// 3.4 end of ghanshyam code
 		columnModel.getColumn(5).setPreferredWidth(100);
 		columnModel.getColumn(6).setPreferredWidth(150);
 		//		columnModel.getColumn(7).setPreferredWidth(80);
