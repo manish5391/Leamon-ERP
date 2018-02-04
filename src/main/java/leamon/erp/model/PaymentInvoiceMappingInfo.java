@@ -35,6 +35,9 @@ public class PaymentInvoiceMappingInfo implements Serializable, Comparable<Payme
 	private Timestamp lastUpdated;
 	private boolean isEnable;
 	
+	/*Release 3.4*/
+	private Integer openingBalanceID;
+	
 	@Override
 	public int compareTo(PaymentInvoiceMappingInfo o) {
 		
