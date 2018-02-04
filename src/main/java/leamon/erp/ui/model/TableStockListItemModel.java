@@ -28,8 +28,8 @@ public class TableStockListItemModel extends AbstractTableModel{
 			"NAME", 
 			"PRODUCT CODE", 
 			"SIZE", 
-			"UNIT", 
 			"QUANTITY",
+			"UNIT", 
 			"FINISH", 
 			"SHAPE", 
 			"DESCRIPTION"
@@ -62,8 +62,8 @@ public class TableStockListItemModel extends AbstractTableModel{
 			case 1: temp = stockItems.get(rowIndex).getName(); break;
 			case 2: temp = stockItems.get(rowIndex).getProductCode(); break;
 			case 3: temp = stockItems.get(rowIndex).getSize(); break;
-			case 4: temp = stockItems.get(rowIndex).getSaleunit(); break;
-			case 5: temp = stockItems.get(rowIndex).getStockItemQuantity()!=null?stockItems.get(rowIndex).getStockItemQuantity().getQuantity():""; break;
+			case 4: temp = stockItems.get(rowIndex).getStockItemQuantity()!=null?stockItems.get(rowIndex).getStockItemQuantity().getQuantity():""; break;
+			case 5: temp = stockItems.get(rowIndex).getSaleunit(); break;
 			case 6: temp = stockItems.get(rowIndex).getFinish(); break;
 			case 7: temp = stockItems.get(rowIndex).getShape(); break;
 			case 8: temp = stockItems.get(rowIndex).getDescription(); break;
