@@ -16,7 +16,14 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.sql.Timestamp;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -51,6 +58,7 @@ import org.jdesktop.swingx.prompt.PromptSupport;
 
 import com.google.common.base.Strings;
 
+import leamon.erp.component.helper.LeamonAutoAccountInfoTextFieldSuggestor;
 import leamon.erp.db.AccountDaoImpl;
 import leamon.erp.model.AccountInfo;
 import leamon.erp.model.StateCityInfo;
@@ -104,6 +112,10 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 	private JLabel label_3;
 	private JLabel lblCode;
 
+	//3.4 Ghanshyam code auto auto name suggestion
+	private LeamonAutoAccountInfoTextFieldSuggestor<List<AccountInfo>, AccountInfo> leamonAutoAccountIDTextFieldSuggestor;
+	//private LeamonAutoAccountInfoTextFieldSuggestor<List<String>, String> leamonAutoTransportNameFieldSuggestor;
+	//3.4 end of ghanshyam code 
 
 	public AccountInfoUI() {
 		setTitle("Account info");
@@ -188,6 +200,9 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		txtName.addKeyListener(new AccountInfoKeyListener());
 		txtName.setFont(new Font("DialogInput", Font.PLAIN, 16));
 		txtName.setPrompt("Account Name");
+		//3.4 Ghanshyam code for autoNamesuggestor
+		autoNameSuggestor(txtName);
+		//3.4 end of ghanshyam code
 
 		txtNickName = new JXTextField();
 		txtNickName.setBounds(246, 75, 244, 23);
@@ -212,6 +227,9 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		txtTransport.setFont(new Font("DialogInput", Font.PLAIN, 16));
 		txtTransport.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
 		txtTransport.addKeyListener(new AccountInfoKeyListener());
+		//3.4 Ghanshyam code for autoNamesuggestor
+		autoTransportNameSuggestor(txtTransport);
+		//3.4 end of ghanshyam code
 
 		txtPhone = new JXTextField();
 		txtPhone.setBounds(246, 248, 244, 23);
@@ -1201,4 +1219,44 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		editAction .putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK));
 		return editAction;
 	}
+
+	// 3.4 Ghanshyam code for autoNamesuggestor
+	private void autoNameSuggestor(JTextField txtName) {
+		List<AccountInfo> accountInfos = new ArrayList<>();
+		try {
+			accountInfos = AccountDaoImpl.getInstance().getItemList();
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		leamonAutoAccountIDTextFieldSuggestor 
+		= new LeamonAutoAccountInfoTextFieldSuggestor<List<AccountInfo>, AccountInfo>(txtName, this);
+		leamonAutoAccountIDTextFieldSuggestor.setItems(accountInfos);
+	}
+	
+	private void autoTransportNameSuggestor(JTextField txtTransport) {
+		List<AccountInfo> accountInfos = new ArrayList<>();
+		List<AccountInfo> uniqueAccountInfo=new ArrayList<>();
+		//List<String> transportName=new ArrayList<>();
+		try {
+			accountInfos = AccountDaoImpl.getInstance().getItemList();
+			uniqueAccountInfo= accountInfos.stream().filter(distinctByKey(p -> p.getTransport()))
+					.collect(Collectors.toList());
+			/*transportName = 
+					uniqueAccountInfo.stream()
+				              .map(AccountInfo::getTransport)
+				              .collect(Collectors.toList());*/
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		leamonAutoAccountIDTextFieldSuggestor 
+		= new LeamonAutoAccountInfoTextFieldSuggestor<List<AccountInfo>, AccountInfo>(txtTransport, this);
+		leamonAutoAccountIDTextFieldSuggestor.setItems(uniqueAccountInfo);
+	}
+	
+	public static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
+		Map<Object, Boolean> map = new ConcurrentHashMap<>();
+		return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
+	}
+	
+	//3.4 end of ghanshyam code
 }
