@@ -616,8 +616,6 @@ public class PaymentUI extends JInternalFrame {
 	}
 	
 	private void saveBillingPaymentAdjustment(PaymentReceivedInfo paymentReceivedInfo, TablePaymentReceivedModel model ){
-
-		
 		try{
 			PaymentReceivedDaoImpl.getInstance().save(paymentReceivedInfo);
 			
@@ -633,53 +631,8 @@ public class PaymentUI extends JInternalFrame {
 			List<Double> reminingBillinigBalance = model.getRemainingBillingBalance();
 			
 			boolean isSaved = true;
-			for(int i=0; i<isBAmount.size(); i++ ){
-				if(Boolean.TRUE.equals(isBAmount.get(i))){
-					InvoiceInfo invoiceInfo = invoiceInfos.get(i);
-					double receivedBal = receivedBillAmount.get(i);
-					double remiaingBal = reminingBillinigBalance.get(i);
-					if(remiaingBal == 0){ /*Remianing is zero*/
-						invoiceInfo.setPaidStatus(InvoicePaymentStatusEnum.ALL_CLEAR.name());
-					}else{
-						double invoicePaidBillAmount = 0;
-						try{
-							invoicePaidBillAmount = Double.parseDouble(invoiceInfo.getPaidBillAmount());
-						}catch(Exception exp){
-							LOGGER.error(exp);
-						}
-
-						receivedBal = invoicePaidBillAmount + receivedBal; 
-						invoiceInfo.setPaidStatus(InvoicePaymentStatusEnum.PARTIAL_PAID.name());
-					}
-					invoiceInfo.setRemainingBillAmount(String.valueOf(remiaingBal));
-					invoiceInfo.setPaidBillAmount(String.valueOf(receivedBal));
-					invoiceInfo.setLastUpdated(new Timestamp(System.currentTimeMillis()));
-					try{
-						InvoiceDaoImpl.getInstance().updatePaidBillAmount(invoiceInfo);
-					}catch(Exception exp){
-						LOGGER.error(exp);
-						isSaved = false;
-						JOptionPane.showMessageDialog(this, "Invoice id '"+invoiceInfo.getInvoicNum()+"' "+exp.getMessage(),"Leamon-ERP Error Meesage", JOptionPane.ERROR_MESSAGE);
-						break;
-					}
-					
-					/*saving mapping of payment id with invoice id*/
-					PaymentInvoiceMappingInfo paymentInvoiceMappingInfo = PaymentInvoiceMappingInfo.builder()
-							.paymentReceivedInfo(paymentReceivedInfo.getId())
-							.invoiceInfoID(invoiceInfo.getId())
-							.createdDate(new Timestamp(System.currentTimeMillis()))
-							.lastUpdated(new Timestamp(System.currentTimeMillis()))
-							.isEnable(Boolean.TRUE)
-							.build();
-					try{
-						PaymentInvoiceMappingDaoImpl.getInstance().save(paymentInvoiceMappingInfo);
-					}catch(Exception exp){
-						LOGGER.error(exp);
-					}
-				}else{
-					continue;
-				}
-			}
+			
+			isSaved = saveBillingAdjust(paymentReceivedInfo, invoiceInfos, isSaved, isBAmount, receivedBillAmount, reminingBillinigBalance);
 			
 			if(isSaved){
 				JOptionPane.showMessageDialog(this, "adjustment saved.", "Leamon-ERP Meesage", JOptionPane.PLAIN_MESSAGE);
@@ -694,6 +647,7 @@ public class PaymentUI extends JInternalFrame {
 		}
 	
 	}
+	
 	private void saveWithoutBillingPaymentAdjustment(PaymentReceivedInfo paymentReceivedInfo, TablePaymentReceivedModel model ){
 		
 		try{
@@ -711,53 +665,8 @@ public class PaymentUI extends JInternalFrame {
 			List<Double> reminingWBillinigBalance = model.getRemainingWithOutBillBalance();
 			
 			boolean isSaved = true;
-			for(int i=0; i<isWAmount.size(); i++ ){
-				if(Boolean.TRUE.equals(isWAmount.get(i))){
-					InvoiceInfo invoiceInfo = invoiceInfos.get(i);
-					double receivedBal = receivedWBillAmount.get(i);
-					double remiaingBal = reminingWBillinigBalance.get(i);
-					if(remiaingBal == 0){ /*Remianing is zero*/
-						invoiceInfo.setWpaidstatus(InvoicePaymentStatusEnum.ALL_CLEAR.name());
-					}else{
-						double invoicePaidWBillAmount = 0;
-						try{
-							invoicePaidWBillAmount = Double.parseDouble(invoiceInfo.getPaidWithoutBillAmount());
-						}catch(Exception exp){
-							LOGGER.error(exp);
-						}
-
-						receivedBal = invoicePaidWBillAmount + receivedBal; 
-						invoiceInfo.setWpaidstatus(InvoicePaymentStatusEnum.PARTIAL_PAID.name());
-					}
-					invoiceInfo.setRemainingWithoutBillAmount(String.valueOf(remiaingBal));
-					invoiceInfo.setPaidWithoutBillAmount(String.valueOf(receivedBal));
-					invoiceInfo.setLastUpdated(new Timestamp(System.currentTimeMillis()));
-					try{
-						InvoiceDaoImpl.getInstance().updatePaidWBillAmount(invoiceInfo);
-					}catch(Exception exp){
-						LOGGER.error(exp);
-						isSaved = false;
-						JOptionPane.showMessageDialog(this, "Invoice id '"+invoiceInfo.getInvoicNum()+"' "+exp.getMessage(),"Leamon-ERP Error Meesage", JOptionPane.ERROR_MESSAGE);
-						break;
-					}
-					
-					/*saving mapping of payment id with invoice id*/
-					PaymentInvoiceMappingInfo paymentInvoiceMappingInfo = PaymentInvoiceMappingInfo.builder()
-							.paymentReceivedInfo(paymentReceivedInfo.getId())
-							.invoiceInfoID(invoiceInfo.getId())
-							.createdDate(new Timestamp(System.currentTimeMillis()))
-							.lastUpdated(new Timestamp(System.currentTimeMillis()))
-							.isEnable(Boolean.TRUE)
-							.build();
-					try{
-						PaymentInvoiceMappingDaoImpl.getInstance().save(paymentInvoiceMappingInfo);
-					}catch(Exception exp){
-						LOGGER.error(exp);
-					}
-				}else{
-					continue;
-				}
-			}
+			
+			isSaved = saveWithoutBillAdjust(paymentReceivedInfo, invoiceInfos, isSaved, isWAmount, receivedWBillAmount, reminingWBillinigBalance);
 			
 			if(isSaved){
 				JOptionPane.showMessageDialog(this, "adjustment saved.", "Leamon-ERP Error Meesage", JOptionPane.PLAIN_MESSAGE);
@@ -893,5 +802,203 @@ public class PaymentUI extends JInternalFrame {
 			LOGGER.error(exp);
 		}
 		return openingBalanceInfos;
+	}
+	
+	private boolean saveBillingAdjust(PaymentReceivedInfo paymentReceivedInfo, List<InvoiceInfo> invoiceInfos, boolean isSaved, List<Boolean> isBAmount,
+			List<Double> receivedBillAmount, List<Double> reminingBillinigBalance){
+		for(int i=0; i<isBAmount.size(); i++ ){
+			if(Boolean.TRUE.equals(isBAmount.get(i))){
+				InvoiceInfo invoiceInfo = invoiceInfos.get(i);
+				double receivedBal = receivedBillAmount.get(i);
+				double remiaingBal = reminingBillinigBalance.get(i);
+				
+				if(invoiceInfo.isOpeningBalance() && 
+						invoiceInfo.getOpenigBalanceInfo().getType().equals(ERPEnum.TYPE_PAYMENT_WITH_BILL.name())){
+					
+					OpeningBalanceInfo openingBalanceInfo = invoiceInfo.getOpenigBalanceInfo();
+				
+					if(remiaingBal == 0){ /*Remianing is zero*/
+						openingBalanceInfo.setStatus(InvoicePaymentStatusEnum.ALL_CLEAR.name());
+					}else{
+						double openingBalPaidBillAmount = 0;
+						try{
+							openingBalPaidBillAmount = Double.parseDouble(openingBalanceInfo.getReceivedopeningbalanceamount());
+						}catch(Exception exp){
+							LOGGER.error(exp);
+						}
+
+						receivedBal = openingBalPaidBillAmount + receivedBal;
+						openingBalanceInfo.setStatus(InvoicePaymentStatusEnum.PARTIAL_PAID.name());
+					}
+					openingBalanceInfo.setRemainingopeningbalanceamount(String.valueOf(remiaingBal));
+					openingBalanceInfo.setReceivedopeningbalanceamount(String.valueOf(receivedBal));
+					openingBalanceInfo.setLastUpdated(new Timestamp(System.currentTimeMillis()));
+					try{
+						OpeningBalanceDaoImpl.getInstance().update(openingBalanceInfo);
+					}catch(Exception exp){
+						LOGGER.error(exp);
+						isSaved = false;
+						JOptionPane.showMessageDialog(this, "Invoice id '"+openingBalanceInfo.getBillnumber()+"' "+exp.getMessage(),"Leamon-ERP Error Meesage", JOptionPane.ERROR_MESSAGE);
+						break;
+					}
+					
+					/*saving mapping of payment id with invoice id*/
+					PaymentInvoiceMappingInfo paymentInvoiceMappingInfo = PaymentInvoiceMappingInfo.builder()
+							.paymentReceivedInfo(paymentReceivedInfo.getId())
+							.openingBalanceID(openingBalanceInfo.getId())
+							.createdDate(new Timestamp(System.currentTimeMillis()))
+							.lastUpdated(new Timestamp(System.currentTimeMillis()))
+							.isEnable(Boolean.TRUE)
+							.build();
+					try{
+						PaymentInvoiceMappingDaoImpl.getInstance().save(paymentInvoiceMappingInfo);
+					}catch(Exception exp){
+						LOGGER.error(exp);
+					}
+				}else{
+					if(remiaingBal == 0){ /*Remianing is zero*/
+						invoiceInfo.setPaidStatus(InvoicePaymentStatusEnum.ALL_CLEAR.name());
+					}else{
+						double invoicePaidBillAmount = 0;
+						try{
+							invoicePaidBillAmount = Double.parseDouble(invoiceInfo.getPaidBillAmount());
+						}catch(Exception exp){
+							LOGGER.error(exp);
+						}
+
+						receivedBal = invoicePaidBillAmount + receivedBal; 
+						invoiceInfo.setPaidStatus(InvoicePaymentStatusEnum.PARTIAL_PAID.name());
+					}
+					invoiceInfo.setRemainingBillAmount(String.valueOf(remiaingBal));
+					invoiceInfo.setPaidBillAmount(String.valueOf(receivedBal));
+					invoiceInfo.setLastUpdated(new Timestamp(System.currentTimeMillis()));
+					try{
+						InvoiceDaoImpl.getInstance().updatePaidBillAmount(invoiceInfo);
+					}catch(Exception exp){
+						LOGGER.error(exp);
+						isSaved = false;
+						JOptionPane.showMessageDialog(this, "Invoice id '"+invoiceInfo.getInvoicNum()+"' "+exp.getMessage(),"Leamon-ERP Error Meesage", JOptionPane.ERROR_MESSAGE);
+						break;
+					}
+					
+					/*saving mapping of payment id with invoice id*/
+					PaymentInvoiceMappingInfo paymentInvoiceMappingInfo = PaymentInvoiceMappingInfo.builder()
+							.paymentReceivedInfo(paymentReceivedInfo.getId())
+							.invoiceInfoID(invoiceInfo.getId())
+							.createdDate(new Timestamp(System.currentTimeMillis()))
+							.lastUpdated(new Timestamp(System.currentTimeMillis()))
+							.isEnable(Boolean.TRUE)
+							.build();
+					try{
+						PaymentInvoiceMappingDaoImpl.getInstance().save(paymentInvoiceMappingInfo);
+					}catch(Exception exp){
+						LOGGER.error(exp);
+					}
+				}
+			}else{
+				continue;
+			}
+		}
+		
+		return isSaved;
+	}
+	
+	private boolean saveWithoutBillAdjust(PaymentReceivedInfo paymentReceivedInfo, List<InvoiceInfo> invoiceInfos, boolean isSaved, List<Boolean> isWAmount, List<Double> receivedWBillAmount, List<Double> reminingWBillinigBalance){
+		
+		for(int i=0; i<isWAmount.size(); i++ ){
+			if(Boolean.TRUE.equals(isWAmount.get(i))){
+				InvoiceInfo invoiceInfo = invoiceInfos.get(i);
+				double receivedBal = receivedWBillAmount.get(i);
+				double remiaingBal = reminingWBillinigBalance.get(i);
+				
+				if(invoiceInfo.isOpeningBalance() 
+						&& invoiceInfo.getOpenigBalanceInfo().getType().equals(ERPEnum.TYPE_PAYMENT_WITHOUT_BILL.name())){
+					OpeningBalanceInfo openingBalanceInfo = invoiceInfo.getOpenigBalanceInfo();
+					if(remiaingBal == 0){ /*Remianing is zero*/
+						openingBalanceInfo.setStatus(InvoicePaymentStatusEnum.ALL_CLEAR.name());
+					}else{
+						double OpeningBalPaidWBillAmount = 0;
+						try{
+							OpeningBalPaidWBillAmount = Double.parseDouble(openingBalanceInfo.getReceivedopeningbalanceamount());
+						}catch(Exception exp){
+							LOGGER.error(exp);
+						}
+
+						receivedBal = OpeningBalPaidWBillAmount + receivedBal;
+						openingBalanceInfo.setStatus(InvoicePaymentStatusEnum.PARTIAL_PAID.name());
+					}
+					openingBalanceInfo.setRemainingopeningbalanceamount(String.valueOf(remiaingBal));
+					openingBalanceInfo.setReceivedopeningbalanceamount(String.valueOf(receivedBal));
+					openingBalanceInfo.setLastUpdated(new Timestamp(System.currentTimeMillis()));
+					try{
+						//InvoiceDaoImpl.getInstance().updatePaidWBillAmount(invoiceInfo);
+						OpeningBalanceDaoImpl.getInstance().update(openingBalanceInfo);
+					}catch(Exception exp){
+						LOGGER.error(exp);
+						isSaved = false;
+						JOptionPane.showMessageDialog(this, "Invoice id '"+openingBalanceInfo.getBillnumber()+"' "+exp.getMessage(),"Leamon-ERP Error Meesage", JOptionPane.ERROR_MESSAGE);
+						break;
+					}
+					
+					/*saving mapping of payment id with invoice id*/
+					PaymentInvoiceMappingInfo paymentInvoiceMappingInfo = PaymentInvoiceMappingInfo.builder()
+							.paymentReceivedInfo(paymentReceivedInfo.getId())
+							.openingBalanceID(openingBalanceInfo.getId())
+							.createdDate(new Timestamp(System.currentTimeMillis()))
+							.lastUpdated(new Timestamp(System.currentTimeMillis()))
+							.isEnable(Boolean.TRUE)
+							.build();
+					try{
+						PaymentInvoiceMappingDaoImpl.getInstance().save(paymentInvoiceMappingInfo);
+					}catch(Exception exp){
+						LOGGER.error(exp);
+					}
+				
+				}else{
+					if(remiaingBal == 0){ /*Remianing is zero*/
+						invoiceInfo.setWpaidstatus(InvoicePaymentStatusEnum.ALL_CLEAR.name());
+					}else{
+						double invoicePaidWBillAmount = 0;
+						try{
+							invoicePaidWBillAmount = Double.parseDouble(invoiceInfo.getPaidWithoutBillAmount());
+						}catch(Exception exp){
+							LOGGER.error(exp);
+						}
+
+						receivedBal = invoicePaidWBillAmount + receivedBal; 
+						invoiceInfo.setWpaidstatus(InvoicePaymentStatusEnum.PARTIAL_PAID.name());
+					}
+					invoiceInfo.setRemainingWithoutBillAmount(String.valueOf(remiaingBal));
+					invoiceInfo.setPaidWithoutBillAmount(String.valueOf(receivedBal));
+					invoiceInfo.setLastUpdated(new Timestamp(System.currentTimeMillis()));
+					try{
+						InvoiceDaoImpl.getInstance().updatePaidWBillAmount(invoiceInfo);
+					}catch(Exception exp){
+						LOGGER.error(exp);
+						isSaved = false;
+						JOptionPane.showMessageDialog(this, "Invoice id '"+invoiceInfo.getInvoicNum()+"' "+exp.getMessage(),"Leamon-ERP Error Meesage", JOptionPane.ERROR_MESSAGE);
+						break;
+					}
+					
+					/*saving mapping of payment id with invoice id*/
+					PaymentInvoiceMappingInfo paymentInvoiceMappingInfo = PaymentInvoiceMappingInfo.builder()
+							.paymentReceivedInfo(paymentReceivedInfo.getId())
+							.invoiceInfoID(invoiceInfo.getId())
+							.createdDate(new Timestamp(System.currentTimeMillis()))
+							.lastUpdated(new Timestamp(System.currentTimeMillis()))
+							.isEnable(Boolean.TRUE)
+							.build();
+					try{
+						PaymentInvoiceMappingDaoImpl.getInstance().save(paymentInvoiceMappingInfo);
+					}catch(Exception exp){
+						LOGGER.error(exp);
+					}
+				}
+			}else{
+				continue;
+			}
+		}
+		
+		return isSaved;
 	}
 }
