@@ -51,6 +51,7 @@ import leamon.erp.db.OpeningBalanceDaoImpl;
 import leamon.erp.model.AccountInfo;
 import leamon.erp.model.InvoiceInfo;
 import leamon.erp.model.OpeningBalanceInfo;
+import leamon.erp.ui.custom.PaymentReceivedSummaryTableCellRenderer;
 import leamon.erp.ui.event.MouseClickHandler;
 import leamon.erp.ui.model.GenericModelWithSnp;
 import leamon.erp.ui.model.TablePaymentReceivedSummaryModel;
@@ -221,6 +222,9 @@ public class PaymentReceivedSummaryUI extends JInternalFrame {
 		table.setColumnControlVisible(true);
 		table.packAll();
 		scrollPane.setViewportView(table);
+		/*Release 3.5*/
+		table.setDefaultRenderer(Object.class, new PaymentReceivedSummaryTableCellRenderer());
+		/*End*/
 		table.addMouseListener(new MouseClickHandler());
 		
 
@@ -630,6 +634,7 @@ public class PaymentReceivedSummaryUI extends JInternalFrame {
 						table.getColumnExt(LeamonERPConstants.TABLE_HEADER_W_AMOUNT).setVisible(false);
 						table.getColumnExt(LeamonERPConstants.TABLE_HEADER_W_STATUS).setVisible(false);
 						table.getColumnExt(LeamonERPConstants.TABLE_HEADER_G_TOTAL).setVisible(false);
+						table.setDefaultRenderer(Object.class, new PaymentReceivedSummaryTableCellRenderer());
 					}else{
 						/*setModel(invoiceInfos);*/ isSetModel = true;
 						clearAmountField();
@@ -907,6 +912,8 @@ public class PaymentReceivedSummaryUI extends JInternalFrame {
 		table.setModel(tablePaymentReceivedSummaryModel);
 		setAmountAlignment(table);//3.5 Ghanshyam code for amount alignment
 		table.packAll();
+		table.setDefaultRenderer(Object.class, new PaymentReceivedSummaryTableCellRenderer());
+		
 	}
 	private void btnSearchClick(ActionEvent e){
 		search();
