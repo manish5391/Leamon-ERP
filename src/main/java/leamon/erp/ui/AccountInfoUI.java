@@ -69,6 +69,7 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 
 	private JXDatePicker txtEngageDate;
 	private JXTextField txtPhone;
+	private JXTextField txtAlternatePhone;//3.5 Ghanshyam code to add alternate number
 	private JXTextField txtName;
 	private JXTextField txtHouseShopNum;
 	private JXTextField txtStreet;
@@ -223,12 +224,22 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		txtTransport.addKeyListener(new AccountInfoKeyListener());
 
 		txtPhone = new JXTextField();
-		txtPhone.setBounds(246, 248, 244, 23);
+		txtPhone.setBounds(246, 248, 120, 23);//3.5 Ghanshyam code to decrease width of phone number
 		txtPhone.setPrompt("Phone Number");
 		txtPhone.setName(LeamonERPConstants.TEXTFIELD_ACCOUNT_PHONE);
 		txtPhone.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
 		txtPhone.addKeyListener(new AccountInfoKeyListener());
 		txtPhone.setFont(new Font("DialogInput", Font.PLAIN, 16));
+
+		// 3.5 Ghanshyam code to add alternate number
+		txtAlternatePhone = new JXTextField();
+		txtAlternatePhone.setBounds(390, 248, 130, 23);// ghan code
+		txtAlternatePhone.setPrompt("Alternate No.");
+		txtAlternatePhone.setName(LeamonERPConstants.TEXTFIELD_ACCOUNT_ALTERNATE_PHONE);
+		txtAlternatePhone.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
+		txtAlternatePhone.addKeyListener(new AccountInfoKeyListener());
+		txtAlternatePhone.setFont(new Font("DialogInput", Font.PLAIN, 16));
+		// end of Ghanshyam code
 
 		txtHouseShopNum = new JXTextField();
 		txtHouseShopNum.setBounds(246, 283, 244, 23);
@@ -477,6 +488,7 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		pnlStock.add(lblTransportName);
 		pnlStock.add(txtTransport);
 		pnlStock.add(txtPhone);
+		pnlStock.add(txtAlternatePhone);//3.5 Ghanshyam code to add alternate phone number
 		pnlStock.add(btnClear);
 		pnlStock.add(btnEdit);
 		pnlStock.add(btnSave);
@@ -580,6 +592,8 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 					}else if(source!=null && source.getName()!=null && source.getName().equals(LeamonERPConstants.TEXTFIELD_ACCOUNT_GST)){
 						txtPhone.requestFocus();
 					}else if(source!=null && source.getName()!=null && source.getName().equals(LeamonERPConstants.TEXTFIELD_ACCOUNT_PHONE)){
+						txtAlternatePhone.requestFocus();
+					}else if(source!=null && source.getName()!=null && source.getName().equals(LeamonERPConstants.TEXTFIELD_ACCOUNT_ALTERNATE_PHONE)){
 						txtHouseShopNum.requestFocus();
 					}
 					else if(source!=null && source.getName()!=null && source.getName().equals(LeamonERPConstants.TEXTFIELD_ACCOUNT_HOUSE)){
@@ -706,6 +720,7 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		String state = ((JTextField)comboBoxState.getEditor().getEditorComponent()).getText();
 
 		String phone = txtPhone.getText();
+		String alternatePhone=txtAlternatePhone.getText();//3.5 Ghanshyam code to alternate number
 		String houseNum = txtHouseShopNum.getText();
 		String street = txtStreet.getText();
 
@@ -749,16 +764,25 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		AccountInfo accountInfo =AccountInfo.builder().build();
 
 		BigInteger bigPhone;
+		BigInteger bigAlternatePhone;//ghan code
 		try{
 			bigPhone = new BigInteger(phone);
+			//ghan code
+			if(!Strings.isNullOrEmpty(alternatePhone)) {
+				bigAlternatePhone= new BigInteger(alternatePhone);
+			}else {
+				bigAlternatePhone =new BigInteger("0");
+			}
+			//end ghan code
 		}catch(Exception e){
 			LOGGER.error(e);
 			bigPhone = new BigInteger("0");
+			bigAlternatePhone =new BigInteger("0");//ghan code
 		}
 
 		try{
 			accountInfo = AccountInfo.builder().name(name).nickName(nickName).gstNumber(tinGST).transport(transport).
-					phone(bigPhone).houseShopNumber(houseNum)
+					phone(bigPhone).alternatePhone(bigAlternatePhone).houseShopNumber(houseNum)
 					.street(street).city(city).state(state).country(country).landMark(landMark)
 					.engagedDate(new Timestamp(txtEngageDate.getDate().getTime())).panCard(pan).licence(licence)
 					.createdDate(new Timestamp(System.currentTimeMillis())).description(description)
@@ -840,6 +864,7 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		String tinGST = txtGSTNumber.getText();
 		String transport = txtTransport.getText();
 		String phone = txtPhone.getText();
+		String alternatePhone=txtAlternatePhone.getText();//3.5 Ghanshyam code to alternate number
 		String houseNum = txtHouseShopNum.getText();
 		String street = txtStreet.getText();
 		String city = ((JTextField)comboBoxCity.getEditor().getEditorComponent()).getText();
@@ -876,16 +901,25 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		AccountInfo accountInfo = AccountInfo.builder().build();
 
 		BigInteger bigPhone;
+		BigInteger bigAlternatePhone;//ghan code
 		try{
 			bigPhone = new BigInteger(phone);
+			//ghan code
+			if(!Strings.isNullOrEmpty(alternatePhone)) {
+				bigAlternatePhone= new BigInteger(alternatePhone);
+			}else {
+				bigAlternatePhone =new BigInteger("0");
+			}
+			//end ghan code
 		}catch(Exception e){
 			LOGGER.error(e);
 			bigPhone = new BigInteger("0");
+			bigAlternatePhone =new BigInteger("0");
 		}
 		
 		try{
 			accountInfo = AccountInfo.builder().name(name).nickName(nickName).gstNumber(tinGST).transport(transport).
-					phone(bigPhone).houseShopNumber(houseNum)
+					phone(bigPhone).alternatePhone(bigAlternatePhone).houseShopNumber(houseNum)
 					.street(street).city(city).state(state).country(country).landMark(landMark)
 					.engagedDate(new Timestamp(txtEngageDate.getDate().getTime())).panCard(pan).licence(licence)
 					.createdDate(new Timestamp(System.currentTimeMillis())).description(description)
@@ -979,6 +1013,7 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		txtGSTNumber.setText(si.getGstNumber());
 		txtTransport.setText(si.getTransport());
 		txtPhone.setText(""+si.getPhone());
+		txtAlternatePhone.setText(""+si.getAlternatePhone());//3.5 Ghanshyam code to alternate number
 		txtHouseShopNum.setText(si.getHouseShopNumber());
 		txtStreet.setText(si.getStreet());
 		fmtTxtPinCode.setText(""+si.getPinCode());
@@ -1103,6 +1138,7 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 
 	private void registerFocusEvent(){
 		txtPhone.addFocusListener(new FocusListenerHandler());
+		txtAlternatePhone.addFocusListener(new FocusListenerHandler());//3.5 Ghanshyam code to alternate number
 		txtName.addFocusListener(new FocusListenerHandler());
 		txtHouseShopNum.addFocusListener(new FocusListenerHandler());
 		txtStreet.addFocusListener(new FocusListenerHandler());
@@ -1127,6 +1163,7 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		txtGSTNumber.setText(LeamonERPConstants.EMPTY_STR);
 		txtTransport.setText(LeamonERPConstants.EMPTY_STR);
 		txtPhone.setText(LeamonERPConstants.EMPTY_STR);
+		txtAlternatePhone.setText(LeamonERPConstants.EMPTY_STR);//3.5 Ghanshyam code to alternate number
 		txtHouseShopNum.setText(LeamonERPConstants.EMPTY_STR);
 		txtStreet.setText(LeamonERPConstants.EMPTY_STR);
 		((JTextField)comboBoxCity.getEditor().getEditorComponent()).setText(LeamonERPConstants.EMPTY_STR);

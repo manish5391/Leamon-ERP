@@ -30,6 +30,7 @@ public class AccountInfo implements Serializable, Comparable<AccountInfo> {
 	private Integer id;
 	public String name;
 	private BigInteger phone;
+	private BigInteger alternatePhone;//ghan code
 	private String houseShopNumber;
 	private String street;
 	private String city;

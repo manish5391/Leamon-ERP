@@ -19,12 +19,12 @@ public interface AccountMapper {
 	final String getAll = "SELECT * FROM ACCOUNT_INFO WHERE ISENABLE = TRUE"; 
 	final String getById = "SELECT * FROM ACCOUNT_INFO WHERE ID = #{id}";
 	
-	final String insert = "INSERT INTO ACCOUNT_INFO (NAME, NICKNAME, GST_TIN_NUMBER, TRANSPORT, PHONE, HOUSENUBER, STREET, CITY, STATE, PINCODE, COUNTRY, LANDMARK, "
+	final String insert = "INSERT INTO ACCOUNT_INFO (NAME, NICKNAME, GST_TIN_NUMBER, TRANSPORT, PHONE, ALTERNATE_PHONE, HOUSENUBER, STREET, CITY, STATE, PINCODE, COUNTRY, LANDMARK, "
 							+ " ENGAGEDATE, PAN, LICENCE, DESCRIPTION, IMAGEPATH, CREATEDDATE, LASTUPDATED, ISENABLE) "
-						+ "VALUES (#{name}, #{nickName}, #{gstNumber}, #{transport}, #{phone}, #{houseShopNumber}, #{street}, #{city}, #{state}, #{pinCode}, #{country}, "
+						+ "VALUES (#{name}, #{nickName}, #{gstNumber}, #{transport}, #{phone}, #{alternatePhone}, #{houseShopNumber}, #{street}, #{city}, #{state}, #{pinCode}, #{country}, "
 						+ "#{landMark}, #{engagedDate}, #{panCard}, #{licence}, #{description}, #{imagePath}, #{createdDate}, #{lastUpdated}, #{isEnable})";
 	
-	final String update = "UPDATE ACCOUNT_INFO SET NAME = #{name}, NICKNAME = #{nickName}, GST_TIN_NUMBER = #{gstNumber}, TRANSPORT = #{transport},  PHONE = #{phone}, HOUSENUBER = #{houseShopNumber}, STREET = #{street}, "
+	final String update = "UPDATE ACCOUNT_INFO SET NAME = #{name}, NICKNAME = #{nickName}, GST_TIN_NUMBER = #{gstNumber}, TRANSPORT = #{transport},  PHONE = #{phone}, ALTERNATE_PHONE= #{alternatePhone}, HOUSENUBER = #{houseShopNumber}, STREET = #{street}, "
 						+ "CITY = #{city}, STATE = #{state}, PINCODE = #{pinCode}, "
 						+ "COUNTRY = #{country}, LANDMARK = #{landMark}, ENGAGEDATE = #{engagedDate}, "
 						+ "PAN = #{panCard}, LICENCE = #{licence}, DESCRIPTION = #{description}, IMAGEPATH = #{imagePath}, "
@@ -45,6 +45,7 @@ public interface AccountMapper {
 	      @Result(property = "gstNumber", column = "GST_TIN_NUMBER"),
 	      @Result(property = "transport", column = "TRANSPORT"),
 	      @Result(property = "phone", column = "PHONE"),
+	      @Result(property = "alternatePhone", column = "ALTERNATE_PHONE"),
 	      @Result(property = "houseShopNumber", column = "HOUSENUBER"),
 	      @Result(property = "street", column = "STREET"),
 	      @Result(property = "city", column = "CITY"),

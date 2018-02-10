@@ -37,11 +37,14 @@ import org.jdesktop.swingx.JXTable;
 
 import leamon.erp.db.StockDaoImpl;
 import leamon.erp.model.StockItem;
+import leamon.erp.report.factory.InvoicePrintFactory;
+import leamon.erp.report.factory.StockItemListFactory;
 import leamon.erp.ui.event.FocusEventHandler;
 import leamon.erp.ui.event.KeyListenerHandler;
 import leamon.erp.ui.event.MouseClickHandler;
 import leamon.erp.ui.model.TableStockListItemModel;
 import leamon.erp.util.LeamonERPConstants;
+import leamon.erp.report.factory.InvoicePrintFactory;
 import lombok.Getter;
 /**
  * @author Manish Kumar Mishra
@@ -152,7 +155,14 @@ public class StockItemListManager extends JInternalFrame implements ActionListen
 		btnDelete.setActionCommand(LeamonERPConstants.BUTTON_ACTION_DELETE_STOCK_ITEM);
 		btnDelete.addActionListener(this);
 		
-		
+		// 3.5 Ghanshyam code for print button
+		JButton btnPrint = new JButton();
+		btnPrint.setBackground(Color.WHITE);
+		btnPrint.setIcon(
+				new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_PRINT_BUTTON)));
+		btnPrint.setActionCommand(LeamonERPConstants.BUTTON_ACTION_PRINT_STOCK_ITEM);
+		btnPrint.addActionListener(this);
+		// 3.5 end of ghanshyam code
 		//textSearchField = new JTextField();
 		textSearchField = new JXSearchField("Search");
 		textSearchField.setFont(new Font("Courier New", Font.BOLD, 36));
@@ -179,6 +189,8 @@ public class StockItemListManager extends JInternalFrame implements ActionListen
 					.addGap(28)
 					.addComponent(btnDelete)
 					.addGap(36)
+					.addComponent(btnPrint)
+					.addGap(28)
 					.addComponent(textSearchField, GroupLayout.PREFERRED_SIZE, 243, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(hprlnkAddStockQuantity, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
@@ -192,6 +204,7 @@ public class StockItemListManager extends JInternalFrame implements ActionListen
 						.addComponent(btnedit)
 						.addComponent(btnView)
 						.addComponent(btnDelete)
+						.addComponent(btnPrint)
 						.addComponent(textSearchField, GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)
 						.addGroup(gl_panel.createSequentialGroup()
 							.addContainerGap()
@@ -228,6 +241,8 @@ public class StockItemListManager extends JInternalFrame implements ActionListen
 				LOGGER.debug("StockItemList[actionPerformed] action command ["+LeamonERPConstants.BUTTON_ACTION_EDIT_STOCK_ITEM+"] inside");
 				viewStockItem(LeamonERPConstants.BUTTON_ACTION_EDIT_STOCK_ITEM);
 				LOGGER.debug("StockItemList[actionPerformed] action command ["+LeamonERPConstants.BUTTON_ACTION_EDIT_STOCK_ITEM+"] end");
+			}else if(btn.getActionCommand()!=null && btn.getActionCommand().equals(LeamonERPConstants.BUTTON_ACTION_PRINT_STOCK_ITEM)){
+				print();
 			}
 		}// end source button 
 		else if (e.getSource() instanceof JMenuItem){  
@@ -463,4 +478,10 @@ public class StockItemListManager extends JInternalFrame implements ActionListen
 		columnModel.getColumn(5).setCellRenderer(dtcr);
 	}
 	// 3.4 end of ghanshyam code
+	// 3.5 ghanshyam code for print
+	private void print() {
+		StockItemListFactory stockItemListFactory = new StockItemListFactory(this);
+		stockItemListFactory.print();
+	}
+	// 3.5 end of ghanshyam code for print
 }

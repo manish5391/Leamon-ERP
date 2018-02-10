@@ -12,6 +12,7 @@ public enum ERPEnum {
 	/*Leamon-Property*/
 	REPORTTD("REPORTTD"),
 	REPORTWITHOUTD("REPORTWITHOUTD"),
+	STOCKITEMLIST("STOCKITEMLIST")
 	;
 	
 	

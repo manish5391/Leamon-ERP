@@ -21,6 +21,7 @@ public interface LeamonERPConstants {
 	public static final String IMG_SAVE_BUTTON="save_button.png";
 	public static final String IMG_EDIT_BUTTON="edit_button.png";
 	public static final String IMG_DELETE_BUTTON="delete_button.png";
+	public static final String IMG_PRINT_BUTTON="print_button.png";//3.5 ghanshyam code for print stcok item
 	public static final String IMG_ADD_BUTTON="add_button.png";
 	public static final String IMG_SAVE_BTN="save_btn.png";
 	public static final String IMG_CLEAR_BUTTON = "clear_button.png";
@@ -71,6 +72,7 @@ public interface LeamonERPConstants {
 	
 	public static String BUTTON_ACTION_ADD_STOCK_ITEM="AddStockItem";
 	public static String BUTTON_ACTION_DELETE_STOCK_ITEM="DeleteStockItem";
+	public static String BUTTON_ACTION_PRINT_STOCK_ITEM="PrintStockItem";//3.5 ghanshyam code for print stcok item
 	public static String BUTTON_ACTION_VIEW_STOCK_ITEM="ViewStockItem";
 	public static String BUTTON_ACTION_EDIT_STOCK_ITEM="EditStockItem";
 	public static String BUTTON_ACTION_UPLOAD_IMAGE_STOCK_ITEM="UploadImage";
@@ -107,6 +109,7 @@ public interface LeamonERPConstants {
 
 	/*Account info*/
 	String TEXTFIELD_ACCOUNT_PHONE="txtAccountPhone";
+	String TEXTFIELD_ACCOUNT_ALTERNATE_PHONE="txtAccountAlternatePhone";//ghan code
 	String TEXTFIELD_ACCOUNT_NAME="txtAccountName";
 	String TEXTFIELD_ACCOUNT_NICK_NAME="txtAccountNickName";
 	String TEXTFIELD_ACCOUNT_GST="txtAccountGST";

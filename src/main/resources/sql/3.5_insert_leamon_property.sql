@@ -1,0 +1,2 @@
+INSERT INTO LEAMON_PROPERTY (PROPERTYNAME, PROPERTYVALUE, DESCRIPTION) 
+VALUES('STOCKITEMLIST','F:\LeamonERP\leamon_ERP\report\Blank_A4_stock_list.jrxml','Report url. This report will print stock item list');
