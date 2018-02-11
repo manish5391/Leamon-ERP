@@ -39,6 +39,7 @@ import leamon.erp.db.StockDaoImpl;
 import leamon.erp.model.StockItem;
 import leamon.erp.report.factory.InvoicePrintFactory;
 import leamon.erp.report.factory.StockItemListFactory;
+import leamon.erp.ui.custom.StockItemListColorRenderer;
 import leamon.erp.ui.event.FocusEventHandler;
 import leamon.erp.ui.event.KeyListenerHandler;
 import leamon.erp.ui.event.MouseClickHandler;
@@ -86,6 +87,7 @@ public class StockItemListManager extends JInternalFrame implements ActionListen
 		tblStockList.setAutoCreateRowSorter(true);
 		tblStockList.setColumnControlVisible(true);
 		tblStockList.packAll();
+		tblStockList.setDefaultRenderer(Object.class, new StockItemListColorRenderer());//3.5 ghan code
 		// 3.4 ghanshyam code for stock alignment
 		setStockAlignment(tblStockList);
 		// 3.4 end of ghanshyam code
@@ -374,6 +376,7 @@ public class StockItemListManager extends JInternalFrame implements ActionListen
 	 	LOGGER.debug("Reloading stockitems ["+stockItems.size()+"]");
 	 	model.setStockItems(stockItems);
 	 	tblStockList.setModel(model);
+	 	tblStockList.setDefaultRenderer(Object.class, new StockItemListColorRenderer());//3.5 ghan code
 	 	LOGGER.info(" Successfully disabled stock items ");
 	 	((AbstractTableModel)tblStockList.getModel()).fireTableDataChanged();
 		tblStockList.repaint();
@@ -411,6 +414,7 @@ public class StockItemListManager extends JInternalFrame implements ActionListen
 		TableStockListItemModel model  = (TableStockListItemModel)tblStockList.getModel();
 		model.setStockItems(stockItems);
 	 	tblStockList.setModel(model);
+	 	tblStockList.setDefaultRenderer(Object.class, new StockItemListColorRenderer());//3.5 ghan code
 	 	((AbstractTableModel)tblStockList.getModel()).fireTableDataChanged();
 		tblStockList.repaint();
 		//SwingUtilities.updateComponentTreeUI(this);
