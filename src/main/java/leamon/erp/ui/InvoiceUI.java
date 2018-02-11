@@ -182,14 +182,14 @@ public class InvoiceUI extends JInternalFrame {
 		setMaximizable(true);
 		setClosable(true);
 		setIconifiable(true);
-		setBounds(100, 5, 1059, 705);
+		setBounds(3, 30, 1059, 660);
 
 		JPanel panel = new JPanel();
-		panel.setBounds(0, 275, 1050, 405);
+		panel.setBounds(0, 230, 1050, 405);
 		panel.setBackground(Color.WHITE);
 
 		JXPanel panel_6 = new JXPanel();
-		panel_6.setBounds(0, 348, 1050, 57);
+		panel_6.setBounds(0, 348, 1050, 46);
 		panel_6.setBorder(new LineBorder(new Color(0, 0, 0), 2, true));
 		panel_6.setBackground(new Color(255, 245, 238));
 
@@ -199,14 +199,14 @@ public class InvoiceUI extends JInternalFrame {
 
 		btnAdd = new JXButton();
 		btnAdd.addActionListener(e -> btnAddClick(e));
-		btnAdd.setBounds(20, 13, 98, 27);
+		btnAdd.setBounds(20, 8, 98, 27);
 		btnAdd.setText("Add New");
 		btnAdd.setMnemonic(KeyEvent.VK_N);
 		btnAdd.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK), "Add");
 		btnAdd.getActionMap().put("Add", getAddAction());
 
 		btnUpdate = new JXButton();
-		btnUpdate.setBounds(124, 13, 98, 27);
+		btnUpdate.setBounds(124, 8, 98, 27);
 		btnUpdate.setText("Update");
 		btnUpdate.setMnemonic(KeyEvent.VK_U);
 		btnUpdate.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_U, KeyEvent.CTRL_DOWN_MASK), "Update");
@@ -214,7 +214,7 @@ public class InvoiceUI extends JInternalFrame {
 		btnUpdate.addActionListener(e -> btnUpdateClick(e));
 
 		btnDelete = new JXButton();
-		btnDelete.setBounds(232, 13, 98, 27);
+		btnDelete.setBounds(232, 8, 98, 27);
 		btnDelete.setText("Delete");
 		btnDelete.addActionListener(e -> btnDeleteClick(e));
 		btnDelete.setMnemonic(KeyEvent.VK_D);
@@ -226,7 +226,7 @@ public class InvoiceUI extends JInternalFrame {
 		comboBoxPrintCopiess.setBounds(502, 13, 89, 22);
 
 		btnPrint = new JXButton();
-		btnPrint.setBounds(597, 13, 98, 27);
+		btnPrint.setBounds(597, 8, 98, 27);
 		btnPrint.setText("Print");
 		btnPrint.addActionListener(e -> btnPrintClick(e));
 		btnPrint.setMnemonic(KeyEvent.VK_P);
@@ -234,7 +234,7 @@ public class InvoiceUI extends JInternalFrame {
 		btnPrint.getActionMap().put("Print", getPrintAction());
 
 		btnSave = new JXButton();
-		btnSave.setBounds(705, 13, 98, 27);
+		btnSave.setBounds(705, 8, 98, 27);
 		btnSave.addActionListener(e -> btnSaveClickHandler(e));
 		btnSave.setText("Save");
 		btnSave.setMnemonic(KeyEvent.VK_S);
@@ -243,7 +243,7 @@ public class InvoiceUI extends JInternalFrame {
 
 
 		btnRefresh = new JXButton();
-		btnRefresh.setBounds(813, 13, 98, 27);
+		btnRefresh.setBounds(813, 8, 98, 27);
 		btnRefresh.setText("Refresh");
 		btnRefresh.setMnemonic(KeyEvent.VK_R);
 		btnRefresh.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK), "Refresh");
@@ -251,7 +251,7 @@ public class InvoiceUI extends JInternalFrame {
 		btnRefresh.addActionListener(e -> btnRefreshClickHandler(e));
 
 		btnClose = new JXButton();
-		btnClose.setBounds(921, 13, 98, 27);
+		btnClose.setBounds(921, 8, 98, 27);
 		btnClose.addActionListener(e -> btnCloseClick(e));
 		btnClose.setText("Close");
 
@@ -304,7 +304,7 @@ public class InvoiceUI extends JInternalFrame {
 		panel_3.setBackground(Color.WHITE);
 
 		JXPanel panel_4 = new JXPanel();
-		panel_4.setBounds(0, 36, 1050, 182);
+		panel_4.setBounds(0, 36, 1050, 146);
 		panel_4.setBorder(new LineBorder(Color.DARK_GRAY));
 		panel_4.setBackground(new Color(238, 232, 170));
 
@@ -350,30 +350,30 @@ public class InvoiceUI extends JInternalFrame {
 		lblPartyName.setFont(new Font("Trebuchet MS", Font.BOLD, 13));
 
 		scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(395, 33, 303, 76);
+		scrollPane_1.setBounds(395, 33, 303, 57);
 		scrollPane_1.setViewportBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 
 		JXLabel lblState = new JXLabel();
-		lblState.setBounds(314, 110, 39, 25);
+		lblState.setBounds(314, 93, 39, 25);
 		lblState.setText("State");
 		lblState.setForeground(new Color(0, 0, 0));
 		lblState.setFont(new Font("Trebuchet MS", Font.BOLD, 13));
 
 		textFieldPartyState = new JXTextField();
-		textFieldPartyState.setBounds(395, 112, 136, 23);
+		textFieldPartyState.setBounds(395, 93, 136, 23);
 		textFieldPartyState.setPrompt("State");
 		textFieldPartyState.setName("txtInventoryAccountName");
 		textFieldPartyState.setFont(new Font("DialogInput", Font.PLAIN, 16));
 		textFieldPartyState.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
 
 		JXLabel lblCode = new JXLabel();
-		lblCode.setBounds(541, 110, 39, 25);
+		lblCode.setBounds(541, 93, 39, 25);
 		lblCode.setText("Code");
 		lblCode.setForeground(new Color(0, 0, 0));
 		lblCode.setFont(new Font("Trebuchet MS", Font.BOLD, 13));
 
 		textFieldStateCode = new JXTextField();
-		textFieldStateCode.setBounds(574, 110, 39, 23);
+		textFieldStateCode.setBounds(574, 93, 39, 23);
 		textFieldStateCode.setPrompt("Code");
 		textFieldStateCode.setName("txtInventoryAccountName");
 		textFieldStateCode.setFont(new Font("DialogInput", Font.PLAIN, 16));
@@ -384,37 +384,37 @@ public class InvoiceUI extends JInternalFrame {
 		textFieldStateAbbr.setName("txtInventoryAccountName");
 		textFieldStateAbbr.setFont(new Font("DialogInput", Font.PLAIN, 16));
 		textFieldStateAbbr.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
-		textFieldStateAbbr.setBounds(656, 110, 39, 23);
+		textFieldStateAbbr.setBounds(656, 93, 39, 23);
 		panel_4.add(textFieldStateAbbr);
 
 		JXLabel lblGst = new JXLabel();
-		lblGst.setBounds(314, 146, 49, 25);
+		lblGst.setBounds(314, 120, 49, 25);
 		lblGst.setText("GST No.");
 		lblGst.setForeground(new Color(0, 0, 0));
 		lblGst.setFont(new Font("Trebuchet MS", Font.BOLD, 13));
 
 		textFieldPartyGST = new JXTextField();
-		textFieldPartyGST.setBounds(395, 146, 136, 23);
+		textFieldPartyGST.setBounds(395, 120, 136, 23);
 		textFieldPartyGST.setPrompt("GST No.");
 		textFieldPartyGST.setName("txtInventoryAccountName");
 		textFieldPartyGST.setFont(new Font("DialogInput", Font.PLAIN, 16));
 		textFieldPartyGST.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
 
 		JXLabel lblMob = new JXLabel();
-		lblMob.setBounds(543, 146, 30, 25);
+		lblMob.setBounds(543, 120, 30, 25);
 		lblMob.setText("Mob.");
 		lblMob.setForeground(new Color(0, 0, 0));
 		lblMob.setFont(new Font("Trebuchet MS", Font.BOLD, 13));
 
 		textFieldPartyMobile = new JXTextField();
-		textFieldPartyMobile.setBounds(574, 146, 124, 23);
+		textFieldPartyMobile.setBounds(574, 120, 124, 23);
 		textFieldPartyMobile.setPrompt("Mobile");
 		textFieldPartyMobile.setName("txtInventoryAccountName");
 		textFieldPartyMobile.setFont(new Font("DialogInput", Font.PLAIN, 16));
 		textFieldPartyMobile.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
 
 		JPanel panel_2 = new JPanel();
-		panel_2.setBounds(757, 125, 277, 46);
+		panel_2.setBounds(757, 90, 277, 46);
 		panel_2.setBackground(new Color(255, 250, 250));
 
 		textFieldPartyTransportList = new JXTextField();
@@ -471,14 +471,14 @@ public class InvoiceUI extends JInternalFrame {
 		textFieldInvoicenumList.setBounds(78, 8, 121, 23);
 		textFieldInvoicenumList.setPrompt("Invoice No.");
 		textFieldInvoicenumList.setName("txtInventoryAccountName");
-		textFieldInvoicenumList.setFont(new Font("DialogInput", Font.PLAIN, 16));
+		textFieldInvoicenumList.setFont(new Font("DialogInput", Font.PLAIN, 14));
 		textFieldInvoicenumList.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
 		/*Auto populating invoice list*/
 		autoInvoiceIdSuggestor(textFieldInvoicenumList);
 
 		JXLabel lblInvoice = new JXLabel();
 		lblInvoice.setBounds(980, 8, 60, 21);
-		lblInvoice.setFont(new Font("Trebuchet MS", Font.BOLD, 18));
+		lblInvoice.setFont(new Font("Trebuchet MS", Font.BOLD, 14));
 		lblInvoice.setText("Invoice");
 
 		JLabel lblInvoiceNo_1 = new JLabel("Invoice No.");
@@ -667,7 +667,7 @@ public class InvoiceUI extends JInternalFrame {
 		label_16.setText("*");
 		label_16.setForeground(Color.RED);
 		label_16.setFont(new Font("Trebuchet MS", Font.BOLD, 13));
-		label_16.setBounds(347, 110, 6, 16);
+		label_16.setBounds(347, 93, 6, 16);
 		panel_4.add(label_16);
 
 		JXLabel label_17 = new JXLabel();
@@ -688,28 +688,28 @@ public class InvoiceUI extends JInternalFrame {
 		lblAbbr.setText("Abbr");
 		lblAbbr.setForeground(Color.BLACK);
 		lblAbbr.setFont(new Font("Trebuchet MS", Font.BOLD, 13));
-		lblAbbr.setBounds(623, 110, 39, 25);
+		lblAbbr.setBounds(623, 93, 39, 25);
 		panel_4.add(lblAbbr);
 
 		JPanel panel_1 = new JPanel();
-		panel_1.setBounds(757, 44, 277, 65);
+		panel_1.setBounds(757, 33, 277, 50);
 		panel_4.add(panel_1);
 		panel_1.setBackground(new Color(255, 255, 255));
 
 		textFieldPartynickName = new JXTextField();
-		textFieldPartynickName.setBounds(10, 34, 180, 23);
+		textFieldPartynickName.setBounds(10, 20, 180, 23);
 		textFieldPartynickName.setPrompt("Marka");
 		textFieldPartynickName.setName("txtInventoryAccountMarka");
 		textFieldPartynickName.setFont(new Font("DialogInput", Font.PLAIN, 16));
 		textFieldPartynickName.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
 
 		JXLabel label = new JXLabel();
-		label.setBounds(194, 35, 9, 20);
+		label.setBounds(194, 20, 9, 20);
 		label.setText("/");
 		label.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
 
 		textFieldGoodsPackets2 = new JXTextField();
-		textFieldGoodsPackets2.setBounds(207, 34, 60, 23);
+		textFieldGoodsPackets2.setBounds(207, 20, 60, 23);
 		textFieldGoodsPackets2.setPrompt("Cartun");
 		textFieldGoodsPackets2.setName(LeamonERPConstants.TEXTFIELD_INVOICE_PACKET2);
 		textFieldGoodsPackets2.setFont(new Font("DialogInput", Font.PLAIN, 16));
@@ -737,7 +737,7 @@ public class InvoiceUI extends JInternalFrame {
 		lblBillNodate.setText("Bill No.");
 		lblBillNodate.setForeground(Color.BLACK);
 		lblBillNodate.setFont(new Font("Trebuchet MS", Font.BOLD, 15));
-		lblBillNodate.setBounds(11, 65, 59, 25);
+		lblBillNodate.setBounds(11, 58, 59, 25);
 		panel_4.add(lblBillNodate);
 
 		textFieldBillNo = new JXTextField();
@@ -745,14 +745,14 @@ public class InvoiceUI extends JInternalFrame {
 		textFieldBillNo.setName("txtInventoryBillNumber");
 		textFieldBillNo.setFont(new Font("DialogInput", Font.PLAIN, 16));
 		textFieldBillNo.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
-		textFieldBillNo.setBounds(11, 91, 110, 23);
+		textFieldBillNo.setBounds(11, 85, 110, 23);
 		panel_4.add(textFieldBillNo);
 		
 		JXLabel lblGrNo = new JXLabel();
 		lblGrNo.setText("Bilty No.");
 		lblGrNo.setForeground(Color.BLACK);
 		lblGrNo.setFont(new Font("Trebuchet MS", Font.BOLD, 15));
-		lblGrNo.setBounds(143, 65, 80, 25);
+		lblGrNo.setBounds(143, 58, 80, 25);
 		panel_4.add(lblGrNo);
 		
 		textFieldGrNumber = new JXTextField();
@@ -761,11 +761,11 @@ public class InvoiceUI extends JInternalFrame {
 		textFieldGrNumber.setFont(new Font("DialogInput", Font.PLAIN, 16));
 		textFieldGrNumber.setEnabled(false);
 		textFieldGrNumber.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
-		textFieldGrNumber.setBounds(140, 91, 110, 23);
+		textFieldGrNumber.setBounds(140, 85, 110, 23);
 		panel_4.add(textFieldGrNumber);
 
 		JXPanel panel_5 = new JXPanel();
-		panel_5.setBounds(0, 218, 1050, 49);
+		panel_5.setBounds(0, 182, 1050, 49);
 		getContentPane().add(panel_5);
 		panel_5.setBackground(new Color(255, 255, 255));
 
