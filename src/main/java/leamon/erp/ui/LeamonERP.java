@@ -128,12 +128,12 @@ public class LeamonERP extends JFrame {
 		scrollPaneContent.setViewportView(desktopPane);
 		
 		JXTaskPane taskPaneInventory = new JXTaskPane();
-		taskPaneInventory.getContentPane().setBackground(new Color(255, 255, 255));
+		//taskPaneInventory.getContentPane().setBackground(new Color(255, 255, 255));
 		
 		taskPaneInventory.setTitle("Invoice");
 		taskPaneInventory.setBounds(0, 33, 224, 223);
 		//taskPaneInventory.add(createTextAction());
-		desktopPane.add(taskPaneInventory);
+//		desktopPane.add(taskPaneInventory);
 		taskPaneInventory.getContentPane().setLayout(new BorderLayout(0, 0));
 		
 		//this.getClass().getClassLoader().getResource(LeamonERPConstants.BILLING).getPath()
@@ -175,7 +175,7 @@ public class LeamonERP extends JFrame {
 		JXTaskPane taskPaneStockItems = new JXTaskPane();
 		taskPaneStockItems.setTitle("Stock Items");
 		taskPaneStockItems.setBounds(0, 255, 224, 208);
-		desktopPane.add(taskPaneStockItems);
+		//desktopPane.add(taskPaneStockItems);
 		taskPaneStockItems.getContentPane().setLayout(new BorderLayout(0, 0));
 		
 		
@@ -224,7 +224,7 @@ public class LeamonERP extends JFrame {
 		
 		taskPane_2.setTitle("Company Master");
 		taskPane_2.setBounds(1101, 33, 224, 223);
-		desktopPane.add(taskPane_2);
+		//desktopPane.add(taskPane_2);
 		taskPane_2.getContentPane().setLayout(new BorderLayout(0, 0));
 		
 		JPanel panelBGImgCompany = new BGImagePanel(LeamonERPConstants.IMAGE_PATH_LEAMON.concat(LeamonERPConstants.COMPANY_IMAGE));
@@ -246,7 +246,7 @@ public class LeamonERP extends JFrame {
 		taskPaneAccounts.setBackground(new Color(255, 255, 255));
 		taskPaneAccounts.setTitle("Party Master");
 		taskPaneAccounts.setBounds(0, 462, 224, 208);
-		desktopPane.add(taskPaneAccounts);
+//		desktopPane.add(taskPaneAccounts);
 		taskPaneAccounts.getContentPane().setLayout(new BorderLayout(0, 0));
 		
 		JPanel panelBGParty = new BGImagePanel(LeamonERPConstants.IMAGE_PATH_LEAMON.concat(LeamonERPConstants.PARTY_IMAGE));
@@ -293,7 +293,7 @@ public class LeamonERP extends JFrame {
 		JXTaskPane taskPaneReport = new JXTaskPane();
 		taskPaneReport.setTitle("Payment Master");
 		taskPaneReport.setBounds(1101, 255, 224, 223);
-		desktopPane.add(taskPaneReport);
+//		desktopPane.add(taskPaneReport);
 		taskPaneReport.getContentPane().setLayout(null);
 		
 		JXHyperlink hprlnkPaymentRegister = new JXHyperlink();
@@ -309,7 +309,7 @@ public class LeamonERP extends JFrame {
 		JXTaskPane taskPane_5 = new JXTaskPane();
 		taskPane_5.setTitle("Tarnsaction Master");
 		taskPane_5.setBounds(1101, 477, 224, 223);
-		desktopPane.add(taskPane_5);
+//		desktopPane.add(taskPane_5);
 		
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.setBounds(0, 0, ((int)sc.getWidth())-10, 30);
@@ -493,7 +493,7 @@ public class LeamonERP extends JFrame {
 		taskPaneInventory.setTitle("Invoice");
 		taskPaneInventory.setBounds(0, 33, 224, 223);
 		//taskPaneInventory.add(createTextAction());
-		desktopPane.add(taskPaneInventory);
+//		desktopPane.add(taskPaneInventory);
 		taskPaneInventory.getContentPane().setLayout(new BorderLayout(0, 0));
 		
 		//this.getClass().getClassLoader().getResource(LeamonERPConstants.BILLING).getPath()
@@ -526,7 +526,7 @@ public class LeamonERP extends JFrame {
 		JXTaskPane taskPaneStockItems = new JXTaskPane();
 		taskPaneStockItems.setTitle("Stock Items");
 		taskPaneStockItems.setBounds(0, 255, 224, 208);
-		desktopPane.add(taskPaneStockItems);
+//		desktopPane.add(taskPaneStockItems);
 		taskPaneStockItems.getContentPane().setLayout(new BorderLayout(0, 0));
 		
 		
@@ -575,7 +575,7 @@ public class LeamonERP extends JFrame {
 		
 		taskPane_2.setTitle("Company Master");
 		taskPane_2.setBounds(1101, 33, 224, 223);
-		desktopPane.add(taskPane_2);
+//		desktopPane.add(taskPane_2);
 		taskPane_2.getContentPane().setLayout(new BorderLayout(0, 0));
 		
 		JPanel panelBGImgCompany = new BGImagePanel(LeamonERPConstants.IMAGE_PATH_LEAMON.concat(LeamonERPConstants.COMPANY_IMAGE));
@@ -597,7 +597,7 @@ public class LeamonERP extends JFrame {
 		taskPaneAccounts.setBackground(new Color(255, 255, 255));
 		taskPaneAccounts.setTitle("Party Master");
 		taskPaneAccounts.setBounds(0, 462, 224, 208);
-		desktopPane.add(taskPaneAccounts);
+//		desktopPane.add(taskPaneAccounts);
 		taskPaneAccounts.getContentPane().setLayout(new BorderLayout(0, 0));
 		
 		JPanel panelBGParty = new BGImagePanel(LeamonERPConstants.IMAGE_PATH_LEAMON.concat(LeamonERPConstants.PARTY_IMAGE));
@@ -644,12 +644,12 @@ public class LeamonERP extends JFrame {
 		JXTaskPane taskPaneReport = new JXTaskPane();
 		taskPaneReport.setTitle("Payment Master");
 		taskPaneReport.setBounds(1101, 255, 224, 223);
-		desktopPane.add(taskPaneReport);
+//		desktopPane.add(taskPaneReport);
 
 		JXTaskPane taskPane_5 = new JXTaskPane();
 		taskPane_5.setTitle("Tarnsaction Master");
 		taskPane_5.setBounds(1101, 477, 224, 223);
-		desktopPane.add(taskPane_5);
+//		desktopPane.add(taskPane_5);
 		
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.setBounds(0, 0, ((int)sc.getWidth())-10, 30);
