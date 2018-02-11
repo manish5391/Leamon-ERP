@@ -101,7 +101,7 @@ public class InvoiceUILegal extends JInternalFrame {
 		setMaximizable(true);
 		setIconifiable(true);
 		setClosable(true);
-		setBounds(100, 3, 1059, 700);
+		setBounds(3, 30, 1059, 700);
 		getContentPane().setLayout(null);
 		setName("Leamon-ERP E-Biling");
 		
