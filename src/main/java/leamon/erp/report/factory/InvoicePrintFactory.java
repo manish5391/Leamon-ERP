@@ -114,7 +114,18 @@ public class InvoicePrintFactory {
 		parameters.put("invoiceDate", invoiceDate);
 		
 		parameters.put("invoiceNum", invoiceNum);
+		
+		/*Added from 3.5*/
+		try{
+
+			BigDecimal bd = new BigDecimal(billAmt);
+			bd = bd.setScale(2,RoundingMode.HALF_UP);
+
+			DecimalFormat df = new DecimalFormat("#.00");
+			billAmt = df.format(bd.doubleValue());
+		}catch(Exception e){ LOGGER.error(e); }
 		parameters.put("billAmount", billAmt);
+		
 		parameters.put("packingAmount", packingAmount);
 		
 		try{
@@ -125,12 +136,21 @@ public class InvoicePrintFactory {
 			DecimalFormat df = new DecimalFormat("#.00");
 			grandTotal = df.format(bd.doubleValue());
 		}catch(Exception e){ LOGGER.error(e); }
-		
 		parameters.put("grandTotal", grandTotal);
+
 		parameters.put("packets", packets);
-		
 		parameters.put("total", total);
 		parameters.put("td", discount);
+		
+		/*added from 3.5*/
+		try{
+
+			BigDecimal bd = new BigDecimal(gst);
+			bd = bd.setScale(2,RoundingMode.HALF_UP);
+
+			DecimalFormat df = new DecimalFormat("#.00");
+			gst = df.format(bd.doubleValue());
+		}catch(Exception e){ LOGGER.error(e); }
 		parameters.put("gst", gst);
 		
 		DefaultJasperReportsContext context = DefaultJasperReportsContext.getInstance();
