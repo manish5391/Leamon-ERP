@@ -91,7 +91,7 @@ public class AccountOpeningBalanceUI extends JInternalFrame  {
 		setIconifiable(true);
 		setClosable(true);
 		getContentPane().setBackground(Color.WHITE);
-		setBounds(230, 30, 588, 299);
+		setBounds(3, 30, 588, 299);
 		getContentPane().setLayout(null);
 		
 		JXPanel panel = new JXPanel();

@@ -117,7 +117,7 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		setIconifiable(true);
 		setMaximizable(true);
 		setClosable(true);
-		setBounds(10, 10, 799, 534);
+		setBounds(3, 30, 799, 534);
 
 
 		JPanel pnlStock = new JPanel();

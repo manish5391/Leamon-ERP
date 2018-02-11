@@ -94,7 +94,7 @@ public class StockItemQuantityUI extends JInternalFrame implements KeyListener{
 		setMaximizable(true);
 		setIconifiable(true);
 		setTitle("Stock Item Quantity");
-		setBounds(100, 100, 876, 474);
+		setBounds(3, 30, 876, 474);
 		getContentPane().setLayout(null);
 		
 		JPanel panel = new JPanel();

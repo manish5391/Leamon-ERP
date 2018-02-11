@@ -68,7 +68,7 @@ public class StockItemListManager extends JInternalFrame implements ActionListen
 		setMaximizable(true);
 		setIconifiable(true);
 		setClosable(true);
-		setBounds(10, 10, 1200, 674);
+		setBounds(3, 30, 1200, 660);
 		
 		//tblStockList = new LeamonTable();
 		tblStockList = new JXTable();

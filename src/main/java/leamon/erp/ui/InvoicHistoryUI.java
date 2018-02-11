@@ -26,7 +26,7 @@ public class InvoicHistoryUI extends JInternalFrame {
 	 * Create the frame.
 	 */
 	public InvoicHistoryUI() {
-		setBounds(100, 100, 450, 300);
+		setBounds(3, 30, 450, 300);
 
 	}
 

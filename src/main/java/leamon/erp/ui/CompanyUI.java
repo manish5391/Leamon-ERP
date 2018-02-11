@@ -81,7 +81,7 @@ public class CompanyUI extends JInternalFrame{
 	 */
 	public CompanyUI() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 375, 558);
+		setBounds(3, 30, 375, 558);
 		setTitle("Leamon-ERP: Comapny Info");
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));

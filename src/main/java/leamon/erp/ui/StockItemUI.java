@@ -98,7 +98,7 @@ public class StockItemUI extends JInternalFrame implements ActionListener{
 		setMaximizable(true);
 		setClosable(true);
 		setDefaultCloseOperation(JInternalFrame.DISPOSE_ON_CLOSE);
-		setBounds(10, 10, 1000, 524);
+		setBounds(3, 30, 1000, 524);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.WHITE);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));

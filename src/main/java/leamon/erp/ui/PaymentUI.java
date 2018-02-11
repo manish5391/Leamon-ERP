@@ -112,7 +112,7 @@ public class PaymentUI extends JInternalFrame {
 		setIconifiable(true);
 		setClosable(true);
 		getContentPane().setBackground(Color.WHITE);
-		setBounds(230, 30, 858, 620);
+		setBounds(3, 30, 858, 620);
 		getContentPane().setLayout(null);
 		
 		JXPanel panel = new JXPanel();

@@ -289,7 +289,7 @@ public class PaymentReceivedSummaryUI extends JInternalFrame {
 		btnPrint.setBounds(677, 11, 73, 23);
 		panel_3.add(btnPrint);
 
-		setBounds(230, 30, 980, 620);
+		setBounds(3, 30, 980, 620);
 	}
 
 	private void search(){
