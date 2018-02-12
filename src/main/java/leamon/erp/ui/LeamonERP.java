@@ -44,6 +44,7 @@ import leamon.erp.db.StockDaoImpl;
 import leamon.erp.model.LeamonProperty;
 import leamon.erp.model.StateCityInfo;
 import leamon.erp.ui.custom.BGImagePanel;
+import leamon.erp.ui.custom.CalculatorFrame;
 import leamon.erp.util.LeamonERPConstants;
 
 public class LeamonERP extends JFrame {
@@ -408,7 +409,33 @@ public class LeamonERP extends JFrame {
 		JMenuItem mntmDefault = new JMenuItem("Default");
 		mnTheme.add(mntmDefault);
 		mntmDefault.addActionListener(e -> mntmDefaultClick(e));
-		
+		// 3.6 Ghanshaym code forJmenu
+		JMenu mnReport = new JMenu("Report Master");
+		menuBar.add(mnReport);
+
+		JMenuItem mntmSalesReport = new JMenuItem("Sales Report");
+		mnReport.add(mntmSalesReport);
+		mntmSalesReport.addActionListener(e -> mntmSalesReportClick(e));
+
+		JMenuItem mntmStockReport = new JMenuItem("Stock Report");
+		mnReport.add(mntmStockReport);
+		mntmStockReport.addActionListener(e -> mntmStockReportClick(e));
+
+		JMenuItem mntmPaymentReport = new JMenuItem("Payment Report");
+		mnReport.add(mntmPaymentReport);
+		mntmPaymentReport.addActionListener(e -> mntmPaymentReportClick(e));
+
+		JMenu mnTools = new JMenu("Tools");
+		menuBar.add(mnTools);
+
+		JMenuItem mntmCalculator = new JMenuItem("Calculator");
+		mnTools.add(mntmCalculator);
+		mntmCalculator.addActionListener(e -> mntmCalculatorClick(e));
+
+		JMenuItem mntmUpdates = new JMenuItem("Updates");
+		mnTools.add(mntmUpdates);
+		mntmUpdates.addActionListener(e -> mntmUpdatesClick(e));
+		// 3.6 end of Ghanshyam code
 		try{
 		StockDaoImpl.getInstance().prepareStockIntelliSense();
 		stateCityInfosLoader();
@@ -448,7 +475,7 @@ public class LeamonERP extends JFrame {
 		accountOpeningBalanceUI = new AccountOpeningBalanceUI();
 	
 		}
-	
+
 	public void initComponents(){
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -1070,4 +1097,36 @@ public class LeamonERP extends JFrame {
 			//accountInfoUI.setExtendedState(JInternalFrame.);
 		});
 	}
+
+	// 3.6 Ghanshyam code for Jmenu on main software
+	private Object mntmSalesReportClick(ActionEvent e) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private Object mntmStockReportClick(ActionEvent e) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private Object mntmPaymentReportClick(ActionEvent e) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private Object mntmCalculatorClick(ActionEvent e) {
+		// TODO Auto-generated method stub
+		CalculatorFrame f = new CalculatorFrame();
+		f.setTitle("Calculator");
+		f.setVisible(true);
+		f.setBounds(100, 100, 300, 440);
+		f.setResizable(false);
+		return this;
+	}
+
+	private Object mntmUpdatesClick(ActionEvent e) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	// 3.6 end of Ghanshyam code
 }
