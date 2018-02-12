@@ -189,7 +189,7 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		lblLicence.setFont(new Font("DialogInput", Font.BOLD, 16));
 
 		txtName = new JXTextField();
-		txtName.setBounds(246, 46, 244, 23);
+		txtName.setBounds(86, 46, 444, 23);
 		txtName.setName(LeamonERPConstants.TEXTFIELD_ACCOUNT_NAME); 
 		txtName.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
 		txtName.addKeyListener(new AccountInfoKeyListener());
