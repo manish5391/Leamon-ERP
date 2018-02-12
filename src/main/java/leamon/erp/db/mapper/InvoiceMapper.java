@@ -41,7 +41,7 @@ public interface InvoiceMapper {
 	
 	final String update = "UPDATE INVOICE_BILL SET PARTYINFOID = #{partyinfoID}, INVOICENUM = #{invoicNum}, INVOICEDATE = #{invoicDate}, "
 						+ "BILL_NO = #{billNo}, ORDERBOOKBY = #{orderBookedBy},  TRANSPORT = #{transport}, PACKETNUM = #{pktNumber}, GSTAMOUNT = #{gstValue}, "
-						+ "BILLAMOUNT = #{billAmount}, GRNUMBER = #{grBiltyNumber},"
+						+ "BILLAMOUNT = #{billAmount}, WITHOUTBILLAMOUNT= #{withoutBillAmount}, GRNUMBER = #{grBiltyNumber},"
 						+ "COL1NAME = #{col1Name}, COL1VAL = #{col1Val}, COL2NAME = #{col2Name}, COL2VAL = #{col2Val}, COL1OPERATOR = #{col1Operator}, COL2OPERATOR = #{col2Operator},"
 						+ "LASTUPDATEDDATE = #{lastUpdated} "
 						+ " WHERE ID = #{id}";
@@ -135,9 +135,16 @@ public interface InvoiceMapper {
 	      @Result(property = "col2Val", column = "COL2VAL"), 
 	      @Result(property = "col1Operator", column = "COL1OPERATOR"), 
 	      @Result(property = "col2Operator", column = "COL2OPERATOR"), 
+	      @Result(property = "withoutBillAmount", column = "WITHOUTBILLAMOUNT"), //WITHOUTBILLAMOUNT
 	      
-	      @Result(property = "grBiltyNumber", column = "GRNUMBER"),
-	      @Result(property = "grBiltyNumber", column = "GRNUMBER"),
+	      /*Release 3.6*/
+	      @Result(property = "remainingBillAmount", column = "REMAININGBILLAMOUNT"), //WITHOUTBILLAMOUNT
+	      @Result(property = "remainingWithoutBillAmount", column = "REMAININGWITHOUTBILLAMOUNT"), //WITHOUTBILLAMOUNT
+	      @Result(property = "paidBillAmount", column = "PAIDBILLAMOUNT"), //WITHOUTBILLAMOUNT
+	      @Result(property = "paidWithoutBillAmount", column = "PAIDWITHOUTBILLAMOUNT"), //WITHOUTBILLAMOUNT
+	      @Result(property = "paidStatus", column = "PAIDSTATUS"), //WITHOUTBILLAMOUNT
+	      @Result(property = "wpaidstatus", column = "WPAIDSTATUS"), //WITHOUTBILLAMOUNT
+	      /*End*/
 	      
 	      @Result(property = "createdDate", column = "CREATEDDATE"),
 	      @Result(property = "lastUpdated", column = "LASTUPDATEDDATE"),
@@ -189,9 +196,16 @@ public interface InvoiceMapper {
 	      @Result(property = "col2Val", column = "COL2VAL"), 
 	      @Result(property = "col1Operator", column = "COL1OPERATOR"), 
 	      @Result(property = "col2Operator", column = "COL2OPERATOR"), 
+	      @Result(property = "withoutBillAmount", column = "WITHOUTBILLAMOUNT"), //WITHOUTBILLAMOUNT
 	      
-	      @Result(property = "grBiltyNumber", column = "GRNUMBER"),
-	      @Result(property = "grBiltyNumber", column = "GRNUMBER"),
+	      /*Release 3.6*/
+	      @Result(property = "remainingBillAmount", column = "REMAININGBILLAMOUNT"), //WITHOUTBILLAMOUNT
+	      @Result(property = "remainingWithoutBillAmount", column = "REMAININGWITHOUTBILLAMOUNT"), //WITHOUTBILLAMOUNT
+	      @Result(property = "paidBillAmount", column = "PAIDBILLAMOUNT"), //WITHOUTBILLAMOUNT
+	      @Result(property = "paidWithoutBillAmount", column = "PAIDWITHOUTBILLAMOUNT"), //WITHOUTBILLAMOUNT
+	      @Result(property = "paidStatus", column = "PAIDSTATUS"), //WITHOUTBILLAMOUNT
+	      @Result(property = "wpaidstatus", column = "WPAIDSTATUS"), //WITHOUTBILLAMOUNT
+	      /*End*/
 	      
 	      @Result(property = "createdDate", column = "CREATEDDATE"),
 	      @Result(property = "lastUpdated", column = "LASTUPDATEDDATE"),
@@ -250,9 +264,16 @@ public interface InvoiceMapper {
 	      @Result(property = "col2Val", column = "COL2VAL"), 
 	      @Result(property = "col1Operator", column = "COL1OPERATOR"), 
 	      @Result(property = "col2Operator", column = "COL2OPERATOR"), 
+	      @Result(property = "withoutBillAmount", column = "WITHOUTBILLAMOUNT"), //WITHOUTBILLAMOUNT
 	      
-	      @Result(property = "grBiltyNumber", column = "GRNUMBER"),
-	      @Result(property = "grBiltyNumber", column = "GRNUMBER"),
+	      /*Release 3.6*/
+	      @Result(property = "remainingBillAmount", column = "REMAININGBILLAMOUNT"), //WITHOUTBILLAMOUNT
+	      @Result(property = "remainingWithoutBillAmount", column = "REMAININGWITHOUTBILLAMOUNT"), //WITHOUTBILLAMOUNT
+	      @Result(property = "paidBillAmount", column = "PAIDBILLAMOUNT"), //WITHOUTBILLAMOUNT
+	      @Result(property = "paidWithoutBillAmount", column = "PAIDWITHOUTBILLAMOUNT"), //WITHOUTBILLAMOUNT
+	      @Result(property = "paidStatus", column = "PAIDSTATUS"), //WITHOUTBILLAMOUNT
+	      @Result(property = "wpaidstatus", column = "WPAIDSTATUS"), //WITHOUTBILLAMOUNT
+	      /*End*/
 	      
 	      @Result(property = "createdDate", column = "CREATEDDATE"),
 	      @Result(property = "lastUpdated", column = "LASTUPDATEDDATE"),
