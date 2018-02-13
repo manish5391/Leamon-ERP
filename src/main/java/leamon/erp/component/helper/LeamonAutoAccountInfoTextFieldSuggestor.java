@@ -38,6 +38,7 @@ import com.google.common.base.Strings;
 import leamon.erp.model.AccountInfo;
 import leamon.erp.ui.AccountOpeningBalanceUI;
 import leamon.erp.ui.InvoiceUI;
+import leamon.erp.ui.InvoiceUILegal;
 import leamon.erp.ui.PaymentReceivedSummaryUI;
 import leamon.erp.ui.PaymentUI;
 import leamon.erp.ui.model.AccountInfoInvoiceListCellRender;
@@ -127,6 +128,10 @@ public class LeamonAutoAccountInfoTextFieldSuggestor <T extends List<E>, E> exte
 			
 			if(isAccountOpeningBalanceUI(ui) && !Strings.isNullOrEmpty(((AccountOpeningBalanceUI)ui).getTextFieldPartyName().getText())){
 				((AccountOpeningBalanceUI)ui).getTextFieldBillNo().requestFocus();
+			}
+			
+			if(isBinvoiceInstance(ui) && !Strings.isNullOrEmpty(((InvoiceUILegal)ui).getTextFieldPartyName().getText())){
+				((InvoiceUILegal)ui).getTextAreaPartyAddress().requestFocus();
 			}
 			return;
 		} 
@@ -291,6 +296,19 @@ public class LeamonAutoAccountInfoTextFieldSuggestor <T extends List<E>, E> exte
 		return false;
 	}
 	
+	/**
+	 * It is to open account info list for B-invoice
+	 * @date FEB 13,2018
+	 * @param frame
+	 * @return
+	 */
+	private boolean isBinvoiceInstance(JInternalFrame frame){
+		if(frame instanceof InvoiceUILegal){
+			return true;
+		}
+		return false;
+	}
+	
 	private boolean isPaymentUIInstance(JInternalFrame frame){
 		if(frame instanceof PaymentUI){
 			return true;
@@ -345,6 +363,13 @@ public class LeamonAutoAccountInfoTextFieldSuggestor <T extends List<E>, E> exte
 			AccountOpeningBalanceUI accountOpeningBalanceUI = (AccountOpeningBalanceUI) ui;
 			accountOpeningBalanceUI.setAccountInfo(info);
 		}
+		
+		/*Release 3.6 */
+		if(isBinvoiceInstance(ui)){
+			InvoiceUILegal invoiceBui = (InvoiceUILegal) ui;
+			invoiceBui.setAccountInfo(info);
+		}
+		/*End*/
 	}
 	
 	/**
