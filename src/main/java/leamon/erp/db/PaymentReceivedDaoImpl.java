@@ -40,20 +40,20 @@ public class PaymentReceivedDaoImpl implements  LeamonERPDao<PaymentReceivedInfo
 	public List<PaymentReceivedInfo> getItemList() throws Exception {
 		LOGGER.info("PaymentReceivedDaoImpl[getPaymentReceivedInfoList] inside.");
 		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
-		PaymentReceivedMapper PaymentReceivedInfoMapper= session.getMapper(PaymentReceivedMapper.class);
-		List<PaymentReceivedInfo> PaymentReceivedInfos = PaymentReceivedInfoMapper.getAll();
+		PaymentReceivedMapper paymentReceivedInfoMapper= session.getMapper(PaymentReceivedMapper.class);
+		List<PaymentReceivedInfo> paymentReceivedInfos = paymentReceivedInfoMapper.getAll();
 		session.close();
 		LOGGER.info("PaymentReceivedDaoImpl[getPaymentReceivedInfoList] end.");
-		return PaymentReceivedInfos;
+		return paymentReceivedInfos;
 	}
 
 	@Override
 	public void save(PaymentReceivedInfo PaymentReceivedInfo) throws Exception {
 		LOGGER.info("PaymentReceivedDaoImpl[save] inside.");
 		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
-		PaymentReceivedMapper PaymentReceivedInfoMapper= session.getMapper(PaymentReceivedMapper.class);
+		PaymentReceivedMapper paymentReceivedInfoMapper= session.getMapper(PaymentReceivedMapper.class);
 		try{
-			PaymentReceivedInfoMapper.insert(PaymentReceivedInfo);
+			paymentReceivedInfoMapper.insert(PaymentReceivedInfo);
 			session.commit();
 		}catch(Exception exp){
 			session.rollback();
@@ -70,9 +70,9 @@ public class PaymentReceivedDaoImpl implements  LeamonERPDao<PaymentReceivedInfo
 	public void disable(PaymentReceivedInfo item) throws Exception{
 		LOGGER.info("PaymentReceivedDaoImpl[delete] inside.");
 		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
-		PaymentReceivedMapper PaymentReceivedInfoMapper= session.getMapper(PaymentReceivedMapper.class);
+		PaymentReceivedMapper paymentReceivedInfoMapper= session.getMapper(PaymentReceivedMapper.class);
 		try{
-			PaymentReceivedInfoMapper.disablepaymentReceivedInfoByID(item);
+			paymentReceivedInfoMapper.disablepaymentReceivedInfoByID(item);
 			session.commit();
 		}catch(Exception exp){
 			session.rollback();
@@ -87,9 +87,9 @@ public class PaymentReceivedDaoImpl implements  LeamonERPDao<PaymentReceivedInfo
 	public void update(PaymentReceivedInfo item) throws Exception{
 		LOGGER.info("PaymentReceivedDaoImpl[update] inside.");
 		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
-		PaymentReceivedMapper PaymentReceivedInfoMapper= session.getMapper(PaymentReceivedMapper.class);
+		PaymentReceivedMapper paymentReceivedInfoMapper= session.getMapper(PaymentReceivedMapper.class);
 		try{
-			PaymentReceivedDaoImpl.getInstance().update(item);
+			paymentReceivedInfoMapper.update(item);
 			session.commit();
 		}catch(Exception exp){
 			session.rollback();
