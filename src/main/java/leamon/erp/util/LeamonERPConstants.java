@@ -250,4 +250,15 @@ public interface LeamonERPConstants {
 	String TEXTFIELD_INVOICE_TEXT_FIELD_COL2_VAL="textFieldCol2Val";
 	String INVOICE_UI_COL1_COL2_OPERATION="+";
 	//3.4 end of ghanshyam code
+
+	//3.6 ghan code
+	public static final String IMG_COMPANY_MASTER="CompanyMaster/Company.png";
+	public static final String IMG_INVOICE_MASTER="InvoiceMaster/Invoice.png";
+	public static final String IMG_PARTY_MASTER="PartyMaster/Party.png";
+	public static final String IMG_PAYMENT_MASTER="PaymentMaster/Payment.png";
+	public static final String IMG_REPORT_MASTER="ReportMaster/Report.png";
+	public static final String IMG_STOCK_MASTER="StockMaster/Stock.png";
+	public static final String IMG_THEME_MASTER="Theme/Theme.png";
+	public static final String IMG_TOOLS_MASTER="Tools/Tools.png";
+	//3.6 end of ghan code
 }
