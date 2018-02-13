@@ -327,6 +327,12 @@ public class LeamonERP extends JFrame {
 		menuBar.add(mnCompanyMaster);
 		
 		JMenuItem mntmCompanyInfo = new JMenuItem("Company Info");
+		try {
+			mntmCompanyInfo.setIcon(
+					new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_COMPANY_INFO)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		mntmCompanyInfo.addActionListener(e -> hprlnkCompanyClick(e));
 		mnCompanyMaster.add(mntmCompanyInfo);
 		
@@ -340,10 +346,22 @@ public class LeamonERP extends JFrame {
 		menuBar.add(mnInvoiceMaster);
 		
 		JMenuItem mntmB_Invoice = new JMenuItem("B-Invoice");
+		try {
+			mntmB_Invoice.setIcon(
+					new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_B_INVOICE)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		mntmB_Invoice.addActionListener(e -> hprlnkEinvoiceClick(e));
 		mnInvoiceMaster.add(mntmB_Invoice);
 		
 		JMenuItem mntmW_Invoice = new JMenuItem("W-Invoice");
+		try {
+			mntmW_Invoice.setIcon(
+					new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_W_INVOICE)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		mntmW_Invoice.addActionListener(e -> hyperlinkInvoiceClick(e));
 		mnInvoiceMaster.add(mntmW_Invoice);
 		
@@ -357,18 +375,42 @@ public class LeamonERP extends JFrame {
 		menuBar.add(mnStockMaster);
 		
 		JMenuItem mntmAddNewStock = new JMenuItem("Add New");
+		try {
+			mntmAddNewStock.setIcon(
+					new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_ADD_STOCK)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		mntmAddNewStock.addActionListener(e -> hprlnkStockItemAddNewClick(e));
 		mnStockMaster.add(mntmAddNewStock);
 		
 		JMenuItem mntmEditStock = new JMenuItem("Edit");
+		try {
+			mntmEditStock.setIcon(
+					new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_EDIT_STOCK)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		mntmEditStock.addActionListener(e -> hprlnkStockItemEditClick(e));
 		mnStockMaster.add(mntmEditStock);
 		
 		JMenuItem mntmSearchStock = new JMenuItem("Search");
+		try {
+			mntmSearchStock.setIcon(
+					new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_SEARCH_STOCK)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		mntmSearchStock.addActionListener(e -> hprlnkStockItemSearchClick(e));
 		mnStockMaster.add(mntmSearchStock);
 		
 		JMenuItem mntmDeleteStock = new JMenuItem("Delete");
+		try {
+			mntmDeleteStock.setIcon(
+					new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_DELETE_STOCK)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		mntmDeleteStock.addActionListener(e -> hprlnkStockItemDeleteClick(e));
 		mnStockMaster.add(mntmDeleteStock);
 		
@@ -382,18 +424,42 @@ public class LeamonERP extends JFrame {
 		menuBar.add(mnPartyMaster);
 		
 		JMenuItem mntmAddNewParty = new JMenuItem("Add New");
+		try {
+			mntmAddNewParty.setIcon(
+					new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_ADD_PARTY)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		mntmAddNewParty.addActionListener(e -> hyperlinkAccountAddNewClick(e));
 		mnPartyMaster.add(mntmAddNewParty);
 		
 		JMenuItem mntmEditParty = new JMenuItem("Edit");
+		try {
+			mntmEditParty.setIcon(
+					new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_EDIT_PARTY)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		mntmEditParty.addActionListener(e -> hyperlinkAccountEditClick(e));
 		mnPartyMaster.add(mntmEditParty);
 		
 		JMenuItem mntmSearchParty = new JMenuItem("Search");
+		try {
+			mntmSearchParty.setIcon(
+					new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_SEARCH_PARTY)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		mntmSearchParty.addActionListener(e ->  hyperlinkAccountSearchClick(e));
 		mnPartyMaster.add(mntmSearchParty);
 		
 		JMenuItem mntmDeleteParty = new JMenuItem("Delete");
+		try {
+			mntmDeleteParty.setIcon(
+					new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_DELETE_PARTY)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		mntmDeleteParty.addActionListener(e-> hyperlinkAccountDeleteClick(e));
 		mnPartyMaster.add(mntmDeleteParty);
 		
@@ -484,6 +550,10 @@ public class LeamonERP extends JFrame {
 		JMenuItem mntmUpdates = new JMenuItem("Updates");
 		mnTools.add(mntmUpdates);
 		mntmUpdates.addActionListener(e -> mntmUpdatesClick(e));
+
+		JMenuItem mntmTrash = new JMenuItem("Trash");
+		mnTools.add(mntmTrash);
+		mntmTrash.addActionListener(e -> mntmTrashClick(e));
 		// 3.6 end of Ghanshyam code
 		try{
 		StockDaoImpl.getInstance().prepareStockIntelliSense();
@@ -1173,6 +1243,11 @@ public class LeamonERP extends JFrame {
 	}
 
 	private Object mntmUpdatesClick(ActionEvent e) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	private Object mntmTrashClick(ActionEvent e) {
 		// TODO Auto-generated method stub
 		return null;
 	}
