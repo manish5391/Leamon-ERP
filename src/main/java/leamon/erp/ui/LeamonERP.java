@@ -60,7 +60,7 @@ public class LeamonERP extends JFrame {
 
 	public static InventoryUIManager inventoryUIManager;
 	public static InventoryUI inventoryUI;
-	public static GrandTotalUI grandTotalUI;
+	//public static GrandTotalUI grandTotalUI;
 	public static CompanyUI companyUI;
 	public static InvoiceSearchUI invoiceSearchUI;
 	public static PaymentUI paymentUI;
@@ -433,7 +433,7 @@ public class LeamonERP extends JFrame {
 		//framCreator();
 		inventoryUI = new InventoryUI();
 
-		grandTotalUI = new GrandTotalUI();
+		//grandTotalUI = new GrandTotalUI();
 		
 		companyUI = new CompanyUI();
 		
@@ -668,7 +668,7 @@ public class LeamonERP extends JFrame {
 		//framCreator();
 		inventoryUI = new InventoryUI();
 
-		grandTotalUI = new GrandTotalUI();
+		//grandTotalUI = new GrandTotalUI();
 		
 		companyUI = new CompanyUI();
 		
@@ -962,7 +962,7 @@ public class LeamonERP extends JFrame {
 		}
 	}
 	
-	public static void openGTCalculatr(){
+	/*public static void openGTCalculatr(){
 		if(grandTotalUI.isVisible()){
 			try {
 				grandTotalUI.setSelected(true);
@@ -980,7 +980,7 @@ public class LeamonERP extends JFrame {
 			}
 			grandTotalUI.moveToFront();
 		}
-	}
+	}*/
 
 	private void mntmWindowClick(ActionEvent e){
 		try{
