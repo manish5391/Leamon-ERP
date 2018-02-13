@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.swing.ImageIcon;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
@@ -316,6 +317,13 @@ public class LeamonERP extends JFrame {
 		desktopPane.add(menuBar);
 		
 		JMenu mnCompanyMaster = new JMenu("Company Master");
+		try {
+			mnCompanyMaster.setIcon(
+					new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_COMPANY_MASTER)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+
 		menuBar.add(mnCompanyMaster);
 		
 		JMenuItem mntmCompanyInfo = new JMenuItem("Company Info");
@@ -323,6 +331,12 @@ public class LeamonERP extends JFrame {
 		mnCompanyMaster.add(mntmCompanyInfo);
 		
 		JMenu mnInvoiceMaster = new JMenu("Invoice Master");
+		try {
+			mnInvoiceMaster.setIcon(
+					new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_INVOICE_MASTER)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		menuBar.add(mnInvoiceMaster);
 		
 		JMenuItem mntmB_Invoice = new JMenuItem("B-Invoice");
@@ -334,6 +348,12 @@ public class LeamonERP extends JFrame {
 		mnInvoiceMaster.add(mntmW_Invoice);
 		
 		JMenu mnStockMaster = new JMenu("Stock Master");
+		try {
+			mnStockMaster.setIcon(
+					new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_STOCK_MASTER)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		menuBar.add(mnStockMaster);
 		
 		JMenuItem mntmAddNewStock = new JMenuItem("Add New");
@@ -353,6 +373,12 @@ public class LeamonERP extends JFrame {
 		mnStockMaster.add(mntmDeleteStock);
 		
 		JMenu mnPartyMaster = new JMenu("Party Master");
+		try {
+			mnPartyMaster.setIcon(
+					new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_PARTY_MASTER)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		menuBar.add(mnPartyMaster);
 		
 		JMenuItem mntmAddNewParty = new JMenuItem("Add New");
@@ -372,6 +398,12 @@ public class LeamonERP extends JFrame {
 		mnPartyMaster.add(mntmDeleteParty);
 		
 		JMenu mnPaymentMaster = new JMenu("Payment Master");
+		try {
+			mnPaymentMaster.setIcon(
+					new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_PAYMENT_MASTER)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		menuBar.add(mnPaymentMaster);
 		
 		JMenuItem mntmAdjustmentPayment = new JMenuItem("Adjustments");
@@ -387,6 +419,12 @@ public class LeamonERP extends JFrame {
 		mnPaymentMaster.add(mntmOpeningBalance);
 		
 		JMenu mnTheme = new JMenu("Theme");
+		try {
+			mnTheme.setIcon(
+					new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_THEME_MASTER)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		menuBar.add(mnTheme);
 		
 		JMenuItem mntmWindow = new JMenuItem("Window");
@@ -408,7 +446,45 @@ public class LeamonERP extends JFrame {
 		JMenuItem mntmDefault = new JMenuItem("Default");
 		mnTheme.add(mntmDefault);
 		mntmDefault.addActionListener(e -> mntmDefaultClick(e));
-		
+		// 3.6 Ghanshaym code forJmenu
+		JMenu mnReport = new JMenu("Report Master");
+		try {
+			mnReport.setIcon(
+					new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_REPORT_MASTER)));
+		}catch(Exception e) {
+			LOGGER.error(e);
+		}
+		menuBar.add(mnReport);
+
+		JMenuItem mntmSalesReport = new JMenuItem("Sales Report");
+		mnReport.add(mntmSalesReport);
+		mntmSalesReport.addActionListener(e -> mntmSalesReportClick(e));
+
+		JMenuItem mntmStockReport = new JMenuItem("Stock Report");
+		mnReport.add(mntmStockReport);
+		mntmStockReport.addActionListener(e -> mntmStockReportClick(e));
+
+		JMenuItem mntmPaymentReport = new JMenuItem("Payment Report");
+		mnReport.add(mntmPaymentReport);
+		mntmPaymentReport.addActionListener(e -> mntmPaymentReportClick(e));
+
+		JMenu mnTools = new JMenu("Tools");
+		try {
+			mnTools.setIcon(
+					new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_TOOLS_MASTER)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		menuBar.add(mnTools);
+
+		JMenuItem mntmCalculator = new JMenuItem("Calculator");
+		mnTools.add(mntmCalculator);
+		mntmCalculator.addActionListener(e -> mntmCalculatorClick(e));
+
+		JMenuItem mntmUpdates = new JMenuItem("Updates");
+		mnTools.add(mntmUpdates);
+		mntmUpdates.addActionListener(e -> mntmUpdatesClick(e));
+		// 3.6 end of Ghanshyam code
 		try{
 		StockDaoImpl.getInstance().prepareStockIntelliSense();
 		stateCityInfosLoader();
@@ -448,7 +524,7 @@ public class LeamonERP extends JFrame {
 		accountOpeningBalanceUI = new AccountOpeningBalanceUI();
 	
 		}
-	
+
 	public void initComponents(){
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -1070,4 +1146,35 @@ public class LeamonERP extends JFrame {
 			//accountInfoUI.setExtendedState(JInternalFrame.);
 		});
 	}
+
+	// 3.6 Ghanshyam code for Jmenu on main software
+	private Object mntmSalesReportClick(ActionEvent e) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private Object mntmStockReportClick(ActionEvent e) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private Object mntmPaymentReportClick(ActionEvent e) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private Object mntmCalculatorClick(ActionEvent e) {
+		try {
+			Runtime.getRuntime().exec("calc");
+		} catch (IOException e1) {
+			LOGGER.error(e);
+		}
+		return this;
+	}
+
+	private Object mntmUpdatesClick(ActionEvent e) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	// 3.6 end of Ghanshyam code
 }
