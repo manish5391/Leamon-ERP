@@ -213,7 +213,7 @@ public class StockItemUI extends JInternalFrame implements ActionListener{
 		btnSave.setFont(new Font("DialogInput", Font.BOLD, 14));
 		btnSave.setActionCommand(LeamonERPConstants.BUTTON_ACTION_ADD_STOCK_ITEM);
 		btnSave.setMnemonic(KeyEvent.VK_S);
-		btnSave.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK), "Save");
+		btnSave.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.ALT_DOWN_MASK), "Save");//3.6 release Ghanshyam code
 		btnSave.getActionMap().put("Save", getSaveAction());
 		btnSave.addActionListener(this);
 		
@@ -232,7 +232,7 @@ public class StockItemUI extends JInternalFrame implements ActionListener{
 		btnDelete.setBackground(Color.WHITE);
 		btnDelete.setActionCommand(LeamonERPConstants.BUTTON_ACTION_DELETE_STOCK_ITEM);
 		btnDelete.setMnemonic(KeyEvent.VK_D);
-		btnDelete.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_DOWN_MASK), "Delete");
+		btnDelete.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.ALT_DOWN_MASK), "Delete");//3.6 release Ghanshyam code
 		btnDelete.getActionMap().put("Delete", getDeleteAction());
 		btnDelete.addActionListener(this);
 		
@@ -245,7 +245,7 @@ public class StockItemUI extends JInternalFrame implements ActionListener{
 		btnEdit.setBackground(Color.WHITE);
 		btnEdit.setActionCommand(LeamonERPConstants.BUTTON_ACTION_EDIT_STOCK_ITEM);
 		btnEdit.setMnemonic(KeyEvent.VK_E);
-		btnEdit.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.CTRL_DOWN_MASK), "Edit");
+		btnEdit.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.ALT_DOWN_MASK), "Edit");//3.6 release Ghanshyam code
 		btnEdit.getActionMap().put("Edit", getEditAction());
 		btnEdit.addActionListener(this);
 		
@@ -258,7 +258,7 @@ public class StockItemUI extends JInternalFrame implements ActionListener{
 		btnClear.setBackground(Color.WHITE);
 		btnClear.setActionCommand("CleaR");
 		btnClear.setMnemonic(KeyEvent.VK_R);
-		btnClear.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK), "Clear");
+		btnClear.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.ALT_DOWN_MASK), "Clear");//3.6 release Ghanshyam code
 		btnClear.getActionMap().put("Clear", getClearAction());
 		btnClear.addActionListener(this);
 		
@@ -811,7 +811,7 @@ public class StockItemUI extends JInternalFrame implements ActionListener{
 				saveStockItem();
 			}
 		};
-		saveAction.putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
+		saveAction.putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.ALT_DOWN_MASK));//3.6 release Ghanshyam code
 		return saveAction;
 	}
 	
@@ -823,7 +823,7 @@ public class StockItemUI extends JInternalFrame implements ActionListener{
 				deleteStockItem();
 			}
 		};
-		deleteAction.putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_DOWN_MASK));
+		deleteAction.putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.ALT_DOWN_MASK));//3.6 release Ghanshyam code
 		return deleteAction;
 	}
 	
@@ -835,7 +835,7 @@ public class StockItemUI extends JInternalFrame implements ActionListener{
 				editStockItem();
 			}
 		};
-		editAction .putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.CTRL_DOWN_MASK));
+		editAction .putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.ALT_DOWN_MASK));//3.6 release Ghanshyam code
 		return editAction;
 	}
 	public Action getClearAction(){
@@ -846,7 +846,7 @@ public class StockItemUI extends JInternalFrame implements ActionListener{
 				clear();
 			}
 		};
-		editAction .putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK));
+		editAction .putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.ALT_DOWN_MASK));//3.6 release Ghanshyam code
 		return editAction;
 	}
 	
