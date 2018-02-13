@@ -253,11 +253,22 @@ public interface LeamonERPConstants {
 
 	//3.6 ghan code
 	public static final String IMG_COMPANY_MASTER="CompanyMaster/Company.png";
+	public static final String IMG_COMPANY_INFO="CompanyMaster/CompanyInfo.png";
 	public static final String IMG_INVOICE_MASTER="InvoiceMaster/Invoice.png";
+	public static final String IMG_B_INVOICE="InvoiceMaster/Binvoice.png";
+	public static final String IMG_W_INVOICE="InvoiceMaster/Winvoice.png";
 	public static final String IMG_PARTY_MASTER="PartyMaster/Party.png";
+	public static final String IMG_ADD_PARTY="PartyMaster/add_button.png";
+	public static final String IMG_EDIT_PARTY="PartyMaster/edit_button.png";
+	public static final String IMG_SEARCH_PARTY="PartyMaster/view.png";
+	public static final String IMG_DELETE_PARTY="PartyMaster/delete_button.png";	
 	public static final String IMG_PAYMENT_MASTER="PaymentMaster/Payment.png";
 	public static final String IMG_REPORT_MASTER="ReportMaster/Report.png";
 	public static final String IMG_STOCK_MASTER="StockMaster/Stock.png";
+	public static final String IMG_ADD_STOCK="StockMaster/add_button.png";
+	public static final String IMG_EDIT_STOCK="StockMaster/edit_button.png";
+	public static final String IMG_SEARCH_STOCK="StockMaster/view.png";
+	public static final String IMG_DELETE_STOCK="StockMaster/delete_button.png";
 	public static final String IMG_THEME_MASTER="Theme/Theme.png";
 	public static final String IMG_TOOLS_MASTER="Tools/Tools.png";
 	//3.6 end of ghan code
