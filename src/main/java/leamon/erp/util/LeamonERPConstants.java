@@ -252,6 +252,7 @@ public interface LeamonERPConstants {
 	//3.4 end of ghanshyam code
 
 	//3.6 ghan code
+	String IMAGE_PATH_LEAMON_ERP=USER_DIR+File.separatorChar+LeamonERPConstants.RESOURCE+File.separatorChar;
 	public static final String IMG_COMPANY_MASTER="CompanyMaster/Company.png";
 	public static final String IMG_COMPANY_INFO="CompanyMaster/CompanyInfo.png";
 	public static final String IMG_INVOICE_MASTER="InvoiceMaster/Invoice.png";

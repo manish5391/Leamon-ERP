@@ -319,7 +319,7 @@ public class LeamonERP extends JFrame {
 		JMenu mnCompanyMaster = new JMenu("Company Master");
 		try {
 			mnCompanyMaster.setIcon(
-					new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_COMPANY_MASTER)));
+					new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_COMPANY_MASTER)));
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -329,7 +329,7 @@ public class LeamonERP extends JFrame {
 		JMenuItem mntmCompanyInfo = new JMenuItem("Company Info");
 		try {
 			mntmCompanyInfo.setIcon(
-					new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_COMPANY_INFO)));
+					new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_COMPANY_INFO)));
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -339,7 +339,7 @@ public class LeamonERP extends JFrame {
 		JMenu mnInvoiceMaster = new JMenu("Invoice Master");
 		try {
 			mnInvoiceMaster.setIcon(
-					new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_INVOICE_MASTER)));
+					new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_INVOICE_MASTER)));
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -348,7 +348,7 @@ public class LeamonERP extends JFrame {
 		JMenuItem mntmB_Invoice = new JMenuItem("B-Invoice");
 		try {
 			mntmB_Invoice.setIcon(
-					new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_B_INVOICE)));
+					new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_B_INVOICE)));
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -358,7 +358,7 @@ public class LeamonERP extends JFrame {
 		JMenuItem mntmW_Invoice = new JMenuItem("W-Invoice");
 		try {
 			mntmW_Invoice.setIcon(
-					new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_W_INVOICE)));
+					new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_W_INVOICE)));
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -368,7 +368,7 @@ public class LeamonERP extends JFrame {
 		JMenu mnStockMaster = new JMenu("Stock Master");
 		try {
 			mnStockMaster.setIcon(
-					new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_STOCK_MASTER)));
+					new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_STOCK_MASTER)));
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -377,7 +377,7 @@ public class LeamonERP extends JFrame {
 		JMenuItem mntmAddNewStock = new JMenuItem("Add New");
 		try {
 			mntmAddNewStock.setIcon(
-					new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_ADD_STOCK)));
+					new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_ADD_STOCK)));
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -387,7 +387,7 @@ public class LeamonERP extends JFrame {
 		JMenuItem mntmEditStock = new JMenuItem("Edit");
 		try {
 			mntmEditStock.setIcon(
-					new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_EDIT_STOCK)));
+					new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_EDIT_STOCK)));
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -397,7 +397,7 @@ public class LeamonERP extends JFrame {
 		JMenuItem mntmSearchStock = new JMenuItem("Search");
 		try {
 			mntmSearchStock.setIcon(
-					new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_SEARCH_STOCK)));
+					new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_SEARCH_STOCK)));
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -407,7 +407,7 @@ public class LeamonERP extends JFrame {
 		JMenuItem mntmDeleteStock = new JMenuItem("Delete");
 		try {
 			mntmDeleteStock.setIcon(
-					new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_DELETE_STOCK)));
+					new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_DELETE_STOCK)));
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -417,7 +417,7 @@ public class LeamonERP extends JFrame {
 		JMenu mnPartyMaster = new JMenu("Party Master");
 		try {
 			mnPartyMaster.setIcon(
-					new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_PARTY_MASTER)));
+					new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_PARTY_MASTER)));
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -426,7 +426,7 @@ public class LeamonERP extends JFrame {
 		JMenuItem mntmAddNewParty = new JMenuItem("Add New");
 		try {
 			mntmAddNewParty.setIcon(
-					new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_ADD_PARTY)));
+					new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_ADD_PARTY)));
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -436,7 +436,7 @@ public class LeamonERP extends JFrame {
 		JMenuItem mntmEditParty = new JMenuItem("Edit");
 		try {
 			mntmEditParty.setIcon(
-					new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_EDIT_PARTY)));
+					new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_EDIT_PARTY)));
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -446,7 +446,7 @@ public class LeamonERP extends JFrame {
 		JMenuItem mntmSearchParty = new JMenuItem("Search");
 		try {
 			mntmSearchParty.setIcon(
-					new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_SEARCH_PARTY)));
+					new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_SEARCH_PARTY)));
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -456,7 +456,7 @@ public class LeamonERP extends JFrame {
 		JMenuItem mntmDeleteParty = new JMenuItem("Delete");
 		try {
 			mntmDeleteParty.setIcon(
-					new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_DELETE_PARTY)));
+					new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_DELETE_PARTY)));
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -466,7 +466,7 @@ public class LeamonERP extends JFrame {
 		JMenu mnPaymentMaster = new JMenu("Payment Master");
 		try {
 			mnPaymentMaster.setIcon(
-					new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_PAYMENT_MASTER)));
+					new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_PAYMENT_MASTER)));
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -487,7 +487,7 @@ public class LeamonERP extends JFrame {
 		JMenu mnTheme = new JMenu("Theme");
 		try {
 			mnTheme.setIcon(
-					new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_THEME_MASTER)));
+					new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_THEME_MASTER)));
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -516,7 +516,7 @@ public class LeamonERP extends JFrame {
 		JMenu mnReport = new JMenu("Report Master");
 		try {
 			mnReport.setIcon(
-					new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_REPORT_MASTER)));
+					new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_REPORT_MASTER)));
 		}catch(Exception e) {
 			LOGGER.error(e);
 		}
@@ -537,7 +537,7 @@ public class LeamonERP extends JFrame {
 		JMenu mnTools = new JMenu("Tools");
 		try {
 			mnTools.setIcon(
-					new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_TOOLS_MASTER)));
+					new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_TOOLS_MASTER)));
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
