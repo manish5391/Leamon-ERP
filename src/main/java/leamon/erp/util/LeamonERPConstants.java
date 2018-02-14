@@ -251,26 +251,48 @@ public interface LeamonERPConstants {
 	String INVOICE_UI_COL1_COL2_OPERATION="+";
 	//3.4 end of ghanshyam code
 
-	//3.6 ghan code
-	String IMAGE_PATH_LEAMON_ERP=USER_DIR+File.separatorChar+LeamonERPConstants.RESOURCE+File.separatorChar;
-	public static final String IMG_COMPANY_MASTER="CompanyMaster/Company.png";
-	public static final String IMG_COMPANY_INFO="CompanyMaster/CompanyInfo.png";
-	public static final String IMG_INVOICE_MASTER="InvoiceMaster/Invoice.png";
-	public static final String IMG_B_INVOICE="InvoiceMaster/Binvoice.png";
-	public static final String IMG_W_INVOICE="InvoiceMaster/Winvoice.png";
-	public static final String IMG_PARTY_MASTER="PartyMaster/Party.png";
-	public static final String IMG_ADD_PARTY="PartyMaster/add_button.png";
-	public static final String IMG_EDIT_PARTY="PartyMaster/edit_button.png";
-	public static final String IMG_SEARCH_PARTY="PartyMaster/view.png";
-	public static final String IMG_DELETE_PARTY="PartyMaster/delete_button.png";	
-	public static final String IMG_PAYMENT_MASTER="PaymentMaster/Payment.png";
-	public static final String IMG_REPORT_MASTER="ReportMaster/Report.png";
-	public static final String IMG_STOCK_MASTER="StockMaster/Stock.png";
-	public static final String IMG_ADD_STOCK="StockMaster/add_button.png";
-	public static final String IMG_EDIT_STOCK="StockMaster/edit_button.png";
-	public static final String IMG_SEARCH_STOCK="StockMaster/view.png";
-	public static final String IMG_DELETE_STOCK="StockMaster/delete_button.png";
-	public static final String IMG_THEME_MASTER="Theme/Theme.png";
-	public static final String IMG_TOOLS_MASTER="Tools/Tools.png";
-	//3.6 end of ghan code
+	// 3.6 ghan code
+	String IMAGE_PATH_LEAMON_ERP = USER_DIR + File.separatorChar + LeamonERPConstants.RESOURCE + File.separatorChar;
+
+	public static final String IMG_COMPANY_MASTER = "CompanyMaster/Company.png";
+	public static final String IMG_COMPANY_INFO = "CompanyMaster/CompanyInfo.png";
+
+	public static final String IMG_INVOICE_MASTER = "InvoiceMaster/Invoice.png";
+	public static final String IMG_B_INVOICE = "InvoiceMaster/Binvoice.png";
+	public static final String IMG_W_INVOICE = "InvoiceMaster/Winvoice.png";
+
+	public static final String IMG_PARTY_MASTER = "PartyMaster/Party.png";
+	public static final String IMG_ADD_PARTY = "PartyMaster/add_button.png";
+	public static final String IMG_EDIT_PARTY = "PartyMaster/edit_button.png";
+	public static final String IMG_SEARCH_PARTY = "PartyMaster/view.png";
+	public static final String IMG_DELETE_PARTY = "PartyMaster/delete_button.png";
+
+	public static final String IMG_PAYMENT_MASTER = "PaymentMaster/Payment.png";
+	public static final String IMG_PAYMENT_ADJUSTMENT = "PaymentMaster/Adjustment.png";
+	public static final String IMG_PAYMENT_OPENING_BALANCE = "PaymentMaster/OpeningBalance.png";
+	public static final String IMG_PAYMENT_SUMMARY = "PaymentMaster/Summary.png";
+
+	public static final String IMG_REPORT_MASTER = "ReportMaster/Report.png";
+	public static final String IMG_PAYMENT_REPORT = "ReportMaster/PaymentReport.png";
+	public static final String IMG_SALES_REPORT = "ReportMaster/SalesReport.png";
+	public static final String IMG_STOCK_REPORT = "ReportMaster/StockReport.png";
+
+	public static final String IMG_STOCK_MASTER = "StockMaster/Stock.png";
+	public static final String IMG_ADD_STOCK = "StockMaster/add_button.png";
+	public static final String IMG_EDIT_STOCK = "StockMaster/edit_button.png";
+	public static final String IMG_SEARCH_STOCK = "StockMaster/view.png";
+	public static final String IMG_DELETE_STOCK = "StockMaster/delete_button.png";
+
+	public static final String IMG_THEME_MASTER = "Theme/Theme.png";
+	public static final String IMG_CLASSIC_THEME = "Theme/Classic.png";
+	public static final String IMG_DEFAULT_THEME = "Theme/Default.png";
+	public static final String IMG_MORTIS_THEME = "Theme/Mortis.png";
+	public static final String IMG_NIMBUS_THEME = "Theme/Nimbus.png";
+	public static final String IMG_WINDOW_THEME = "Theme/Window.png";
+
+	public static final String IMG_TOOLS_MASTER = "Tools/Tools.png";
+	public static final String IMG_TOOLS_CALCULATOR = "Tools/Calculator.png";
+	public static final String IMG_TOOLS_TRASH = "Tools/Trash.png";
+	public static final String IMG_TOOLS_UPDATES = "Tools/Updates.png";
+	// 3.6 end of ghan code
 }

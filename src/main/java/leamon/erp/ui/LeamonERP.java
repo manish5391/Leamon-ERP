@@ -473,85 +473,169 @@ public class LeamonERP extends JFrame {
 		menuBar.add(mnPaymentMaster);
 		
 		JMenuItem mntmAdjustmentPayment = new JMenuItem("Adjustments");
+		try {
+			mntmAdjustmentPayment.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_PAYMENT_ADJUSTMENT)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		mntmAdjustmentPayment.addActionListener(e -> hprlnkPaymentRegisterClick(e));
 		mnPaymentMaster.add(mntmAdjustmentPayment);
 		
 		JMenuItem mntmSummaryPayment = new JMenuItem("Summary");
+		try {
+			mntmSummaryPayment.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_PAYMENT_SUMMARY)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		mntmSummaryPayment.addActionListener(e -> mntmSummaryPaymentClick(e) );
 		mnPaymentMaster.add(mntmSummaryPayment);
 		
 		JMenuItem mntmOpeningBalance = new JMenuItem("Opening Balance");
+		try {
+			mntmOpeningBalance.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_PAYMENT_OPENING_BALANCE)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		mntmOpeningBalance.addActionListener(e -> mntmOpeningBalanceClick(e));
 		mnPaymentMaster.add(mntmOpeningBalance);
 		
 		JMenu mnTheme = new JMenu("Theme");
 		try {
-			mnTheme.setIcon(
-					new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_THEME_MASTER)));
+			mnTheme.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_THEME_MASTER)));
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
 		menuBar.add(mnTheme);
 		
 		JMenuItem mntmWindow = new JMenuItem("Window");
+		try {
+			mntmWindow.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_WINDOW_THEME)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		mntmWindow.addActionListener(e -> mntmWindowClick(e));
 		mnTheme.add(mntmWindow);
 		
 		JMenuItem mntmClassic = new JMenuItem("Classic");
+		try {
+			mntmClassic.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_CLASSIC_THEME)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		mnTheme.add(mntmClassic);
 		mntmClassic.addActionListener(e -> mntmClassicClick(e));
 		
 		JMenuItem mntmMetal = new JMenuItem("Mortis");
+		try {
+			mntmMetal.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_MORTIS_THEME)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		mnTheme.add(mntmMetal);
 		mntmMetal.addActionListener(e -> mntmMortisClick(e));
 		
 		JMenuItem mntmNimus = new JMenuItem("Nimbus");
+		try {
+			mntmNimus.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_NIMBUS_THEME)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		mnTheme.add(mntmNimus);
 		mntmNimus.addActionListener(e -> mntmNimusClick(e));
 		
 		JMenuItem mntmDefault = new JMenuItem("Default");
+		try {
+			mntmDefault.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_DEFAULT_THEME)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		mnTheme.add(mntmDefault);
 		mntmDefault.addActionListener(e -> mntmDefaultClick(e));
 		// 3.6 Ghanshaym code forJmenu
 		JMenu mnReport = new JMenu("Report Master");
 		try {
-			mnReport.setIcon(
-					new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_REPORT_MASTER)));
-		}catch(Exception e) {
+			mnReport.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_REPORT_MASTER)));
+		} catch (Exception e) {
 			LOGGER.error(e);
 		}
 		menuBar.add(mnReport);
 
 		JMenuItem mntmSalesReport = new JMenuItem("Sales Report");
+		try {
+			mntmSalesReport.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_SALES_REPORT)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		mnReport.add(mntmSalesReport);
 		mntmSalesReport.addActionListener(e -> mntmSalesReportClick(e));
 
 		JMenuItem mntmStockReport = new JMenuItem("Stock Report");
+		try {
+			mntmStockReport.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_STOCK_REPORT)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		mnReport.add(mntmStockReport);
 		mntmStockReport.addActionListener(e -> mntmStockReportClick(e));
 
 		JMenuItem mntmPaymentReport = new JMenuItem("Payment Report");
+		try {
+			mntmPaymentReport.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_PAYMENT_REPORT)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		mnReport.add(mntmPaymentReport);
 		mntmPaymentReport.addActionListener(e -> mntmPaymentReportClick(e));
 
 		JMenu mnTools = new JMenu("Tools");
 		try {
-			mnTools.setIcon(
-					new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_TOOLS_MASTER)));
+			mnTools.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_TOOLS_MASTER)));
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
 		menuBar.add(mnTools);
 
 		JMenuItem mntmCalculator = new JMenuItem("Calculator");
+		try {
+			mntmCalculator.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_TOOLS_CALCULATOR)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		mnTools.add(mntmCalculator);
 		mntmCalculator.addActionListener(e -> mntmCalculatorClick(e));
 
 		JMenuItem mntmUpdates = new JMenuItem("Updates");
+		try {
+			mntmUpdates.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_TOOLS_UPDATES)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		mnTools.add(mntmUpdates);
 		mntmUpdates.addActionListener(e -> mntmUpdatesClick(e));
 
 		JMenuItem mntmTrash = new JMenuItem("Trash");
+		try {
+			mntmTrash.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_TOOLS_TRASH)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		mnTools.add(mntmTrash);
 		mntmTrash.addActionListener(e -> mntmTrashClick(e));
 		// 3.6 end of Ghanshyam code
