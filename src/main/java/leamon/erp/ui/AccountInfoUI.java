@@ -1013,7 +1013,14 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		txtGSTNumber.setText(si.getGstNumber());
 		txtTransport.setText(si.getTransport());
 		txtPhone.setText(""+si.getPhone());
-		txtAlternatePhone.setText(""+si.getAlternatePhone());//3.5 Ghanshyam code to alternate number
+		
+		if(null == si.getAlternatePhone()){
+			txtAlternatePhone.setText(LeamonERPConstants.EMPTY_STR);
+		}else{
+			txtAlternatePhone.setText(si.getAlternatePhone().toString());
+		}
+		
+		//3.5 Ghanshyam code to alternate number
 		txtHouseShopNum.setText(si.getHouseShopNumber());
 		txtStreet.setText(si.getStreet());
 		fmtTxtPinCode.setText(""+si.getPinCode());
