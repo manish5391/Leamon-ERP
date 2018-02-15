@@ -509,7 +509,7 @@ public class LeamonERP extends JFrame {
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
-		menuBar.add(mnTheme);
+		
 		
 		JMenuItem mntmWindow = new JMenuItem("Window");
 		try {
@@ -568,8 +568,8 @@ public class LeamonERP extends JFrame {
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
-		menuBar.add(mnReport);
-
+		
+		
 		JMenuItem mntmSalesReport = new JMenuItem("Sales Report");
 		try {
 			mntmSalesReport.setIcon(new ImageIcon(
@@ -607,7 +607,10 @@ public class LeamonERP extends JFrame {
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
+		
+		menuBar.add(mnReport);
 		menuBar.add(mnTools);
+		menuBar.add(mnTheme);
 
 		JMenuItem mntmCalculator = new JMenuItem("Calculator");
 		try {
