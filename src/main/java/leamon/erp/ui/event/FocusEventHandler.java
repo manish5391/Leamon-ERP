@@ -80,7 +80,11 @@ public class FocusEventHandler implements FocusListener {
 			}else if(txtField.getName() !=null && txtField.getName().equals(LeamonERPConstants.TEXTFIELD_NAME_ACCOUNT_INFO_SERACH)){ /*Stock Items Search*/
 				LOGGER.debug("inside "+LeamonERPConstants.TEXTFIELD_NAME_ACCOUNT_INFO_SERACH);
 				txtField.getDocument().addDocumentListener(new DocumentListenerHandler(txtField,table.getRowSorter()));
+			}else if(txtField.getName() !=null && txtField.getName().equals(LeamonERPConstants.TEXTFIELD_NAME_STATE_CITY_SERACH)){ /*State City Search*/
+				LOGGER.debug("inside "+LeamonERPConstants.TEXTFIELD_NAME_STATE_CITY_SERACH);
+				txtField.getDocument().addDocumentListener(new DocumentListenerHandler(txtField,table.getRowSorter()));
 			}
+			
 		}//end if text field instance
 		else if(e.getSource() instanceof JXSearchField){
 			
@@ -89,6 +93,9 @@ public class FocusEventHandler implements FocusListener {
 			
 			if(txtField.getName() !=null && txtField.getName().equals(LeamonERPConstants.TEXTFIELD_NAME_ACCOUNT_INFO_SERACH)){
 				LOGGER.debug("inside "+LeamonERPConstants.TEXTFIELD_NAME_ACCOUNT_INFO_SERACH);
+				txtField.getDocument().addDocumentListener(new DocumentListenerHandler(txtField,table.getRowSorter()));
+			}else if(txtField.getName() !=null && txtField.getName().equals(LeamonERPConstants.TEXTFIELD_NAME_STATE_CITY_SERACH)){ /*State City Search*/
+				LOGGER.debug("inside "+LeamonERPConstants.TEXTFIELD_NAME_STATE_CITY_SERACH);
 				txtField.getDocument().addDocumentListener(new DocumentListenerHandler(txtField,table.getRowSorter()));
 			}
 		}

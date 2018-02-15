@@ -106,6 +106,7 @@ public interface LeamonERPConstants {
 	String TEXTFIELD_NAME_DESCRIPTION = "txtDescription";
 	String TEXTFIELD_NAME_SOCK_ITEM_SERACH = "textSearchField";
 	String TEXTFIELD_NAME_ACCOUNT_INFO_SERACH = "textSearchFieldAccountInfo";
+	String TEXTFIELD_NAME_STATE_CITY_SERACH = "textSearchFieldStateCity";
 
 	/*Account info*/
 	String TEXTFIELD_ACCOUNT_PHONE="txtAccountPhone";
