@@ -346,7 +346,7 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		btnClear.setFont(new Font("DialogInput", Font.BOLD, 14));
 		btnClear.setBackground(Color.WHITE);
 		btnClear.setMnemonic(KeyEvent.VK_R);
-		btnClear.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK), "Clear");
+		btnClear.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.ALT_DOWN_MASK), "Clear");
 		btnClear.getActionMap().put("Clear", getClearAction());
 		btnClear.addActionListener(e -> btnClearClick(e));
 
@@ -360,7 +360,7 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		btnEdit.setBackground(Color.WHITE);
 		btnEdit.setName(LeamonERPConstants.BUTTON_ACTION_EDIT_ACCOUNT_INFO);
 		btnEdit.setMnemonic(KeyEvent.VK_E);
-		btnEdit.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.CTRL_DOWN_MASK), "Edit");
+		btnEdit.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.ALT_DOWN_MASK), "Edit");
 		btnEdit.getActionMap().put("Edit", getEditAction());
 		btnEdit.addActionListener(this);
 
@@ -373,7 +373,7 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		btnSave.setName(LeamonERPConstants.BUTTON_ACTION_ADD_ACCOUNT_INFO);
 		btnSave.setBackground(Color.WHITE);
 		btnSave.setMnemonic(KeyEvent.VK_S);
-		btnSave.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK), "Save");
+		btnSave.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.ALT_DOWN_MASK), "Save");
 		btnSave.getActionMap().put("Save", getSaveAction());
 		btnSave.addActionListener(this);
 
@@ -386,7 +386,7 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		btnDelete.setFont(new Font("DialogInput", Font.BOLD, 14));
 		btnDelete.setBackground(Color.WHITE);
 		btnDelete.setMnemonic(KeyEvent.VK_D);
-		btnDelete.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_DOWN_MASK), "Delete");
+		btnDelete.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.ALT_DOWN_MASK), "Delete");
 		btnDelete.getActionMap().put("Delete", getDeleteAction());
 		btnDelete.setName(LeamonERPConstants.BUTTON_ACTION_DELETE_ACCOUNT_INFO);
 
@@ -444,7 +444,7 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		btnUploadImage.addKeyListener(new CustomKeyListener());
 		btnUploadImage.setMnemonic(KeyEvent.VK_U);
 		btnUploadImage.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_U,
-				KeyEvent.CTRL_DOWN_MASK), "Upload Image");
+				KeyEvent.ALT_DOWN_MASK), "Upload Image");
 		btnUploadImage.getActionMap().put("Upload Image", getUploadImageAction());
 
 		JLabel lblDescription = new JLabel("Description");
@@ -1200,11 +1200,11 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		Action saveAction = new AbstractAction("Save") {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				LOGGER.info("ctrl + s clicked");
+				LOGGER.info("alt + s clicked");
 				save();
 			}
 		};
-		saveAction.putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
+		saveAction.putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.ALT_DOWN_MASK));
 		return saveAction;
 	}
 
@@ -1212,11 +1212,11 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		Action deleteAction = new AbstractAction("Delete") {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				LOGGER.info("ctrl + D clicked");
+				LOGGER.info("alt + D clicked");
 				delete();
 			}
 		};
-		deleteAction.putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_DOWN_MASK));
+		deleteAction.putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.ALT_DOWN_MASK));
 		return deleteAction;
 	}
 
@@ -1224,22 +1224,22 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		Action editAction = new AbstractAction("Edit") {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				LOGGER.info("ctrl + E clicked");
+				LOGGER.info("alt + E clicked");
 				edit();
 			}
 		};
-		editAction .putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.CTRL_DOWN_MASK));
+		editAction .putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.ALT_DOWN_MASK));
 		return editAction;
 	}
 	public Action getClearAction(){
 		Action editAction = new AbstractAction("Clear") {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				LOGGER.info("ctrl + R clicked");
+				LOGGER.info("alt + R clicked");
 				clear();
 			}
 		};
-		editAction .putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK));
+		editAction .putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.ALT_DOWN_MASK));
 		return editAction;
 	}
 	
@@ -1247,11 +1247,11 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		Action editAction = new AbstractAction("Upload Image") {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				LOGGER.info("ctrl + U clicked");
+				LOGGER.info("alt + U clicked");
 				imageShower();
 			}
 		};
-		editAction .putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK));
+		editAction .putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.ALT_DOWN_MASK));
 		return editAction;
 	}
 
