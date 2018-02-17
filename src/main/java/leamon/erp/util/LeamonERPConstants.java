@@ -264,6 +264,13 @@ public interface LeamonERPConstants {
 	public static final String IMG_B_INVOICE = "InvoiceMaster/Binvoice.png";
 	public static final String IMG_W_INVOICE = "InvoiceMaster/Winvoice.png";
 	public static final String IMG_INVOICE_MANAGER = "InvoiceMaster/InvoiceManager.png";
+	public static final String IMG_B_W_INVOICE_ADD = "InvoiceMaster/BandWInvoice/Add.png";
+	public static final String IMG_B_W_INVOICE_CLOSE = "InvoiceMaster/BandWInvoice/Close.png";
+	public static final String IMG_B_W_INVOICE_DELETE = "InvoiceMaster/BandWInvoice/Delete.png";
+	public static final String IMG_B_W_INVOICE_PRINT = "InvoiceMaster/BandWInvoice/Print.png";
+	public static final String IMG_B_W_INVOICE_REFERESH = "InvoiceMaster/BandWInvoice/Refresh.png";
+	public static final String IMG_B_W_INVOICE_SAVE = "InvoiceMaster/BandWInvoice/Save.png";
+	public static final String IMG_B_W_INVOICE_UPDATE = "InvoiceMaster/BandWInvoice/Update.png";
 
 	public static final String IMG_PARTY_MASTER = "PartyMaster/Party.png";
 	public static final String IMG_ADD_PARTY = "PartyMaster/add_button.png";
