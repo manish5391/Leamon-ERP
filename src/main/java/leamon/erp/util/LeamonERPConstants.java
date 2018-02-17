@@ -257,10 +257,13 @@ public interface LeamonERPConstants {
 
 	public static final String IMG_COMPANY_MASTER = "CompanyMaster/Company.png";
 	public static final String IMG_COMPANY_INFO = "CompanyMaster/CompanyInfo.png";
+	public static final String IMG_COMPANY_INFO_SAVE = "CompanyMaster/CompanyInfo/Save.png";
+	public static final String IMG_COMPANY_INFO_CLOSE = "CompanyMaster/CompanyInfo/Close.png";
 
 	public static final String IMG_INVOICE_MASTER = "InvoiceMaster/Invoice.png";
 	public static final String IMG_B_INVOICE = "InvoiceMaster/Binvoice.png";
 	public static final String IMG_W_INVOICE = "InvoiceMaster/Winvoice.png";
+	public static final String IMG_INVOICE_MANAGER = "InvoiceMaster/InvoiceManager.png";
 
 	public static final String IMG_PARTY_MASTER = "PartyMaster/Party.png";
 	public static final String IMG_ADD_PARTY = "PartyMaster/add_button.png";
@@ -272,6 +275,7 @@ public interface LeamonERPConstants {
 	public static final String IMG_PAYMENT_ADJUSTMENT = "PaymentMaster/Adjustment.png";
 	public static final String IMG_PAYMENT_OPENING_BALANCE = "PaymentMaster/OpeningBalance.png";
 	public static final String IMG_PAYMENT_SUMMARY = "PaymentMaster/Summary.png";
+	public static final String IMG_PAYMENT_MANAGER = "PaymentMaster/PaymentManager.png";
 
 	public static final String IMG_REPORT_MASTER = "ReportMaster/Report.png";
 	public static final String IMG_PAYMENT_REPORT = "ReportMaster/PaymentReport.png";

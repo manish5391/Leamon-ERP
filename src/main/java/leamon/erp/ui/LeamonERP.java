@@ -364,6 +364,37 @@ public class LeamonERP extends JFrame {
 		}
 		mntmW_Invoice.addActionListener(e -> hyperlinkInvoiceClick(e));
 		mnInvoiceMaster.add(mntmW_Invoice);
+
+		// 3.6 ghan code
+		JMenu mntmInvoice_Manager = new JMenu("Invoice Manager");
+		try {
+			mntmInvoice_Manager.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_INVOICE_MANAGER)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		mnInvoiceMaster.add(mntmInvoice_Manager);
+		
+		JMenuItem mntmB_Invoice_Manager = new JMenuItem("B-Invoice Manager");
+		try {
+			mntmB_Invoice_Manager.setIcon(
+					new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_B_INVOICE)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		mntmB_Invoice_Manager.addActionListener(e -> hyperlinkBInvoiceManagerClick(e));
+		mntmInvoice_Manager.add(mntmB_Invoice_Manager);
+		
+		JMenuItem mntmW_Invoice_Manager = new JMenuItem("W-Invoice Manager");
+		try {
+			mntmW_Invoice_Manager.setIcon(
+					new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_W_INVOICE)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		mntmW_Invoice_Manager.addActionListener(e -> hyperlinkWInvoiceManagerClick(e));
+		mntmInvoice_Manager.add(mntmW_Invoice_Manager);
+		// 3.6 end of ghan code
 		
 		JMenu mnStockMaster = new JMenu("Stock Master");
 		try {
@@ -501,6 +532,18 @@ public class LeamonERP extends JFrame {
 		}
 		mntmOpeningBalance.addActionListener(e -> mntmOpeningBalanceClick(e));
 		mnPaymentMaster.add(mntmOpeningBalance);
+		
+		// 3.6 ghan code
+		JMenuItem mntmPayment_Manager = new JMenuItem("Payment Manager");
+		try {
+			mntmPayment_Manager.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_PAYMENT_MANAGER)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		mntmPayment_Manager.addActionListener(e -> mntmPaymentManagerClick(e));
+		mnPaymentMaster.add(mntmPayment_Manager);
+		// 3.6 end of ghan code
 		
 		JMenu mnTheme = new JMenu("Theme");
 		try {
@@ -1335,6 +1378,21 @@ public class LeamonERP extends JFrame {
 	}
 	
 	private Object mntmTrashClick(ActionEvent e) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private Object mntmPaymentManagerClick(ActionEvent e) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private Object hyperlinkBInvoiceManagerClick(ActionEvent e) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private Object hyperlinkWInvoiceManagerClick(ActionEvent e) {
 		// TODO Auto-generated method stub
 		return null;
 	}
