@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -11,13 +12,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
 
@@ -243,17 +249,50 @@ public class AccountOpeningBalanceUI extends JInternalFrame  {
 		
 		btnSave = new JButton("Save");
 		btnSave.setBounds(292, 239, 82, 23);
+		// 3.6 ghan code
+		btnSave.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+				.put(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.ALT_DOWN_MASK), "Save");
+		btnSave.getActionMap().put("Save", getSaveAction());
+		try {
+			btnSave.setIcon(new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP
+					.concat(LeamonERPConstants.IMG_PAYMENT_MASTER_SAVE_BUTTON)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		// 3.6 end of ghan code
 		getContentPane().add(btnSave);
 		btnSave.addActionListener( e -> btnSaveClick(e));
 		
 		buttonRefresh = new JButton("Refresh");
 		buttonRefresh.addActionListener(e -> buttonRefreshClick(e));
 		buttonRefresh.setBounds(382, 239, 94, 23);
+		// 3.6 ghan code
+		buttonRefresh.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+				.put(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.ALT_DOWN_MASK), "Clear");
+		buttonRefresh.getActionMap().put("Clear", getClearAction());
+		try {
+			buttonRefresh.setIcon(new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP
+					.concat(LeamonERPConstants.IMG_PAYMENT_MASTER_REFRESH_BUTTON)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		// 3.6 end of ghan code
 		getContentPane().add(buttonRefresh);
 		
 		buttonClose = new JButton("Close");
 		buttonClose.addActionListener(e -> buttonCloseClick(e));
 		buttonClose.setBounds(486, 239, 94, 23);
+		// 3.6 ghan code
+		buttonClose.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+				.put(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.ALT_DOWN_MASK), "Close");
+		buttonClose.getActionMap().put("Close", getCloseAction());
+		try {
+			buttonClose.setIcon(new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP
+					.concat(LeamonERPConstants.IMG_PAYMENT_MASTER_CLOSE_BUTTON)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		// 3.6 end of ghan code
 		getContentPane().add(buttonClose);
 		
 		registerKeyEventHandler();
@@ -393,4 +432,47 @@ public class AccountOpeningBalanceUI extends JInternalFrame  {
 			JOptionPane.showMessageDialog(this, "Failed to save!.", "Leamon-ERP Meesage", JOptionPane.ERROR_MESSAGE);
 		}
 	}
+	
+	//3.6 ghan code
+	private Action getSaveAction() {
+
+		Action saveAction = new AbstractAction("Save") {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				LOGGER.info("alt + s clicked");
+				if(!isValidated()){
+					return ;
+				}
+				save();
+			}
+		};
+		saveAction.putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.ALT_DOWN_MASK));
+		return saveAction;
+	}
+
+	public Action getClearAction() {
+		Action editAction = new AbstractAction("Clear") {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				LOGGER.info("alt + R clicked");
+				clear();
+			}
+		};
+		editAction.putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.ALT_DOWN_MASK));
+		return editAction;
+	}
+
+	private Action getCloseAction() {
+
+		Action closeAction = new AbstractAction("Close") {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				LOGGER.info("alt + c clicked");
+				dispose();
+			}
+		};
+		closeAction.putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.ALT_DOWN_MASK));
+		return closeAction;
+	}
+	//end of 3.6 ghan code
 }

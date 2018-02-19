@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
@@ -829,6 +830,14 @@ public class InvoiceUILegal extends JInternalFrame {
 		buttonAddNew.setText("Add New");
 		buttonAddNew.setMnemonic(KeyEvent.VK_N);
 		buttonAddNew.setBounds(20, 5, 98, 27);
+		// 3.6 ghan code
+		try {
+			buttonAddNew.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_B_W_INVOICE_ADD)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		// 3.6 end of ghan code
 		panel_6.add(buttonAddNew);
 		buttonAddNew.addActionListener(e -> buttonAddNewClick(e));
 		
@@ -836,12 +845,28 @@ public class InvoiceUILegal extends JInternalFrame {
 		buttonUpdate.setText("Update");
 		buttonUpdate.setMnemonic(KeyEvent.VK_U);
 		buttonUpdate.setBounds(124, 5, 98, 27);
+		// 3.6 ghan code
+		try {
+			buttonUpdate.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_B_W_INVOICE_UPDATE)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		// 3.6 end of ghan code
 		panel_6.add(buttonUpdate);
 		
 		buttonDelete = new JXButton();
 		buttonDelete.setText("Delete");
 		buttonDelete.setMnemonic(KeyEvent.VK_D);
 		buttonDelete.setBounds(232, 5, 98, 27);
+		// 3.6 ghan code
+		try {
+			buttonDelete.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_B_W_INVOICE_DELETE)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		// 3.6 end of ghan code
 		panel_6.add(buttonDelete);
 		
 		JComboBox comboBoxPrint = new JComboBox();
@@ -852,23 +877,55 @@ public class InvoiceUILegal extends JInternalFrame {
 		buttonPrint.setText("Print");
 		buttonPrint.setMnemonic(KeyEvent.VK_P);
 		buttonPrint.setBounds(597, 5, 98, 27);
+		// 3.6 ghan code
+		try {
+			buttonPrint.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_B_W_INVOICE_PRINT)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		// 3.6 end of ghan code
 		panel_6.add(buttonPrint);
 		
 		buttonSave = new JXButton();
 		buttonSave.setText("Save");
 		buttonSave.setMnemonic(KeyEvent.VK_S);
 		buttonSave.setBounds(705, 5, 98, 27);
+		// 3.6 ghan code
+		try {
+			buttonSave.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_B_W_INVOICE_SAVE)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		// 3.6 end of ghan code
 		panel_6.add(buttonSave);
 		
 		buttonRefresh = new JXButton();
 		buttonRefresh.setText("Refresh");
 		buttonRefresh.setMnemonic(KeyEvent.VK_R);
 		buttonRefresh.setBounds(813, 5, 98, 27);
+		// 3.6 ghan code
+		try {
+			buttonRefresh.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_B_W_INVOICE_REFERESH)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		// 3.6 end of ghan code
 		panel_6.add(buttonRefresh);
 		
 		JXButton buttonClose = new JXButton();
 		buttonClose.setText("Close");
 		buttonClose.setBounds(921, 5, 98, 27);
+		// 3.6 ghan code
+		try {
+			buttonClose.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_B_W_INVOICE_CLOSE)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		// 3.6 end of ghan code
 		buttonClose.addActionListener(e -> buttonCloseClick(e));
 		panel_6.add(buttonClose);
 		

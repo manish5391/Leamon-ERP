@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -14,10 +16,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -25,6 +30,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
@@ -287,16 +293,49 @@ public class PaymentUI extends JInternalFrame {
 		
 		JButton btnSaveAdjustment = new JButton("Save Adjustment");
 		btnSaveAdjustment.setBounds(504, 11, 130, 23);
+		// 3.6 ghan code
+		btnSaveAdjustment.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+				.put(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.ALT_DOWN_MASK), "Save");
+		btnSaveAdjustment.getActionMap().put("Save", getSaveAction());
+		try {
+			btnSaveAdjustment.setIcon(new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP
+					.concat(LeamonERPConstants.IMG_PAYMENT_MASTER_SAVE_BUTTON)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		// 3.6 end of ghan code
 		btnSaveAdjustment.addActionListener(e -> btnSaveAdjustmentClick(e));
 		panel_1.add(btnSaveAdjustment);
 		
 		JButton btnClose = new JButton("Close");
 		btnClose.setBounds(746, 11, 94, 23);
+		// 3.6 ghan code
+		btnClose.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+				.put(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.ALT_DOWN_MASK), "Close");
+		btnClose.getActionMap().put("Close", getCloseAction());
+		try {
+			btnClose.setIcon(new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP
+					.concat(LeamonERPConstants.IMG_PAYMENT_MASTER_CLOSE_BUTTON)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		// 3.6 end of ghan code
 		btnClose.addActionListener(e -> btnCloseClick(e));
 		panel_1.add(btnClose);
 		
 		JButton btnRefresh = new JButton("Refresh");
 		btnRefresh.setBounds(642, 11, 94, 23);
+		// 3.6 ghan code
+		btnRefresh.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+				.put(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.ALT_DOWN_MASK), "Clear");
+		btnRefresh.getActionMap().put("Clear", getClearAction());
+		try {
+			btnRefresh.setIcon(new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP
+					.concat(LeamonERPConstants.IMG_PAYMENT_MASTER_REFRESH_BUTTON)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		// 3.6 end of ghan code
 		btnRefresh.addActionListener(e -> btnRefreshClick (e));
 		panel_1.add(btnRefresh);
 		
@@ -683,69 +722,7 @@ public class PaymentUI extends JInternalFrame {
 	
 	}
 	private void btnSaveAdjustmentClick(ActionEvent e){
-		
-		if(!checkValidation()){
-			return ;
-		}
-		
-		/*get all value to save*/
-		Integer partyId = accountInfo.getId();
-		String receivedDate = datePickerPaymentDate.getEditor().getText();
-		String payment = textFieldPayment.getText();
-		String adjustedAmount = textFieldAdjAmt.getText();
-		String remainingAdjustmentAmount = textFieldRemainingAmt.getText();
-		String remark = textFieldRemark.getText();
-
-		String status = "";
-		if(Strings.isNullOrEmpty(remainingAdjustmentAmount) && Strings.isNullOrEmpty(adjustedAmount)){
-			status = ERPEnum.STATUS_PAYMENT_ADJUSTMENT_NOTHING.name();
-		}else if("0.0".equals(remainingAdjustmentAmount.trim())){
-			status = ERPEnum.STATUS_PAYMENT_ADJUSTMENT_CLEAR.name();
-		}else{
-			status = ERPEnum.STATUS_PAYMENT_ADJUSTMENT_PARTIAL.name();
-		}
-			
-		TablePaymentReceivedModel model  = (TablePaymentReceivedModel)table.getModel();
-		
-		PaymentReceivedInfo paymentReceivedInfo = PaymentReceivedInfo.builder()
-				.partyInfoID(partyId)
-				.receivedDate(receivedDate)
-				.receivedPayment(payment)
-				.adjustedPayment(adjustedAmount)
-				.remainingAmount(remainingAdjustmentAmount)
-				.remark(remark)
-				.status(status)
-				
-				.createdDate(new Timestamp(System.currentTimeMillis()))
-				.lastUpdated(new Timestamp(System.currentTimeMillis()))
-				.isEnable(Boolean.TRUE)
-				.build();
-		/*save bill amount adjustments*/
-		if(chckbxAdjustBillAmount.isSelected()){
-			paymentReceivedInfo.setType(ERPEnum.TYPE_PAYMENT_WITH_BILL.name());
-			
-			if(!model.getIsBAmount().contains(Boolean.TRUE)){
-				int choice =  JOptionPane.showConfirmDialog(this, "Nothing adjusted\n Still do you want to save?", "Leamon-ERP : Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-				
-				if(choice == JOptionPane.NO_OPTION){
-					return;
-				}
-			}
-			saveBillingPaymentAdjustment(paymentReceivedInfo, model);
-		}else if(chckbxWamountAdjust.isSelected()){
-			paymentReceivedInfo.setType(ERPEnum.TYPE_PAYMENT_WITHOUT_BILL.name());
-			
-			if(!model.getIsWAmount().contains(Boolean.TRUE)){
-				int choice =  JOptionPane.showConfirmDialog(this, "Nothing adjusted\n Still do you want to save?", "Leamon-ERP : Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-				
-				if(choice == JOptionPane.NO_OPTION){
-					return;
-				}
-			}
-			saveWithoutBillingPaymentAdjustment(paymentReceivedInfo, model);
-		}else{
-			JOptionPane.showMessageDialog(this, "No adjustment found.", "Leamon-ERP Message", JOptionPane.ERROR_MESSAGE);
-		}
+		save();//3.6 ghan code
 	}
 	private void btnCloseClick(ActionEvent e){
 		this.dispose();
@@ -1001,4 +978,107 @@ public class PaymentUI extends JInternalFrame {
 		
 		return isSaved;
 	}
+	
+	// 3.6 ghan code
+	public Action getClearAction() {
+		Action clearAction = new AbstractAction("Clear") {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				LOGGER.info("alt + R clicked");
+				clear();
+			}
+		};
+		clearAction.putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.ALT_DOWN_MASK));
+		return clearAction;
+	}
+
+	private Action getSaveAction() {
+
+		Action saveAction = new AbstractAction("Save") {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				LOGGER.info("alt + s clicked");
+				save();
+			}
+		};
+		saveAction.putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.ALT_DOWN_MASK));
+		return saveAction;
+	}
+
+	private Action getCloseAction() {
+
+		Action closeAction = new AbstractAction("Close") {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				LOGGER.info("alt + c clicked");
+				dispose();
+			}
+		};
+		closeAction.putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.ALT_DOWN_MASK));
+		return closeAction;
+	}
+
+	private void save() {
+
+		if (!checkValidation()) {
+			return;
+		}
+
+		/* get all value to save */
+		Integer partyId = accountInfo.getId();
+		String receivedDate = datePickerPaymentDate.getEditor().getText();
+		String payment = textFieldPayment.getText();
+		String adjustedAmount = textFieldAdjAmt.getText();
+		String remainingAdjustmentAmount = textFieldRemainingAmt.getText();
+		String remark = textFieldRemark.getText();
+
+		String status = "";
+		if (Strings.isNullOrEmpty(remainingAdjustmentAmount) && Strings.isNullOrEmpty(adjustedAmount)) {
+			status = ERPEnum.STATUS_PAYMENT_ADJUSTMENT_NOTHING.name();
+		} else if ("0.0".equals(remainingAdjustmentAmount.trim())) {
+			status = ERPEnum.STATUS_PAYMENT_ADJUSTMENT_CLEAR.name();
+		} else {
+			status = ERPEnum.STATUS_PAYMENT_ADJUSTMENT_PARTIAL.name();
+		}
+
+		TablePaymentReceivedModel model = (TablePaymentReceivedModel) table.getModel();
+
+		PaymentReceivedInfo paymentReceivedInfo = PaymentReceivedInfo.builder().partyInfoID(partyId)
+				.receivedDate(receivedDate).receivedPayment(payment).adjustedPayment(adjustedAmount)
+				.remainingAmount(remainingAdjustmentAmount).remark(remark).status(status)
+
+				.createdDate(new Timestamp(System.currentTimeMillis()))
+				.lastUpdated(new Timestamp(System.currentTimeMillis())).isEnable(Boolean.TRUE).build();
+		/* save bill amount adjustments */
+		if (chckbxAdjustBillAmount.isSelected()) {
+			paymentReceivedInfo.setType(ERPEnum.TYPE_PAYMENT_WITH_BILL.name());
+
+			if (!model.getIsBAmount().contains(Boolean.TRUE)) {
+				int choice = JOptionPane.showConfirmDialog(this, "Nothing adjusted\n Still do you want to save?",
+						"Leamon-ERP : Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+
+				if (choice == JOptionPane.NO_OPTION) {
+					return;
+				}
+			}
+			saveBillingPaymentAdjustment(paymentReceivedInfo, model);
+		} else if (chckbxWamountAdjust.isSelected()) {
+			paymentReceivedInfo.setType(ERPEnum.TYPE_PAYMENT_WITHOUT_BILL.name());
+
+			if (!model.getIsWAmount().contains(Boolean.TRUE)) {
+				int choice = JOptionPane.showConfirmDialog(this, "Nothing adjusted\n Still do you want to save?",
+						"Leamon-ERP : Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+
+				if (choice == JOptionPane.NO_OPTION) {
+					return;
+				}
+			}
+			saveWithoutBillingPaymentAdjustment(paymentReceivedInfo, model);
+		} else {
+			JOptionPane.showMessageDialog(this, "No adjustment found.", "Leamon-ERP Message",
+					JOptionPane.ERROR_MESSAGE);
+		}
+
+	}
+	// 3.6 end of ghan code
 }

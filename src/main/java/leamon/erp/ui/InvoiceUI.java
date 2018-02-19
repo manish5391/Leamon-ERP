@@ -202,14 +202,30 @@ public class InvoiceUI extends JInternalFrame {
 		btnAdd.setBounds(20, 8, 98, 27);
 		btnAdd.setText("Add New");
 		btnAdd.setMnemonic(KeyEvent.VK_N);
-		btnAdd.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK), "Add");
+		// 3.6 ghan code
+		try {
+			btnAdd.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_B_W_INVOICE_ADD)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		// 3.6 end of ghan code
+		btnAdd.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.ALT_DOWN_MASK), "Add");
 		btnAdd.getActionMap().put("Add", getAddAction());
 
 		btnUpdate = new JXButton();
 		btnUpdate.setBounds(124, 8, 98, 27);
 		btnUpdate.setText("Update");
 		btnUpdate.setMnemonic(KeyEvent.VK_U);
-		btnUpdate.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_U, KeyEvent.CTRL_DOWN_MASK), "Update");
+		// 3.6 ghan code
+		try {
+			btnUpdate.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_B_W_INVOICE_UPDATE)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		// 3.6 end of ghan code
+		btnUpdate.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_U, KeyEvent.ALT_DOWN_MASK), "Update");
 		btnUpdate.getActionMap().put("Update", getUpdateAction());
 		btnUpdate.addActionListener(e -> btnUpdateClick(e));
 
@@ -218,7 +234,15 @@ public class InvoiceUI extends JInternalFrame {
 		btnDelete.setText("Delete");
 		btnDelete.addActionListener(e -> btnDeleteClick(e));
 		btnDelete.setMnemonic(KeyEvent.VK_D);
-		btnDelete.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_DOWN_MASK), "Delete");
+		// 3.6 ghan code
+		try {
+			btnDelete.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_B_W_INVOICE_DELETE)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		// 3.6 end of ghan code
+		btnDelete.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.ALT_DOWN_MASK), "Delete");
 		btnDelete.getActionMap().put("Update", getDeleteAction());
 
 		comboBoxPrintCopiess = new JComboBox();
@@ -230,6 +254,14 @@ public class InvoiceUI extends JInternalFrame {
 		btnPrint.setText("Print");
 		btnPrint.addActionListener(e -> btnPrintClick(e));
 		btnPrint.setMnemonic(KeyEvent.VK_P);
+		// 3.6 ghan code
+		try {
+			btnPrint.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_B_W_INVOICE_PRINT)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		// 3.6 end of ghan code
 		btnPrint.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_DOWN_MASK), "Print");
 		btnPrint.getActionMap().put("Print", getPrintAction());
 
@@ -238,7 +270,15 @@ public class InvoiceUI extends JInternalFrame {
 		btnSave.addActionListener(e -> btnSaveClickHandler(e));
 		btnSave.setText("Save");
 		btnSave.setMnemonic(KeyEvent.VK_S);
-		btnSave.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK), "Save");
+		// 3.6 ghan code
+		try {
+			btnSave.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_B_W_INVOICE_SAVE)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		// 3.6 end of ghan code
+		btnSave.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.ALT_DOWN_MASK), "Save");
 		btnSave.getActionMap().put("Save", getSaveAction());
 
 
@@ -246,12 +286,30 @@ public class InvoiceUI extends JInternalFrame {
 		btnRefresh.setBounds(813, 8, 98, 27);
 		btnRefresh.setText("Refresh");
 		btnRefresh.setMnemonic(KeyEvent.VK_R);
-		btnRefresh.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK), "Refresh");
+		// 3.6 ghan code
+		try {
+			btnRefresh.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_B_W_INVOICE_REFERESH)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		// 3.6 end of ghan code
+		btnRefresh.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.ALT_DOWN_MASK), "Refresh");
 		btnRefresh.getActionMap().put("Refresh", getRefreshAction());
 		btnRefresh.addActionListener(e -> btnRefreshClickHandler(e));
 
 		btnClose = new JXButton();
 		btnClose.setBounds(921, 8, 98, 27);
+		// 3.6 ghan code
+		try {
+			btnClose.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_B_W_INVOICE_CLOSE)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		btnClose.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.ALT_DOWN_MASK), "Close");
+		btnClose.getActionMap().put("Close", getCloseAction());
+		// 3.6 end of ghan code
 		btnClose.addActionListener(e -> btnCloseClick(e));
 		btnClose.setText("Close");
 
@@ -2115,12 +2173,12 @@ public class InvoiceUI extends JInternalFrame {
 		Action editAction = new AbstractAction("Refresh") {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				LOGGER.info("ctrl + R clicked");
+				LOGGER.info("ALT + R clicked");
 				refresh();
 			}
 		};
 
-		editAction .putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK));
+		editAction .putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.ALT_DOWN_MASK));
 		return editAction;
 	}
 	
@@ -2133,7 +2191,7 @@ public class InvoiceUI extends JInternalFrame {
 			}
 		};
 
-		editAction.putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
+		editAction.putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.ALT_DOWN_MASK));
 		return editAction;
 	}
 	
@@ -2141,12 +2199,12 @@ public class InvoiceUI extends JInternalFrame {
 		Action editAction = new AbstractAction("Add") {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				LOGGER.info("ctrl + N clicked");
+				LOGGER.info("ALT + N clicked");
 				addnextInvoice();
 			}
 		};
 
-		editAction.putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK));
+		editAction.putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.ALT_DOWN_MASK));
 		return editAction;
 	}
 	
@@ -2154,12 +2212,12 @@ public class InvoiceUI extends JInternalFrame {
 		Action editAction = new AbstractAction("Update") {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				LOGGER.info("ctrl + U clicked");
+				LOGGER.info("ALT + U clicked");
 				//TODO
 			}
 		};
 
-		editAction.putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_U, KeyEvent.CTRL_DOWN_MASK));
+		editAction.putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_U, KeyEvent.ALT_DOWN_MASK));
 		return editAction;
 	}
 
@@ -2167,11 +2225,11 @@ public class InvoiceUI extends JInternalFrame {
 		Action editAction = new AbstractAction("Delete") {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				LOGGER.info("ctrl + D clicked");
+				LOGGER.info("ALT + D clicked");
 				delete();
 			}
 		};
-		editAction .putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_DOWN_MASK));
+		editAction .putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.ALT_DOWN_MASK));
 		return editAction;
 	}
 	
@@ -2227,4 +2285,19 @@ public class InvoiceUI extends JInternalFrame {
 		}
 		return col2Operator;
 	}
+	
+	// 3.6 ghan code
+	private Action getCloseAction() {
+		Action closeAction = new AbstractAction("Close") {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				LOGGER.info("ctrl + C clicked");
+				dispose();
+			}
+		};
+
+		closeAction.putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.ALT_DOWN_MASK));
+		return closeAction;
+	}
+	// end of ghan code
 }
