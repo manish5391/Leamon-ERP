@@ -283,6 +283,10 @@ public interface LeamonERPConstants {
 	public static final String IMG_PAYMENT_OPENING_BALANCE = "PaymentMaster/OpeningBalance.png";
 	public static final String IMG_PAYMENT_SUMMARY = "PaymentMaster/Summary.png";
 	public static final String IMG_PAYMENT_MANAGER = "PaymentMaster/PaymentManager.png";
+	public static final String IMG_PAYMENT_MASTER_CLOSE_BUTTON = "PaymentMaster/Close.png";
+	public static final String IMG_PAYMENT_MASTER_REFRESH_BUTTON = "PaymentMaster/Refresh.png";
+	public static final String IMG_PAYMENT_MASTER_SAVE_BUTTON = "PaymentMaster/Save.png";
+	public static final String IMG_PAYMENT_MASTER_PRINT_BUTTON = "PaymentMaster/Print.png";
 
 	public static final String IMG_REPORT_MASTER = "ReportMaster/Report.png";
 	public static final String IMG_PAYMENT_REPORT = "ReportMaster/PaymentReport.png";

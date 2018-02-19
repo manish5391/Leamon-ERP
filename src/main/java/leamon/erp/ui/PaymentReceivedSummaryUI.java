@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.beans.PropertyVetoException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -19,16 +20,21 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
@@ -236,7 +242,18 @@ public class PaymentReceivedSummaryUI extends JInternalFrame {
 		panel_3.setLayout(null);
 
 		JButton buttonRefresh = new JButton("Refresh");
-		buttonRefresh.setBounds(769, 11, 73, 23);
+		buttonRefresh.setBounds(769, 11, 100, 23);
+		// 3.6 ghan code
+		buttonRefresh.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+				.put(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.ALT_DOWN_MASK), "Clear");
+		buttonRefresh.getActionMap().put("Clear", getClearAction());
+		try {
+			buttonRefresh.setIcon(new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP
+					.concat(LeamonERPConstants.IMG_PAYMENT_MASTER_REFRESH_BUTTON)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		// 3.6 end of ghan code
 		buttonRefresh.addActionListener(e -> buttonRefreshClick(e));
 		panel_3.add(buttonRefresh);
 
@@ -287,6 +304,14 @@ public class PaymentReceivedSummaryUI extends JInternalFrame {
 
 		JButton btnPrint = new JButton("Print");
 		btnPrint.setBounds(677, 11, 73, 23);
+		// 3.6 ghan code
+		try {
+			btnPrint.setIcon(new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP
+					.concat(LeamonERPConstants.IMG_PAYMENT_MASTER_PRINT_BUTTON)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		// 3.6 end of ghan code
 		panel_3.add(btnPrint);
 
 		setBounds(3, 30, 980, 620);
@@ -1367,4 +1392,18 @@ public class PaymentReceivedSummaryUI extends JInternalFrame {
 
 	}
 	// 3.5 end of code
+	
+	// 3.6 ghan code
+	public Action getClearAction() {
+		Action clearAction = new AbstractAction("Clear") {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				LOGGER.info("alt + R clicked");
+				refresh();
+			}
+		};
+		clearAction.putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.ALT_DOWN_MASK));
+		return clearAction;
+	}
+	// 3.61end of ghan code
 }

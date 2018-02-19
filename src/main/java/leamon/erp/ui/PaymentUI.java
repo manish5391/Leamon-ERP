@@ -297,6 +297,12 @@ public class PaymentUI extends JInternalFrame {
 		btnSaveAdjustment.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
 				.put(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.ALT_DOWN_MASK), "Save");
 		btnSaveAdjustment.getActionMap().put("Save", getSaveAction());
+		try {
+			btnSaveAdjustment.setIcon(new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP
+					.concat(LeamonERPConstants.IMG_PAYMENT_MASTER_SAVE_BUTTON)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		// 3.6 end of ghan code
 		btnSaveAdjustment.addActionListener(e -> btnSaveAdjustmentClick(e));
 		panel_1.add(btnSaveAdjustment);
@@ -307,6 +313,12 @@ public class PaymentUI extends JInternalFrame {
 		btnClose.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
 				.put(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.ALT_DOWN_MASK), "Close");
 		btnClose.getActionMap().put("Close", getCloseAction());
+		try {
+			btnClose.setIcon(new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP
+					.concat(LeamonERPConstants.IMG_PAYMENT_MASTER_CLOSE_BUTTON)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		// 3.6 end of ghan code
 		btnClose.addActionListener(e -> btnCloseClick(e));
 		panel_1.add(btnClose);
@@ -317,6 +329,12 @@ public class PaymentUI extends JInternalFrame {
 		btnRefresh.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
 				.put(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.ALT_DOWN_MASK), "Clear");
 		btnRefresh.getActionMap().put("Clear", getClearAction());
+		try {
+			btnRefresh.setIcon(new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP
+					.concat(LeamonERPConstants.IMG_PAYMENT_MASTER_REFRESH_BUTTON)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		// 3.6 end of ghan code
 		btnRefresh.addActionListener(e -> btnRefreshClick (e));
 		panel_1.add(btnRefresh);
@@ -963,15 +981,15 @@ public class PaymentUI extends JInternalFrame {
 	
 	// 3.6 ghan code
 	public Action getClearAction() {
-		Action editAction = new AbstractAction("Clear") {
+		Action clearAction = new AbstractAction("Clear") {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				LOGGER.info("alt + R clicked");
 				clear();
 			}
 		};
-		editAction.putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.ALT_DOWN_MASK));
-		return editAction;
+		clearAction.putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.ALT_DOWN_MASK));
+		return clearAction;
 	}
 
 	private Action getSaveAction() {
