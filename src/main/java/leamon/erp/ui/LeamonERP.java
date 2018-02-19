@@ -71,6 +71,7 @@ public class LeamonERP extends JFrame {
 
 	/*3.6 Release*/
 	public static StateCityManagerUI stateCityManagerUI;
+	public static StateCityUI stateCityUI;
 	/*End*/
 	
 	public static  List<String> cityCache;
@@ -731,6 +732,7 @@ public class LeamonERP extends JFrame {
 		stockItemQuantityUI = new StockItemQuantityUI();
 		accountOpeningBalanceUI = new AccountOpeningBalanceUI();
 		stateCityManagerUI = new StateCityManagerUI();
+		stateCityUI = new StateCityUI();
 	
 		}
 
@@ -1428,6 +1430,5 @@ public class LeamonERP extends JFrame {
 			stateCityManagerUI.setVisible(true);
 		}
 		SwingUtilities.updateComponentTreeUI(stateCityManagerUI);
-	
 	}
 }
