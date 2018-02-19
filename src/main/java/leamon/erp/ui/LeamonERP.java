@@ -69,6 +69,10 @@ public class LeamonERP extends JFrame {
 	public static StockItemQuantityUI stockItemQuantityUI;
 	public static AccountOpeningBalanceUI accountOpeningBalanceUI;
 
+	/*3.6 Release*/
+	public static StateCityManagerUI stateCityManagerUI;
+	/*End*/
+	
 	public static  List<String> cityCache;
 	public static  List<String> countryCache;
 	public static  List<String> stateCache;
@@ -612,6 +616,10 @@ public class LeamonERP extends JFrame {
 		menuBar.add(mnTools);
 		menuBar.add(mnTheme);
 
+		JMenuItem mntmStateCityManager = new JMenuItem("State & City Manager");
+		mnTools.add(mntmStateCityManager);
+		mntmStateCityManager.addActionListener( e-> mntmStateCityManagerClick(e));
+		
 		JMenuItem mntmCalculator = new JMenuItem("Calculator");
 		try {
 			mntmCalculator.setIcon(new ImageIcon(
@@ -679,6 +687,7 @@ public class LeamonERP extends JFrame {
 		paymentReceivedUI = new PaymentReceivedSummaryUI();
 		stockItemQuantityUI = new StockItemQuantityUI();
 		accountOpeningBalanceUI = new AccountOpeningBalanceUI();
+		stateCityManagerUI = new StateCityManagerUI();
 	
 		}
 
@@ -1339,4 +1348,28 @@ public class LeamonERP extends JFrame {
 		return null;
 	}
 	// 3.6 end of Ghanshyam code
+	
+	/**
+	 * open statecitymanager UI
+	 * 
+	 * @author Manish Kumar Mishra
+	 * @date FEB 15,2018 
+	 * @param e
+	 */
+	private void mntmStateCityManagerClick(ActionEvent e){
+
+		if(stateCityManagerUI.isVisible()){
+			try {
+				stateCityManagerUI.setSelected(true);
+			} catch (PropertyVetoException e1) {
+				LOGGER.error(e1.toString());
+			}
+			stateCityManagerUI.moveToFront();
+		}else{
+			desktopPane.add(stateCityManagerUI);
+			stateCityManagerUI.setVisible(true);
+		}
+		SwingUtilities.updateComponentTreeUI(stateCityManagerUI);
+	
+	}
 }
