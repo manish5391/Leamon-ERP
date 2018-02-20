@@ -1051,7 +1051,12 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		if(Strings.isNullOrEmpty(item)){
 			return ;
 		}
-		StateCityInfo stateCityInfo = LeamonERP.stateCityInfos.stream().filter(ele -> ele.getCity().equals(item)).findFirst().get();
+		StateCityInfo stateCityInfo = null;
+		try{
+			stateCityInfo = LeamonERP.stateCityInfos.stream().filter(ele -> ele.getCity().equals(item)).findFirst().get();
+		}catch(Exception exp){
+			LOGGER.error(exp);
+		}
 		if(null != stateCityInfo){
 			comboBoxState.setSelectedItem(stateCityInfo.getState());
 			textFieldSCode.setText(stateCityInfo.getStateCode());
