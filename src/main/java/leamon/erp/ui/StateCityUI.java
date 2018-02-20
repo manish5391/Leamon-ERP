@@ -10,6 +10,7 @@ import org.apache.xpath.operations.Bool;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 
 import leamon.erp.db.InvoiceDaoImpl;
 import leamon.erp.db.StateCityDaoImpl;
@@ -27,7 +28,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
 import java.sql.Timestamp;
 import java.util.List;
@@ -40,7 +43,7 @@ import java.util.List;
  * 
  */
 @Getter
-public class StateCityUI extends JInternalFrame {
+public class StateCityUI extends JInternalFrame implements KeyListener{
 
 	static final Logger LOGGER = Logger.getLogger(StateCityManagerUI.class);
 	static final String CLASS_NAME = "StateCityUI";
@@ -193,6 +196,15 @@ public class StateCityUI extends JInternalFrame {
 		lblID.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
 		lblID.setBounds(0, 0, 48, 22);
 		getContentPane().add(lblID);
+		
+		registerEvent();
+	}
+	
+	public void registerEvent(){
+		textFieldCity.addKeyListener(this);
+		textFieldState.addKeyListener(this);
+		textFieldStateCode.addKeyListener(this);
+		textFieldAbbr.addKeyListener(this);
 	}
 	
 	public void setStateCityInfo(StateCityInfo item){
@@ -271,6 +283,36 @@ public class StateCityUI extends JInternalFrame {
 
 	private void buttonSaveClick(ActionEvent e){
 		save();
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		int KEY_CODE = e.getKeyCode();
+		if( e.getSource() instanceof JTextField && KEY_CODE == KeyEvent.VK_ENTER){
+			JTextField source = (JTextField) e.getSource();
+			
+			if(source.equals(textFieldCity)){
+				textFieldState.requestFocus();
+			}else if(source.equals(textFieldState)){
+				textFieldStateCode.requestFocus();
+			}else if(source.equals(textFieldStateCode)){
+				textFieldAbbr.requestFocus();
+			}else if(source.equals(textFieldAbbr)){
+				buttonSave.requestFocus();
+			}
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	
