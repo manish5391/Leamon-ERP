@@ -157,6 +157,9 @@ public interface LeamonERPConstants {
 	String TABLE_STOCK_ITEMS="TableStockItems";
 	String TABLE_ACCOUNT_INFO_LIST="TableAccountList";
 	String TABLE_INVENTORY="TableInventory";
+	/*Release 3.6*/
+	String TABLE_STATE_CITY="TableStateCity";
+	/*End*/
 	
 	final Integer TABLE_INVENTORY_SNO = 0;
 	Integer TABLE_INVENTORY_DESC_OF_GOODS = 1;
