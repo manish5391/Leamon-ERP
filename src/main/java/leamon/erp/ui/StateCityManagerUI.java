@@ -18,16 +18,21 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import org.jdesktop.swingx.JXSearchField;
 
+import leamon.erp.db.AccountDaoImpl;
 import leamon.erp.db.StateCityDaoImpl;
 import leamon.erp.db.StockDaoImpl;
+import leamon.erp.model.AccountInfo;
 import leamon.erp.model.StateCityInfo;
 import leamon.erp.model.StockItem;
 import leamon.erp.ui.custom.StockItemListColorRenderer;
 import leamon.erp.ui.event.FocusEventHandler;
 import leamon.erp.ui.event.KeyListenerHandler;
+import leamon.erp.ui.event.MouseClickHandler;
+import leamon.erp.ui.model.TableAccountInfoListModel;
 import leamon.erp.ui.model.TableStateCityInfoModel;
 import leamon.erp.ui.model.TableStateCityInfoModel;
 import leamon.erp.util.LeamonERPConstants;
+import lombok.Getter;
 
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -52,6 +57,7 @@ import javax.swing.JTable;
  * @date 15 Feb,2018
  * @author Manish Kumar Mishra
  */
+@Getter
 public class StateCityManagerUI extends JInternalFrame {
 
 	static final Logger LOGGER = Logger.getLogger(StateCityManagerUI.class);
@@ -130,6 +136,7 @@ public class StateCityManagerUI extends JInternalFrame {
 		getContentPane().add(scrollPane);
 
 		table = new JXTable();
+		table.setName(LeamonERPConstants.TABLE_STATE_CITY);
 
 		StateCityDaoImpl daoImpl = StateCityDaoImpl.getInstance();
 		List<StateCityInfo> stateCityInfos = new ArrayList<StateCityInfo>();
@@ -150,6 +157,7 @@ public class StateCityManagerUI extends JInternalFrame {
 		table.setAutoCreateRowSorter(true);
 		scrollPane.setViewportView(table);
 		table.setComponentPopupMenu(createPopup());
+		table.addMouseListener(new MouseClickHandler());
 		
 		searchField = new JXSearchField("Search");
 		searchField.setName(LeamonERPConstants.TEXTFIELD_NAME_STATE_CITY_SERACH);
@@ -171,7 +179,8 @@ public class StateCityManagerUI extends JInternalFrame {
 		JMenuItem menuItemRefresh = new JMenuItem("Refresh",new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_POPUP_MENU_REFRESH)));
 		
 		menuItemDelete.setActionCommand(LeamonERPConstants.MENU_ACTION_DELETE_STOCK_ITEM);
-		//menuItemDelete.addActionListener(this);
+		menuItemDelete.addActionListener(e -> menuItemDeleteClick(e));
+		
 		menuItemView.setActionCommand(LeamonERPConstants.MENU_ACTION_VIEW_STOCK_ITEM);
 		menuItemView.addActionListener(e -> btnViewClick(e));
 		menuItemRefresh.setActionCommand(LeamonERPConstants.MENU_ACTION_REFRESH_STOCK_ITEM);
@@ -202,6 +211,75 @@ public class StateCityManagerUI extends JInternalFrame {
 	}
 	private void menuItemRefreshClick(ActionEvent e){
 		refreshTable();
+	}
+	
+	private void menuItemDeleteClick(ActionEvent e){
+		final String METHOD_NAME = "menuItemDeleteClick";
+		LOGGER.info(CLASS_NAME+"["+METHOD_NAME+"] inside");
+		
+		int op =JOptionPane.showConfirmDialog(this, "Are you sure ?","Leamon-ERP",JOptionPane.YES_NO_OPTION);
+		
+		if(! (op==JOptionPane.YES_OPTION)){
+			return;
+		}
+		
+		TableStateCityInfoModel model  = (TableStateCityInfoModel)table.getModel();
+
+		int selectedRow = table.getSelectedRow();
+		if(selectedRow == LeamonERPConstants.NO_ROW_SELECTED){
+			JOptionPane.showMessageDialog(this, "Please select atleast one item", "Warning", JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+	 	if(table.getRowSorter() != null){
+			selectedRow = table.getRowSorter().convertRowIndexToModel(selectedRow);
+			LOGGER.debug("Selcted row : "+ selectedRow);
+		}
+	 	
+	 	int selectedRows[] = table.getSelectedRows();
+	 	IntStream.of(selectedRows).forEach(val -> {
+	 		LOGGER.info(CLASS_NAME+"["+METHOD_NAME+"] selected rows["+val+"]");
+	 	});
+	 	List<StateCityInfo> stateCityInfos=  model.getStateCityInfos();
+	 	int i=0;
+	 	int f=0;
+	 	for(int row  : selectedRows){
+	 		if(i==0){
+	 			f=row;
+	 		}
+	 		i++;
+	 		if(row == selectedRow ){
+	 			LOGGER.debug("Selcted row selectedRow equal: "+ (row));
+ 				StateCityInfo si = stateCityInfos.get(row);
+ 				LOGGER.debug("Selected Row : "+si);
+ 				try{
+ 					StateCityDaoImpl.getInstance().disable(si);
+ 				}catch(Exception exp){
+ 					LOGGER.error(exp);
+ 				}
+	 		}else{
+	 				LOGGER.debug("Selcted row only : "+ (selectedRow+row-f));
+	 				StateCityInfo si = stateCityInfos.get(selectedRow+row-f);
+	 				LOGGER.debug("Selected Row : "+si);
+	 				try{
+	 					StateCityDaoImpl.getInstance().disable(si);
+	 				}catch(Exception exp){
+	 					LOGGER.error(exp);
+	 				}
+	 		}
+	 	}
+	 	try{
+	 		stateCityInfos = StateCityDaoImpl.getInstance().getItemList();
+	 	}catch(Exception exp){
+			LOGGER.error(exp);
+		}
+	 	LOGGER.debug("Reloading AccountInfos ["+stateCityInfos.size()+"]");
+	 	model.setStateCityInfos(stateCityInfos);
+	 	table.setModel(model);
+	 	LOGGER.info(" Successfully disabled Accoount Info items ");
+	 	((AbstractTableModel)table.getModel()).fireTableDataChanged();
+	 	table.repaint();
+	 	SwingUtilities.updateComponentTreeUI(this);
+	 	LOGGER.info(CLASS_NAME+"["+METHOD_NAME+"] end.");
 	}
 	
 	public void view(){
@@ -305,6 +383,9 @@ public class StateCityManagerUI extends JInternalFrame {
 		LOGGER.info(CLASS_NAME+"["+METHOD_NAME+"] End");
 	}
 	public void edit(){
+		LeamonERP.stateCityUI.getButtonEdit().setEnabled(Boolean.TRUE);
+		LeamonERP.stateCityUI.getButtonSave().setEnabled(Boolean.TRUE);
+		view();
 		
 	}
 	public void print(){
@@ -326,6 +407,7 @@ public class StateCityManagerUI extends JInternalFrame {
 		LeamonERP.stateCityUI.setVisible(true);
 		LeamonERP.stateCityUI.getTextFieldCity().requestFocus();
 		LeamonERP.stateCityUI.moveToFront();
+		LeamonERP.stateCityUI.getButtonSave().setEnabled(Boolean.TRUE);
 		SwingUtilities.updateComponentTreeUI(LeamonERP.stateCityUI);
 		LOGGER.info(CLASS_NAME+"["+METHOD_NAME+"] End.");
 	}
