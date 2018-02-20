@@ -24,6 +24,8 @@ import java.awt.Font;
 import javax.swing.UIManager;
 import org.jdesktop.swingx.JXTextField;
 
+import com.google.common.base.Strings;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
@@ -33,6 +35,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -147,13 +150,21 @@ public class StateCityUI extends JInternalFrame implements KeyListener{
 		textFieldAbbr.setBounds(140, 162, 219, 23);
 		getContentPane().add(textFieldAbbr);
 		
-		buttonClear = new JButton("CleaR");
+		buttonClear = new JButton("Clear");
 		buttonClear.setMnemonic('C');
 		buttonClear.setMnemonic(KeyEvent.VK_R);
 		buttonClear.setForeground(UIManager.getColor("OptionPane.warningDialog.titlePane.foreground"));
 		buttonClear.setFont(new Font("DialogInput", Font.BOLD, 14));
 		buttonClear.setBackground(Color.WHITE);
 		buttonClear.setBounds(10, 225, 121, 43);
+		// 3.6 ghan code
+		try {
+			buttonClear.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_TOOLS_STATE_CITY_CLEAR)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		// 3.6 end of ghan code
 		getContentPane().add(buttonClear);
 		buttonClear.addActionListener(e -> buttonClearClick(e));
 		
@@ -165,6 +176,14 @@ public class StateCityUI extends JInternalFrame implements KeyListener{
 		buttonEdit.setFont(new Font("DialogInput", Font.BOLD, 14));
 		buttonEdit.setBackground(Color.WHITE);
 		buttonEdit.setBounds(263, 225, 118, 43);
+		// 3.6 ghan code
+		try {
+			buttonEdit.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_TOOLS_STATE_CITY_EDIT)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		// 3.6 end of ghan code
 		getContentPane().add(buttonEdit);
 		buttonEdit.addActionListener(e -> buttonEditClick(e));
 		
@@ -176,6 +195,14 @@ public class StateCityUI extends JInternalFrame implements KeyListener{
 		buttonSave.setFont(new Font("DialogInput", Font.BOLD, 14));
 		buttonSave.setBackground(Color.WHITE);
 		buttonSave.setBounds(140, 225, 118, 43);
+		// 3.6 ghan code
+		try {
+			buttonSave.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_TOOLS_STATE_CITY_SAVE)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		// 3.6 end of ghan code
 		getContentPane().add(buttonSave);
 		buttonSave.addActionListener(e -> buttonSaveClick(e));
 		
@@ -186,7 +213,15 @@ public class StateCityUI extends JInternalFrame implements KeyListener{
 		buttonDelete.setForeground(UIManager.getColor("OptionPane.warningDialog.titlePane.foreground"));
 		buttonDelete.setFont(new Font("DialogInput", Font.BOLD, 14));
 		buttonDelete.setBackground(Color.WHITE);
-		buttonDelete.setBounds(391, 224, 95, 43);
+		buttonDelete.setBounds(391, 224, 110, 43);
+		// 3.6 ghan code
+		try {
+			buttonDelete.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_TOOLS_STATE_CITY_DELETE)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		// 3.6 end of ghan code
 		getContentPane().add(buttonDelete);
 		buttonDelete.addActionListener(e -> buttonDeleteClick(e));
 		
@@ -231,6 +266,18 @@ public class StateCityUI extends JInternalFrame implements KeyListener{
 		String state = textFieldState.getText();
 		String stateCode = textFieldStateCode.getText();
 		String abbr = textFieldAbbr.getText();
+		
+		//3.6 ghan code
+		if(Strings.isNullOrEmpty(city)) {
+			JOptionPane.showMessageDialog(this, "City can not be blank it's mandatory", "Error", JOptionPane.ERROR_MESSAGE);
+			textFieldCity.requestFocus();
+			return;
+		}else if(Strings.isNullOrEmpty(state)){
+			JOptionPane.showMessageDialog(this, "State can not be blank it's mandatory", "Error", JOptionPane.ERROR_MESSAGE);
+			textFieldState.requestFocus();
+			return;
+		}
+		//3.6 end of ghan code
 		
 		Integer nextId = 0;
 		try{
@@ -300,6 +347,7 @@ public class StateCityUI extends JInternalFrame implements KeyListener{
 			if(source.equals(textFieldCity)){
 				textFieldState.requestFocus();
 			}else if(source.equals(textFieldState)){
+				checkStateCode();//3.6 ghan code
 				textFieldStateCode.requestFocus();
 			}else if(source.equals(textFieldStateCode)){
 				textFieldAbbr.requestFocus();
@@ -315,5 +363,23 @@ public class StateCityUI extends JInternalFrame implements KeyListener{
 		
 	}
 	
+	// 3.6 ghan code
+	private void checkStateCode() {
+		StateCityDaoImpl daoImpl = StateCityDaoImpl.getInstance();
+		List<StateCityInfo> stateCityInfos = new ArrayList<StateCityInfo>();
+		try {
+			stateCityInfos = daoImpl.getItemList();
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+
+		StateCityInfo stateInfo = stateCityInfos.stream()
+				.filter(e -> e.getState().equalsIgnoreCase(textFieldState.getText())).findAny().orElse(null);
+		if (null != stateInfo) {
+			textFieldStateCode.setText(stateInfo.getStateCode());
+			textFieldAbbr.setText(stateInfo.getAbbreviations());
+		}
+	}
+	// 3.6 end of ghan code
 	
 }

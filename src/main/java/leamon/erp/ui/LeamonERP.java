@@ -661,6 +661,12 @@ public class LeamonERP extends JFrame {
 		menuBar.add(mnTheme);
 
 		JMenuItem mntmStateCityManager = new JMenuItem("State & City Manager");
+		try {
+			mntmStateCityManager.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_TOOLS_STATE_AND_CITY)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		mnTools.add(mntmStateCityManager);
 		mntmStateCityManager.addActionListener( e-> mntmStateCityManagerClick(e));
 		

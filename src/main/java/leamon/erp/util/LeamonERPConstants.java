@@ -310,8 +310,13 @@ public interface LeamonERPConstants {
 	public static final String IMG_WINDOW_THEME = "Theme/Window.png";
 
 	public static final String IMG_TOOLS_MASTER = "Tools/Tools.png";
+	public static final String IMG_TOOLS_STATE_AND_CITY = "Tools/StateAndCity.png";
 	public static final String IMG_TOOLS_CALCULATOR = "Tools/Calculator.png";
 	public static final String IMG_TOOLS_TRASH = "Tools/Trash.png";
 	public static final String IMG_TOOLS_UPDATES = "Tools/Updates.png";
+	public static final String IMG_TOOLS_STATE_CITY_CLEAR = "Tools/StateAndCity/Clear.png";
+	public static final String IMG_TOOLS_STATE_CITY_SAVE = "Tools/StateAndCity/Save.png";
+	public static final String IMG_TOOLS_STATE_CITY_EDIT = "Tools/StateAndCity/Edit.png";
+	public static final String IMG_TOOLS_STATE_CITY_DELETE = "Tools/StateAndCity/Delete.png";
 	// 3.6 end of ghan code
 }
