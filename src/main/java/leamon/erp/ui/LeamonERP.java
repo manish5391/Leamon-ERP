@@ -79,6 +79,7 @@ public class LeamonERP extends JFrame {
 	public static  List<String> stateCache;
 	
 	public static List<StateCityInfo> stateCityInfos;
+	public static List<StateCityInfo> distinctStateInfos;
 	
 	public static InvoiceUI invoiceUI;
 	public static InvoiceUILegal invoiceUILegal;
@@ -1250,6 +1251,7 @@ public class LeamonERP extends JFrame {
 	public void stateCityInfosLoader(){
 		try{
 			stateCityInfos = StateCityDaoImpl.getInstance().getItemList();
+			distinctStateInfos = StateCityDaoImpl.getInstance().getItemListDistinctState();
 		}catch(Exception e){
 			LOGGER.error(e);
 		}

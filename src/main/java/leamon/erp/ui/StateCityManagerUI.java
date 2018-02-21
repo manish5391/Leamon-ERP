@@ -404,10 +404,10 @@ public class StateCityManagerUI extends JInternalFrame {
 			LOGGER.error(CLASS_NAME+"["+METHOD_NAME+"] "+e1);
 		}
 		LeamonERP.stateCityUI.buttonClearClick(null);
+		LeamonERP.stateCityUI.getButtonSave().setEnabled(Boolean.TRUE);
 		LeamonERP.stateCityUI.setVisible(true);
 		LeamonERP.stateCityUI.getTextFieldCity().requestFocus();
 		LeamonERP.stateCityUI.moveToFront();
-		LeamonERP.stateCityUI.getButtonSave().setEnabled(Boolean.TRUE);
 		SwingUtilities.updateComponentTreeUI(LeamonERP.stateCityUI);
 		LOGGER.info(CLASS_NAME+"["+METHOD_NAME+"] End.");
 	}

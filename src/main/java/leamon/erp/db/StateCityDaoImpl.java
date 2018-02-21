@@ -45,7 +45,24 @@ public class StateCityDaoImpl implements  LeamonERPDao<StateCityInfo>{
 		LOGGER.info("StateCityDaoImpl[getItemList]");
 		return stateCityItems;
 	}
-
+	
+	/**
+	 * Get unique state 
+	 * @author Manish Kmar Mishra
+	 * @date FEB 21,2018
+	 * @return
+	 * @throws Exception
+	 */
+	public List<StateCityInfo> getItemListDistinctState() throws Exception {
+		LOGGER.info("StateCityDaoImpl[getItemListDistinctState] inside.");
+		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
+		StateCityInfoMapper stateCityMapper= session.getMapper(StateCityInfoMapper.class);
+		List<StateCityInfo> stateCityItems = stateCityMapper.getAllDistinctState();
+		session.close();
+		LOGGER.info("StateCityDaoImpl[getItemListDistinctState]");
+		return stateCityItems;
+	}
+	
 	@Override
 	public void save(StateCityInfo item) throws Exception {
 		LOGGER.info("StateCityDaoImpl[save] inside.");

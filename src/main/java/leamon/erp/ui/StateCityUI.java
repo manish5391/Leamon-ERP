@@ -10,8 +10,11 @@ import org.apache.xpath.operations.Bool;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import leamon.erp.component.helper.LeamonAutoCityFieldSuggestor;
+import leamon.erp.component.helper.LeamonAutoStateFieldSuggestor;
 import leamon.erp.db.InvoiceDaoImpl;
 import leamon.erp.db.StateCityDaoImpl;
 import leamon.erp.model.InvoiceInfo;
@@ -101,6 +104,7 @@ public class StateCityUI extends JInternalFrame implements KeyListener{
 		textFieldCity.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
 		textFieldCity.setBounds(140, 27, 219, 23);
 		getContentPane().add(textFieldCity);
+		autoCitySuggestor(textFieldCity);
 		
 		JLabel lblState = new JLabel("State");
 		lblState.setForeground((Color) null);
@@ -121,6 +125,7 @@ public class StateCityUI extends JInternalFrame implements KeyListener{
 		textFieldState.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
 		textFieldState.setBounds(140, 75, 219, 23);
 		getContentPane().add(textFieldState);
+		autoStateSuggestor(textFieldState);
 		
 		JLabel lblStateCode = new JLabel("State Code");
 		lblStateCode.setForeground((Color) null);
@@ -236,8 +241,8 @@ public class StateCityUI extends JInternalFrame implements KeyListener{
 	}
 	
 	public void registerEvent(){
-		textFieldCity.addKeyListener(this);
-		textFieldState.addKeyListener(this);
+		//textFieldCity.addKeyListener(this);
+		//textFieldState.addKeyListener(this);
 		textFieldStateCode.addKeyListener(this);
 		textFieldAbbr.addKeyListener(this);
 	}
@@ -254,7 +259,19 @@ public class StateCityUI extends JInternalFrame implements KeyListener{
 		lblID.setText(""+item.getId());
 		labelMsg.setText(LeamonERPConstants.EMPTY_STR);
 		buttonSave.setEnabled(false);
+		textFieldState.requestFocus();
+		LOGGER.info(CLASS_NAME+"["+METHOD_NAME+"] End.");
+	}
+	
+	public void setDistinctState(StateCityInfo item){
+		final String METHOD_NAME = "setDistinctState";
 		
+		LOGGER.info(CLASS_NAME+"["+METHOD_NAME+"] inside.");
+		LOGGER.info(CLASS_NAME+"["+METHOD_NAME+"] "+item);
+		textFieldState.setText(item.getState());
+		textFieldStateCode.setText(item.getStateCode());
+		textFieldAbbr.setText(item.getAbbreviations());
+		textFieldStateCode.requestFocus();
 		LOGGER.info(CLASS_NAME+"["+METHOD_NAME+"] End.");
 	}
 	
@@ -318,6 +335,9 @@ public class StateCityUI extends JInternalFrame implements KeyListener{
 		textFieldAbbr.setText(LeamonERPConstants.EMPTY_STR);
 		lblID.setText(LeamonERPConstants.EMPTY_STR);
 		labelMsg.setText(LeamonERPConstants.EMPTY_STR);
+		
+		buttonSave.setEnabled(Boolean.TRUE);
+		
 	}	
 	
 	private void buttonEditClick(ActionEvent e){
@@ -347,7 +367,7 @@ public class StateCityUI extends JInternalFrame implements KeyListener{
 			if(source.equals(textFieldCity)){
 				textFieldState.requestFocus();
 			}else if(source.equals(textFieldState)){
-				checkStateCode();//3.6 ghan code
+				//checkStateCode();//3.6 ghan code
 				textFieldStateCode.requestFocus();
 			}else if(source.equals(textFieldStateCode)){
 				textFieldAbbr.requestFocus();
@@ -382,4 +402,24 @@ public class StateCityUI extends JInternalFrame implements KeyListener{
 	}
 	// 3.6 end of ghan code
 	
+	public void autoCitySuggestor(JXTextField textField){
+		final String methodName="autoInvoiceIdSuggestor";
+		LOGGER.info(CLASS_NAME+"["+methodName+"] inside");
+		List<StateCityInfo> stateCityInfos =  LeamonERP.stateCityInfos;
+		LeamonAutoCityFieldSuggestor<List<StateCityInfo>, StateCityInfo> leamonAutoCityFieldSuggestor =
+				new LeamonAutoCityFieldSuggestor<List<StateCityInfo>, StateCityInfo>(textField, this);
+		leamonAutoCityFieldSuggestor.setItems(stateCityInfos);
+		LOGGER.info(CLASS_NAME+"["+methodName+"] end");
+	}
+	
+	public void autoStateSuggestor(JXTextField textField){
+		final String methodName="autoInvoiceIdSuggestor";
+		LOGGER.info(CLASS_NAME+"["+methodName+"] inside");
+		List<StateCityInfo> stateCityInfos =  LeamonERP.distinctStateInfos;
+		LeamonAutoStateFieldSuggestor<List<StateCityInfo>, StateCityInfo> leamonAutoCityFieldSuggestor =
+				new LeamonAutoStateFieldSuggestor<List<StateCityInfo>, StateCityInfo>(textField, this);
+		leamonAutoCityFieldSuggestor.setItems(stateCityInfos);
+		LOGGER.info(CLASS_NAME+"["+methodName+"] end");
+	}
 }
+

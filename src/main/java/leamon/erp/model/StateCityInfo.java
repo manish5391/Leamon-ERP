@@ -23,9 +23,20 @@ public class StateCityInfo implements Serializable, Comparable<StateCityInfo>{
 	private Timestamp createdDate;
 	private Timestamp lastUpdatedDate;
 	private boolean isEnable;
+
+	public StateCityInfo(String state, String stateCode, String abbreviations){
+		this.state = state;
+		this.stateCode = stateCode;
+		this.abbreviations = abbreviations;
+	}
 	
 	@Override
 	public int compareTo(StateCityInfo o) {
-		return (this.id < o.id) ? -1 : (this.id > o.id) ? 1 : 0;
+		/*if(null == o.id ){
+			return 1;
+		}else{
+			return (this.id < o.id) ? -1 : (this.id > o.id) ? 1 : 0;
+		}*/
+		return 1;
 	}
 }

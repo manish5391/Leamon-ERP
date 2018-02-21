@@ -15,7 +15,7 @@ import leamon.erp.model.StockItem;
 
 public interface StateCityInfoMapper {
 
-	final String getAll = "SELECT * FROM STATECITYINFO WHERE ISENABLE = TRUE ORDER BY ID";
+	final String getAll = "SELECT * FROM STATECITYINFO WHERE ISENABLE = TRUE ORDER BY LASTUPDATED DESC";
 	final String getAllIncludingDisabled = "SELECT * FROM STATECITYINFO ORDER BY ID";
 	final String getById = "SELECT * FROM STATECITYINFO WHERE ID = #{id}";
 	
@@ -29,6 +29,8 @@ public interface StateCityInfoMapper {
 	final String deleteById = "DELETE from STATECITYINFO WHERE ID = #{id}";
 	
 	final String disableByID = "UPDATE STATECITYINFO SET ISENABLE = FALSE WHERE ID = #{id}";
+	
+	final String distinctState = "SELECT DISTINCT STATE, STATECODE, ABBREVIATIONS FROM STATECITYINFO WHERE ISENABLE = TRUE";
 	/*End*/
 	
 	@Select(getAll)
@@ -56,6 +58,14 @@ public interface StateCityInfoMapper {
 	      @Result(property = "lastUpdatedDate", column = "LASTUPDATED")
 	})
 	public List<StateCityInfo> getAllIncludingDisabledID() throws Exception;
+	
+	@Select(distinctState)
+	   @Results(value = {
+	      @Result(property = "state", column = "STATE"),
+	      @Result(property = "stateCode", column = "STATECODE"),
+	      @Result(property = "abbreviations", column = "ABBREVIATIONS"),
+	})
+	public List<StateCityInfo> getAllDistinctState() throws Exception;
 	
 	@Insert(insert)
 	@Options(useGeneratedKeys = true, keyProperty = "id")
