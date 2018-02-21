@@ -326,6 +326,7 @@ public class LeamonERP extends JFrame {
 		try {
 			mnCompanyMaster.setIcon(
 					new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_COMPANY_MASTER)));
+			LOGGER.debug("Path Company Master : "+LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_COMPANY_MASTER));
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -336,6 +337,7 @@ public class LeamonERP extends JFrame {
 		try {
 			mntmCompanyInfo.setIcon(
 					new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_COMPANY_INFO)));
+			LOGGER.debug("Path Company Info : "+LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_COMPANY_INFO));
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -346,6 +348,7 @@ public class LeamonERP extends JFrame {
 		try {
 			mnInvoiceMaster.setIcon(
 					new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_INVOICE_MASTER)));
+			LOGGER.debug("Path Invoice Master : "+LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_INVOICE_MASTER));
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
@@ -355,6 +358,7 @@ public class LeamonERP extends JFrame {
 		try {
 			mntmB_Invoice.setIcon(
 					new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_B_INVOICE)));
+			LOGGER.debug("Path B-Invoice : "+LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_B_INVOICE));
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
