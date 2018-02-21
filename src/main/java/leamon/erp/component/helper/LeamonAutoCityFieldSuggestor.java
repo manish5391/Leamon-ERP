@@ -19,16 +19,21 @@ import java.util.regex.PatternSyntaxException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.JWindow;
 import javax.swing.text.JTextComponent;
 
 import org.jdesktop.swingx.JXList;
 
+import com.google.common.base.Strings;
+
 import leamon.erp.model.StateCityInfo;
 import leamon.erp.ui.InvoiceUI;
+import leamon.erp.ui.StateCityUI;
 import leamon.erp.ui.model.StateCityInfoCellRender;
 
 
@@ -37,7 +42,9 @@ public class LeamonAutoCityFieldSuggestor<T extends List<E>, E> extends JWindow 
 	JXList lst = null;
 	java.util.TreeSet<E> val = new java.util.TreeSet<E>();
 	java.util.Vector<E> tempVector = new java.util.Vector<E>(1, 1);
-	InvoiceUI ui;
+	/*Release 3.6*/
+	JInternalFrame ui;
+	/*InvoiceUI ui;*/
 	String txt;
 
 	StringBuffer typed = new StringBuffer();
@@ -55,10 +62,10 @@ public class LeamonAutoCityFieldSuggestor<T extends List<E>, E> extends JWindow 
 	}
 	
 	
-	public LeamonAutoCityFieldSuggestor(JTextArea textArea, InvoiceUI invoiceUI) {
+	public LeamonAutoCityFieldSuggestor(JTextComponent textArea, JInternalFrame uI) {
 		this();
-		this.ui  = invoiceUI;
-		parent = (JTextComponent) textArea;
+		this.ui  = uI;
+		parent =  textArea;
 		textArea.addFocusListener(this);
 		textArea.addKeyListener(this);
 	}
@@ -105,7 +112,13 @@ public class LeamonAutoCityFieldSuggestor<T extends List<E>, E> extends JWindow 
 	}
 	private void select(boolean enterPressed) {
 		if(!this.isVisible()) {
-			ui.getTextFieldBillNo().requestFocus();
+			if(ui instanceof InvoiceUI){
+				((InvoiceUI)ui).getTextFieldBillNo().requestFocus();
+			}
+			
+			if(ui instanceof StateCityUI){
+				((StateCityUI)ui).getTextFieldState().requestFocus();
+			}
 			return;
 		}
 		if(parent == null) {
@@ -129,7 +142,13 @@ public class LeamonAutoCityFieldSuggestor<T extends List<E>, E> extends JWindow 
 		}
 		StateCityInfo info = (StateCityInfo) lst.getSelectedValue();
 		parent.setText(info.getCity());
-		setStateCityInfo(info);
+		
+		/*Releasse 3.6*/
+		if(ui instanceof InvoiceUI){
+			setStateCityInfoInInvoice(info);
+		}else if(ui instanceof StateCityUI){
+			setStateCityInfoInUI(info);
+		}
 		this.setVisible(false);
 	}
 
@@ -152,6 +171,18 @@ public class LeamonAutoCityFieldSuggestor<T extends List<E>, E> extends JWindow 
 		else if(fe.getSource() == parent ){
 			populateList();
 		}*/
+		
+		if(parent instanceof JTextField){
+			if(fe.getSource() == lst){
+				parent.requestFocus();
+				if(!Strings.isNullOrEmpty(parent.getText())){
+					parent.selectAll();
+				}
+			}
+			else if(fe.getSource() == parent ){
+				populateList();
+			}
+		}
 	}
 	public void keyPressed(KeyEvent ke) {
 		int kc = ke.getKeyCode();
@@ -163,14 +194,24 @@ public class LeamonAutoCityFieldSuggestor<T extends List<E>, E> extends JWindow 
 		else if(kc == KeyEvent.VK_ESCAPE  || (parent instanceof JTextArea && kc==KeyEvent.VK_ESCAPE)){
 			this.setVisible(false);
 		}
+		
+		if(kc == KeyEvent.VK_F5 || (parent instanceof JTextField && kc==KeyEvent.VK_UP))
+			moveUp();
+		else if(kc == KeyEvent.VK_F6 || (parent instanceof JTextField && kc==KeyEvent.VK_DOWN))
+			moveDown();
+		
 	}
 	public void keyReleased(KeyEvent ke) {
 
 		int kc = ke.getKeyCode();
-		if((kc == KeyEvent.VK_F7 || kc == KeyEvent.VK_ENTER) || (parent instanceof JTextArea && kc==KeyEvent.VK_ENTER))
+		if((kc == KeyEvent.VK_F7 || kc == KeyEvent.VK_ENTER) || ( parent instanceof JTextArea  && kc==KeyEvent.VK_ENTER))
 			select(true);
-		else if(kc == KeyEvent.VK_ESCAPE  || (parent instanceof JTextArea && kc==KeyEvent.VK_ESCAPE)){
+		else if(kc == KeyEvent.VK_ESCAPE  || (parent instanceof JTextArea  && kc==KeyEvent.VK_ESCAPE)){
 			this.setVisible(false);
+		}else if((kc == KeyEvent.VK_F7 || kc == KeyEvent.VK_ENTER) || (parent instanceof JTextField && kc==KeyEvent.VK_ENTER)){
+			select(true);
+		}else if((kc == KeyEvent.VK_ESCAPE || kc == KeyEvent.VK_ENTER) || (parent instanceof JTextField && kc==KeyEvent.VK_ENTER)){
+			select(true);
 		}
 		else if(parent != null)
 			populateList();
@@ -201,6 +242,11 @@ public class LeamonAutoCityFieldSuggestor<T extends List<E>, E> extends JWindow 
 				else count++;
 			}
 			txt = txt.substring(i+1,n+1);
+		}else if(parent instanceof JTextField){
+			txt = parent.getText();
+			if(txt!=null && txt.length()==0){
+				return;
+			}
 		}
 		tempVector.clear();
 		int index = lst.getSelectedIndex();
@@ -253,7 +299,11 @@ public class LeamonAutoCityFieldSuggestor<T extends List<E>, E> extends JWindow 
 
 	}
 	
-	private void setStateCityInfo(StateCityInfo info){
-		ui.setStateCityInfo(info);
+	private void setStateCityInfoInInvoice(StateCityInfo info){
+		((InvoiceUI)ui).setStateCityInfo(info);
+	}
+	
+	private void setStateCityInfoInUI(StateCityInfo info){
+		((StateCityUI)ui).setStateCityInfo(info);
 	}
 }
