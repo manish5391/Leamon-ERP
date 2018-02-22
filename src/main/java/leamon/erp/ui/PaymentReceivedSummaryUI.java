@@ -816,20 +816,20 @@ public class PaymentReceivedSummaryUI extends JInternalFrame {
 			
 			//|| item.isOpeningBalance() && item.getOpenigBalanceInfo().getType().equals(ERPEnum.TYPE_PAYMENT_WITH_BILL.name())
 			double sumBillAmount = invoiceInfos.stream()
-					.filter(item -> !Strings.isNullOrEmpty(item.getBillAmount()))
-					.map(item -> item.getBillAmount()).mapToDouble(Double::parseDouble).sum();
+					.filter(item -> !Strings.isNullOrEmpty(item.getRemainingBillAmount()))
+					.map(item -> item.getRemainingBillAmount()).mapToDouble(Double::parseDouble).sum();
 			
 			sumBillAmount = sumBillAmount + invoiceInfos.stream()
 					.filter(item -> item.isOpeningBalance() && item.getOpenigBalanceInfo().getType().equals(ERPEnum.TYPE_PAYMENT_WITH_BILL.name()))
-					.map(item -> item.getOpenigBalanceInfo().getOpeningbalanceamount()).mapToDouble(Double::parseDouble).sum();
+					.map(item -> item.getOpenigBalanceInfo().getRemainingopeningbalanceamount()).mapToDouble(Double::parseDouble).sum();
 			
 			double sumWAmount = invoiceInfos.stream()
-					.filter(item -> !Strings.isNullOrEmpty(item.getWithoutBillAmount()))
-					.map(item -> item.getWithoutBillAmount()).mapToDouble(Double::parseDouble).sum();
+					.filter(item -> !Strings.isNullOrEmpty(item.getRemainingWithoutBillAmount()))
+					.map(item -> item.getRemainingWithoutBillAmount()).mapToDouble(Double::parseDouble).sum();
 
 			sumWAmount = sumWAmount + invoiceInfos.stream()
 					.filter(item -> item.isOpeningBalance() && item.getOpenigBalanceInfo().getType().equals(ERPEnum.TYPE_PAYMENT_WITHOUT_BILL.name()))
-					.map(item -> item.getOpenigBalanceInfo().getOpeningbalanceamount()).mapToDouble(Double::parseDouble).sum();
+					.map(item -> item.getOpenigBalanceInfo().getRemainingopeningbalanceamount()).mapToDouble(Double::parseDouble).sum();
 			
 			double sum = 0; //= sumBillAmount + sumWAmount;
 			
