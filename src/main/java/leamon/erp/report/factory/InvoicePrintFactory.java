@@ -158,7 +158,7 @@ public class InvoicePrintFactory {
 		    "net.sf.jasperreports.engine.util.xml.JaxenXPathExecuterFactory");
 		
 		String reportPath = "";
-		if(Strings.isNullOrEmpty(discount) || discount.equals(".00")){
+		if(Strings.isNullOrEmpty(discount) || discount.equals(".00") || discount.equals("0.0")){
 			reportPath = LeamonERP.getPropertyValue(ERPEnum.REPORTWITHOUTD.name());
 		}else{
 			reportPath = LeamonERP.getPropertyValue(ERPEnum.REPORTTD.name());
