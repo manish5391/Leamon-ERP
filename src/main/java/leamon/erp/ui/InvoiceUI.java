@@ -1263,6 +1263,13 @@ public class InvoiceUI extends JInternalFrame {
 			LOGGER.error("validation failed while saving");
 			return ;
 		}
+		/*Release 3.7 Fire events for Gst & Bill Amount on save click*/
+		KeyEvent textFieldGstTAXExplicitEnterPress = new KeyEvent(textFieldGstTAX, 0, 0, 0, KeyEvent.VK_ENTER, ' ');
+		new InvoiceUiEventHandler(textFieldCol1,this).enterKeyNavigation(textFieldGstTAXExplicitEnterPress);
+		
+		KeyEvent textFieldBillAmountExplicitEnterPress = new KeyEvent(textFieldBillAmount, 0, 0, 0, KeyEvent.VK_ENTER, ' ');
+		new InvoiceUiEventHandler(textFieldPackingAmount,this).enterKeyNavigation(textFieldBillAmountExplicitEnterPress);;
+		/*End*/
 		
 		String invoiceNum			=	textFieldInvoiceNum.getText();
 		String invoiceDate 			=  datePickerInvoiceDate.getEditor().getText();
@@ -1469,7 +1476,7 @@ public class InvoiceUI extends JInternalFrame {
 		//3.3.2 Ghanshyam code data type changed from Integer to double
 				for (Integer si : uniqueStockIds){
 					double totalOrderedQuantity = invoiceItemInfos.stream().filter(e -> (null !=e.getStockItemId())
-							&& e.getStockItemId() == si).map(InvoiceItemInfo::getQty)
+							&& e.getStockItemId().intValue() == si.intValue()).map(InvoiceItemInfo::getQty)
 							.mapToDouble(Double::parseDouble).sum();
 				//3.3.2 end of ghanshyam code
 			
@@ -1495,7 +1502,7 @@ public class InvoiceUI extends JInternalFrame {
 						try{
 							StockQuantityDaoImpl.getInstance().update(matchedItemQuantity);
 							/*saving order history for ordered quantity*/
-							List<InvoiceItemInfo> invoiceItemInfos2 = invoiceItemInfos.stream().filter(e -> e.getStockItemId() == si).collect(Collectors.toList());
+							List<InvoiceItemInfo> invoiceItemInfos2 = invoiceItemInfos.stream().filter(e -> e.getStockItemId().intValue() == si.intValue()).collect(Collectors.toList());
 							for(InvoiceItemInfo invoiceItemInfoToOrderHistory : invoiceItemInfos2){
 								StockItemQuantityOrderHistory stockItemQuantityOrderHistory = StockItemQuantityOrderHistory.builder()
 										.invoiceid(invoiceId)
@@ -1686,6 +1693,7 @@ public class InvoiceUI extends JInternalFrame {
 		btnPrint.setEnabled(false);
 		btnUpdate.setEnabled(false);
 		btnDelete.setEnabled(false);
+		btnAdd.setEnabled(Boolean.TRUE);
 
 		autoInvoiceIdSuggestor(textFieldInvoicenumList);
 		/*refresh stockitem description*/
@@ -1969,6 +1977,15 @@ public class InvoiceUI extends JInternalFrame {
 		if(actionObjectInvoiceInfo == null){
 			return ;
 		}
+		
+		/*Release 3.7 Fire events for Gst & Bill Amount on save click*/
+		//KeyEvent ke = new KeyEvent(parent, 0, 0, 0, KeyEvent.VK_ENTER, ' ');
+		KeyEvent textFieldGstTAXExplicitEnterPress = new KeyEvent(textFieldGstTAX, 0, 0, 0, KeyEvent.VK_ENTER, ' ');
+		new InvoiceUiEventHandler(textFieldCol1,this).enterKeyNavigation(textFieldGstTAXExplicitEnterPress);
+		
+		KeyEvent textFieldBillAmountExplicitEnterPress = new KeyEvent(textFieldBillAmount, 0, 0, 0, KeyEvent.VK_ENTER, ' ');
+		new InvoiceUiEventHandler(textFieldPackingAmount,this).enterKeyNavigation(textFieldBillAmountExplicitEnterPress);;
+		/*End*/
 		
 		String invoiceDate =  datePickerInvoiceDate.getEditor().getText();
 		String billNo 				= textFieldBillNo.getText();
