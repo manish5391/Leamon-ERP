@@ -712,6 +712,11 @@ public class InvoiceUiEventHandler implements KeyListener, ActionListener, Mouse
 		}
 		
 		String billAmtVal = ui.getTextFieldBillAmount().getText();
+		/*Release 3.7*/
+		if(Strings.isNullOrEmpty(billAmtVal)){
+			ui.getTextFieldBillAmount().setText("0");
+		}
+		/*end*/
 		String gvalue= ui.getTextFieldGtotal2().getText();
 		
 		double billAmt = 0;
@@ -822,9 +827,9 @@ public class InvoiceUiEventHandler implements KeyListener, ActionListener, Mouse
 			} // 3.3.2 ghanshyam code end
 			
 		}
-
+		
 		StockItemQuantity matchedItemQuantity = stockItemQuantities.stream()
-				.filter(s -> s.getStokItemid() == (Integer.parseInt(invoiceUI.getHiddenLabelStockId().getText())))
+				.filter(s -> s.getStokItemid().intValue() == (Integer.parseInt(invoiceUI.getHiddenLabelStockId().getText())))
 				.findFirst().orElse(null);
 
 		if (matchedItemQuantity != null) {
@@ -835,7 +840,7 @@ public class InvoiceUiEventHandler implements KeyListener, ActionListener, Mouse
 				List<InvoiceItemInfo> invoiceItemInfos = model.getInvoiceItemInfos();
 				double totalOrderedQuantity = 0;
 				totalOrderedQuantity = invoiceItemInfos.stream().filter(e -> (null !=e.getStockItemId())
-						&& e.getStockItemId() == matchedItemQuantity.getStokItemid()).map(InvoiceItemInfo::getQty)
+						&& e.getStockItemId().intValue() == matchedItemQuantity.getStokItemid().intValue()).map(InvoiceItemInfo::getQty)
 						.mapToDouble(Double::parseDouble).sum();
 
 				double maxTotalQty = totalOrderedQuantity + qtyVal;
@@ -864,7 +869,7 @@ public class InvoiceUiEventHandler implements KeyListener, ActionListener, Mouse
 				StockItem stockItemPresent =null;
 				try{
 					List<StockItem> stockItems = StockDaoImpl.getInstance().getItemList();
-					stockItemPresent = stockItems.stream().filter(e -> e.getId() == Integer.parseInt(invoiceUI.getHiddenLabelStockId().getText())).findAny().orElse(null);
+					stockItemPresent = stockItems.stream().filter(e -> e.getId().intValue() == Integer.parseInt(invoiceUI.getHiddenLabelStockId().getText())).findAny().orElse(null);
 				}catch(Exception exp){
 					LOGGER.error(exp);
 				}
