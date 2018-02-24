@@ -222,4 +222,46 @@ public class StockDaoImpl implements  LeamonERPDao<StockItem> {
 		return stockItems;
 	}
 	
+	// 3.7 ghan code
+	public List<StockItem> getDeletedStockItems() throws Exception {
+		SqlSession session = MyBatsUtil.getSqlSessionFactory().openSession();
+		StockMapper stockItemMapper = session.getMapper(StockMapper.class);
+		List<StockItem> stockItems = stockItemMapper.getDeletedStockItems();
+		session.close();
+		return stockItems;
+	}
+
+	public void delete(StockItem item) throws Exception {
+		LOGGER.info("LeamonERPDaoImpl[delete] inside.");
+		SqlSession session = MyBatsUtil.getSqlSessionFactory().openSession();
+		StockMapper stockItemMapper = session.getMapper(StockMapper.class);
+		try {
+			stockItemMapper.delete(item.getId());
+			session.commit();
+		} catch (Exception exp) {
+			session.rollback();
+			throw exp;
+		} finally {
+			session.close();
+		}
+		LOGGER.info("LeamonERPDaoImpl[delete] end.");
+	}
+
+	public void updateByID(StockItem item) throws Exception {
+		LOGGER.info("LeamonERPDaoImpl[delete] inside.");
+		SqlSession session = MyBatsUtil.getSqlSessionFactory().openSession();
+		StockMapper stockItemMapper = session.getMapper(StockMapper.class);
+		try {
+			stockItemMapper.updateByID(item.getId());
+			session.commit();
+		} catch (Exception exp) {
+			session.rollback();
+			throw exp;
+		} finally {
+			session.close();
+		}
+		LOGGER.info("LeamonERPDaoImpl[delete] end.");
+	}
+	// 3.7 end of ghan code
+	
 }

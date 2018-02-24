@@ -72,6 +72,8 @@ public interface LeamonERPConstants {
 	
 	public static String BUTTON_ACTION_ADD_STOCK_ITEM="AddStockItem";
 	public static String BUTTON_ACTION_DELETE_STOCK_ITEM="DeleteStockItem";
+	public static String BUTTON_ACTION_REFRESH_STOCK_ITEM="RefreshStockItem";//3.7 ghan code
+	public static String BUTTON_ACTION_RESTORE_STOCK_ITEM="RestoreStockItem";//3.7 ghan code
 	public static String BUTTON_ACTION_PRINT_STOCK_ITEM="PrintStockItem";//3.5 ghanshyam code for print stcok item
 	public static String BUTTON_ACTION_VIEW_STOCK_ITEM="ViewStockItem";
 	public static String BUTTON_ACTION_EDIT_STOCK_ITEM="EditStockItem";
@@ -319,4 +321,6 @@ public interface LeamonERPConstants {
 	public static final String IMG_TOOLS_STATE_CITY_EDIT = "Tools/StateAndCity/Edit.png";
 	public static final String IMG_TOOLS_STATE_CITY_DELETE = "Tools/StateAndCity/Delete.png";
 	// 3.6 end of ghan code
+	public static final String IMG_TOOLS_STOCK_TRASH_REFRESH = "Tools/StockTrash/Refresh.png";
+	public static final String IMG_TOOLS_STOCK_TRASH_RESTORE = "Tools/StockTrash/Restore.png";
 }

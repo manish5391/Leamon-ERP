@@ -57,6 +57,7 @@ public class LeamonERP extends JFrame {
 	public static AccountInfoUI accountInfoUI;
 	public static StockItemUI stockItemManager;
 	public static StockItemListManager stockItemList;
+	public static StockItemTrash stockItemTrash;//3.7 ghan code
 	public static AccountListManager accountListManager;
 
 	public static InventoryUIManager inventoryUIManager;
@@ -695,7 +696,7 @@ public class LeamonERP extends JFrame {
 		mnTools.add(mntmUpdates);
 		mntmUpdates.addActionListener(e -> mntmUpdatesClick(e));
 
-		JMenuItem mntmTrash = new JMenuItem("Trash");
+		JMenu mntmTrash = new JMenu("Trash");
 		try {
 			mntmTrash.setIcon(new ImageIcon(
 					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_TOOLS_TRASH)));
@@ -703,7 +704,16 @@ public class LeamonERP extends JFrame {
 			LOGGER.error(e);
 		}
 		mnTools.add(mntmTrash);
-		mntmTrash.addActionListener(e -> mntmTrashClick(e));
+		
+		JMenuItem mntmStockTrash = new JMenuItem("Stock Item Trash");
+		try {
+			mntmStockTrash.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_TOOLS_UPDATES)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		mntmTrash.add(mntmStockTrash);
+		mntmStockTrash.addActionListener(e -> mntmStockTrashClick(e));
 		// 3.6 end of Ghanshyam code
 		try{
 		StockDaoImpl.getInstance().prepareStockIntelliSense();
@@ -725,6 +735,7 @@ public class LeamonERP extends JFrame {
 		
 		stockItemManager = new StockItemUI();
 		stockItemList = new StockItemListManager();
+		stockItemTrash=new StockItemTrash();//3.7 ghan code
 		accountListManager = new AccountListManager();
 		//framCreator();
 		inventoryUI = new InventoryUI();
@@ -962,6 +973,7 @@ public class LeamonERP extends JFrame {
 
 		stockItemManager = new StockItemUI();
 		stockItemList = new StockItemListManager();
+		stockItemTrash =new StockItemTrash();//3.7 ghan code
 		accountListManager = new AccountListManager();
 		//framCreator();
 		inventoryUI = new InventoryUI();
@@ -1400,9 +1412,19 @@ public class LeamonERP extends JFrame {
 		return null;
 	}
 	
-	private Object mntmTrashClick(ActionEvent e) {
-		// TODO Auto-generated method stub
-		return null;
+	private void mntmStockTrashClick(ActionEvent e) {
+		if(stockItemTrash.isVisible()){
+			try {
+				stockItemTrash.setSelected(true);
+			} catch (PropertyVetoException e1) {
+				LOGGER.error(e1.toString());
+			}
+			stockItemTrash.moveToFront();
+		}else{
+			desktopPane.add(stockItemTrash);
+			stockItemTrash.setVisible(true);
+		}
+		SwingUtilities.updateComponentTreeUI(stockItemTrash);
 	}
 
 	private Object mntmPaymentManagerClick(ActionEvent e) {

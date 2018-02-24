@@ -33,6 +33,8 @@ public interface StockMapper {
 	
 	final String disableByID = "UPDATE STOCK_ITEM SET ISENABLE = FALSE WHERE ID = #{id}";
 	
+	final String updateByID = "UPDATE STOCK_ITEM SET ISENABLE = TRUE WHERE ID = #{id}";//3.7 ghan code
+	
 	//@Options(flushCache= FlushCachePolicy.TRUE)
 	@Select(getAll)
 	   @Results(value = {
@@ -100,4 +102,29 @@ public interface StockMapper {
 	      , one =@One(select="getStockItemQuantity"))
 	})
 	public List<StockItem> getAllWithQuantity() throws Exception;
+	
+	//3.7 ghan code
+	@Select("SELECT * FROM STOCK_ITEM WHERE ISENABLE = FALSE ORDER BY LASTUPDATEDDATE DESC")
+	   @Results(value = {
+	      @Result(property = "id", column = "ID"),
+	      @Result(property = "name", column = "NAME"),
+	      @Result(property = "productCode", column = "PRODUCTCODE"),
+	      @Result(property = "size", column = "SIZE"),
+	      @Result(property = "unit", column = "UNIT"),
+	      @Result(property = "finish", column = "FINISH"),
+	      @Result(property = "shape", column = "SHAPE"),
+	      @Result(property = "saleunit", column = "SALE_UNIT"),
+	      @Result(property = "description", column = "DESCRIPTION"),
+	      @Result(property = "imagePath", column = "IMAGEPATH"),
+	      @Result(property = "isEnable", column = "ISENABLE"),
+	      @Result(property = "createdDate", column = "CREATEDDATE"),
+	      @Result(property = "lastUpdatedDate", column = "LASTUPDATEDDATE"),
+	      @Result(property = "stockItemQuantity", javaType=StockItemQuantity.class, column = "ID"
+	      , one =@One(select="getStockItemQuantity"))
+	})
+	public List<StockItem> getDeletedStockItems() throws Exception;
+	
+	@Update(updateByID)
+	void updateByID(int id) throws Exception;
+	//3.7 end of ghan code
 }
