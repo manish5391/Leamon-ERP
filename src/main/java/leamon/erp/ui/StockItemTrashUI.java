@@ -45,7 +45,7 @@ import lombok.Getter;
  * @date 24, Feb, 2018
  */
 @Getter
-public class StockItemTrash extends JInternalFrame implements ActionListener {
+public class StockItemTrashUI extends JInternalFrame implements ActionListener {
 
 	static final Logger LOGGER = Logger.getLogger(StockItemListManager.class);
 
@@ -53,7 +53,7 @@ public class StockItemTrash extends JInternalFrame implements ActionListener {
 	private JXTable tblStockList;
 	private JXSearchField textSearchField;
 
-	public StockItemTrash() {
+	public StockItemTrashUI() {
 		setTitle("Stock Item Trash");
 		setResizable(true);
 		setMaximizable(true);

@@ -57,7 +57,7 @@ public class LeamonERP extends JFrame {
 	public static AccountInfoUI accountInfoUI;
 	public static StockItemUI stockItemManager;
 	public static StockItemListManager stockItemList;
-	public static StockItemTrash stockItemTrash;//3.7 ghan code
+	public static StockItemTrashUI stockItemTrash;//3.7 ghan code
 	public static AccountListManager accountListManager;
 
 	public static InventoryUIManager inventoryUIManager;
@@ -735,7 +735,7 @@ public class LeamonERP extends JFrame {
 		
 		stockItemManager = new StockItemUI();
 		stockItemList = new StockItemListManager();
-		stockItemTrash=new StockItemTrash();//3.7 ghan code
+		stockItemTrash=new StockItemTrashUI();//3.7 ghan code
 		accountListManager = new AccountListManager();
 		//framCreator();
 		inventoryUI = new InventoryUI();
@@ -973,7 +973,7 @@ public class LeamonERP extends JFrame {
 
 		stockItemManager = new StockItemUI();
 		stockItemList = new StockItemListManager();
-		stockItemTrash =new StockItemTrash();//3.7 ghan code
+		stockItemTrash =new StockItemTrashUI();//3.7 ghan code
 		accountListManager = new AccountListManager();
 		//framCreator();
 		inventoryUI = new InventoryUI();
