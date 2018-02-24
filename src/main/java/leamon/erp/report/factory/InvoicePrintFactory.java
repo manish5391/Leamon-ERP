@@ -46,22 +46,22 @@ import net.sf.jasperreports.swing.JRViewer;
 import net.sf.jasperreports.view.JasperViewer;
 
 public class InvoicePrintFactory {
-	
+
 	private InvoiceUI invoiceUI;
-	
+
 	static final Logger LOGGER = Logger.getLogger(InvoicePrintFactory.class);
-	
+
 	public InvoicePrintFactory(InvoiceUI invoiceUI){
 		this.invoiceUI = invoiceUI;
 	}
-	
+
 	public void print(){
-		
+
 		if(invoiceUI == null){
 			JOptionPane.showMessageDialog(LeamonERP.frame, "Invoice UI Not found", "Error", JOptionPane.ERROR_MESSAGE);
 			return ;
 		}
-		
+
 		String invoiceNum = invoiceUI.getTextFieldInvoiceNum().getText();
 		String invoiceDate = invoiceUI.getDatePickerInvoiceDate().getEditor().getText();
 		String billNo = invoiceUI.getTextFieldBillNo().getText();
@@ -69,20 +69,23 @@ public class InvoicePrintFactory {
 		String partynickName =   invoiceUI.getTextFieldPartynickName().getText();
 		String partyCity = invoiceUI.getTextAreaPartyAddress().getText();
 		String partyState = invoiceUI.getTextFieldPartyState().getText();
-		
-		
+
+
 		String partyTransport = invoiceUI.getTextFieldPartyTransportList().getText();
 		String packets = invoiceUI.getTextFieldGoodsPackets1().getText();
-		
-		
+
+
 		String total = invoiceUI.getTextFieldTotal().getText();
 		String discount = invoiceUI.getTextFieldDiscount().getText();
- 		String taxableValue = invoiceUI.getTextFieldTaxableValue().getText();
+		String taxableValue = invoiceUI.getTextFieldTaxableValue().getText();
 		String gst = invoiceUI.getTextFieldGstTAX().getText();
+		/*Release 3.7*/
+		gst = Strings.isNullOrEmpty(gst)? "0" : gst; 
+		/*end*/
 		String grandTotal = invoiceUI.getTextFieldGTotal1().getText();
 		String billAmt = invoiceUI.getTextFieldBillAmount().getText();
 		String packingAmount = invoiceUI.getTextFieldPackingAmount().getText();
-		
+
 		total = Strings.isNullOrEmpty(total) ? LeamonERPConstants.EMPTY_STR : total;
 		discount = Strings.isNullOrEmpty(discount) ? LeamonERPConstants.EMPTY_STR : discount;
 		taxableValue = Strings.isNullOrEmpty(taxableValue) ? LeamonERPConstants.EMPTY_STR : taxableValue;
@@ -90,44 +93,47 @@ public class InvoicePrintFactory {
 		grandTotal = Strings.isNullOrEmpty(grandTotal) ? LeamonERPConstants.EMPTY_STR : grandTotal;
 		billAmt = Strings.isNullOrEmpty(billAmt) ? LeamonERPConstants.EMPTY_STR : billAmt;
 		packingAmount = Strings.isNullOrEmpty(packingAmount) ? LeamonERPConstants.EMPTY_STR : packingAmount;
-		
+
 		List<InvoiceItemInfo> invoiceItemInfos =  ((TableInvoiceModel)invoiceUI.getTableInvoice().getModel()).getInvoiceItemInfos();
-		
+
 		CompanyInfo companyInfo = getCompany();
 		try{
 			companyInfo = CompanyInfoDaoImpl.getInstance().getItemList().get(0);
 		}catch(Exception e){
 			LOGGER.error(e);
 		}
-		
+
 		HashMap parameters = new HashMap();
 		parameters.put("companyName", companyInfo.getCompanyName());
 		parameters.put("companyAddress", companyInfo.getCompanyAddress());
 		parameters.put("companyMobile", companyInfo.getCompanyMobile());
 		parameters.put("companyState", companyInfo.getCompanyState());
-		
+
 		parameters.put("partyName", partyName);
 		parameters.put("partynickName", partynickName);
 		parameters.put("partyCity", partyCity);
 		parameters.put("partyTransport", partyTransport);
 		parameters.put("billNo", billNo);
 		parameters.put("invoiceDate", invoiceDate);
-		
+
 		parameters.put("invoiceNum", invoiceNum);
-		
+
 		/*Added from 3.5*/
 		try{
+			if(billAmt.equals("0")){
+				billAmt = "0.00";
+			}else{
+				BigDecimal bd = new BigDecimal(billAmt);
+				bd = bd.setScale(2,RoundingMode.HALF_UP);
 
-			BigDecimal bd = new BigDecimal(billAmt);
-			bd = bd.setScale(2,RoundingMode.HALF_UP);
-
-			DecimalFormat df = new DecimalFormat("#.00");
-			billAmt = df.format(bd.doubleValue());
+				DecimalFormat df = new DecimalFormat("#.00");
+				billAmt = df.format(bd.doubleValue());
+			}
 		}catch(Exception e){ LOGGER.error(e); }
 		parameters.put("billAmount", billAmt);
-		
+
 		parameters.put("packingAmount", packingAmount);
-		
+
 		try{
 
 			BigDecimal bd = new BigDecimal(grandTotal);
@@ -141,22 +147,26 @@ public class InvoicePrintFactory {
 		parameters.put("packets", packets);
 		parameters.put("total", total);
 		parameters.put("td", discount);
-		
+
 		/*added from 3.5*/
 		try{
 
-			BigDecimal bd = new BigDecimal(gst);
-			bd = bd.setScale(2,RoundingMode.HALF_UP);
+			if(gst.equals("0")){
+				gst = "0.00";
+			}else{
+				BigDecimal bd = new BigDecimal(gst);
+				bd = bd.setScale(2,RoundingMode.HALF_UP);
 
-			DecimalFormat df = new DecimalFormat("#.00");
-			gst = df.format(bd.doubleValue());
+				DecimalFormat df = new DecimalFormat("#.00");
+				gst = df.format(bd.doubleValue());
+			}
 		}catch(Exception e){ LOGGER.error(e); }
 		parameters.put("gst", gst);
-		
+
 		DefaultJasperReportsContext context = DefaultJasperReportsContext.getInstance();
 		JRPropertiesUtil.getInstance(context).setProperty("net.sf.jasperreports.xpath.executer.factory",
-		    "net.sf.jasperreports.engine.util.xml.JaxenXPathExecuterFactory");
-		
+				"net.sf.jasperreports.engine.util.xml.JaxenXPathExecuterFactory");
+
 		String reportPath = "";
 		if(Strings.isNullOrEmpty(discount) || discount.equals(".00") || discount.equals("0.0")){
 			reportPath = LeamonERP.getPropertyValue(ERPEnum.REPORTWITHOUTD.name());
@@ -166,28 +176,28 @@ public class InvoicePrintFactory {
 		try (InputStream  compiledInvoiceReport = new FileInputStream(reportPath)){
 			//compiledInvoiceReport = new FileInputStream(new File(this.getClass().getClassLoader().getResource("report/Blank_A5_invoice.jrxml").getPath().toString()));
 			//compiledInvoiceReport = new FileInputStream(LeamonERP.rptInvoiceReportPath);
-			
-		
+
+
 			JasperDesign jasperDesign = JRXmlLoader.load(compiledInvoiceReport);
 			JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
-			
+
 			JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(invoiceItemInfos);
-			
+
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, beanColDataSource);
 			//JasperPrint jasperPrint = JasperFillManager.fillReport(compiledInvoiceReport, parameters, beanColDataSource);
-			
+
 			JRViewer jrViewer = new JRViewer(jasperPrint);
-			
+
 			JasperViewer jasperViewer = new JasperViewer(jasperPrint);
-			
+
 			JInternalFrame frm = new JInternalFrame("Leamon-Invoice Report",true,true,true);
 			frm.getContentPane().add(jrViewer);
 			frm.setSize(500, 500);
 			frm.setDefaultCloseOperation(JInternalFrame.DISPOSE_ON_CLOSE);
 			LeamonERP.desktopPane.add(frm);
 			frm.setVisible(true);
-			
-			
+
+
 		} catch (JRException e) {
 			e.printStackTrace();
 		} catch (FileNotFoundException e1) {
@@ -197,12 +207,12 @@ public class InvoicePrintFactory {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
+
 	}
-	
+
 	public static Collection getInvoiceList(){
 		Vector vector = new Vector(); 
-		
+
 		List<InvoiceItemInfo> items = new ArrayList<InvoiceItemInfo>();
 		InvoiceItemInfo invoiceItemInfo = InvoiceItemInfo.builder()
 				.amount("1000")
@@ -221,7 +231,7 @@ public class InvoicePrintFactory {
 				.unit("Pcs.")
 				.build();
 		items .add(invoiceItemInfo);
-		
+
 		InvoiceInfo info =InvoiceInfo.builder().billAmount("1000")
 				.gstValue("500")
 				.id(1)
@@ -239,11 +249,11 @@ public class InvoicePrintFactory {
 		vector.add(info);
 		return vector;
 	}
-	
-	
+
+
 	public static CompanyInfo getCompany(){
 		//List companyList = new ArrayList();
-		
+
 		CompanyInfo companyInfo = CompanyInfo.builder().companyAccountNo("ABC12345")
 				.companyAddress("Aligarh City")
 				.companyBankName("PNB")
@@ -253,127 +263,127 @@ public class InvoicePrintFactory {
 				.companyMobile("8364758987")
 				.companyState("Uttar Pradesh")
 				.build();
-		
+
 		//companyList.add(companyInfo);
-		
+
 		return companyInfo;
 	}
-	
-	
+
+
 	public void printRpt(){
 		String invoiceNum = invoiceUI.getTextFieldInvoiceNum().getText();
 		String invoiceDate = invoiceUI.getDatePickerInvoiceDate().getEditor().getText();
 		String partyName =   invoiceUI.getTextFieldPartyName().getText();
 		String partyCity = invoiceUI.getTextAreaPartyAddress().getText();
 		String partyState = invoiceUI.getTextFieldPartyState().getText();
-		
+
 		String partyTransport = invoiceUI.getTextFieldPartyTransportList().getText();
 		String packets = invoiceUI.getTextFieldGoodsPackets1().getText();
-		
-		
+
+
 		String total = invoiceUI.getTextFieldTotal().getText();
 		String discount = invoiceUI.getTextFieldDiscount().getText();
- 		String taxableValue = invoiceUI.getTextFieldTaxableValue().getText();
+		String taxableValue = invoiceUI.getTextFieldTaxableValue().getText();
 		String gst = invoiceUI.getTextFieldGstTAX().getText();
 		String grandTotal = invoiceUI.getTextFieldGTotal1().getText();
 		String billAmt = invoiceUI.getTextFieldBillAmount().getText();
 		String packingAmount = invoiceUI.getTextFieldPackingAmount().getText();
-		
+
 		List<InvoiceItemInfo> invoiceItemInfos =  ((TableInvoiceModel)invoiceUI.getTableInvoice().getModel()).getInvoiceItemInfos();
-		
+
 		CompanyInfo companyInfo = getCompany();
-		
+
 		HashMap parameters = new HashMap();
 		parameters.put("companyName", companyInfo.getCompanyName());
 		parameters.put("companyAddress", companyInfo.getCompanyAddress());
 		parameters.put("companyMobile", companyInfo.getCompanyMobile());
 		parameters.put("companyState", companyInfo.getCompanyState());
-		
+
 		parameters.put("partyName", partyName);
 		parameters.put("partyCity", partyCity);
 		parameters.put("partyTransport", partyTransport);
-		
+
 		parameters.put("invoiceNum", invoiceNum);
 		parameters.put("billAmount", billAmt);
 		parameters.put("packingAmount", packingAmount);
 		parameters.put("grandTotal", grandTotal);
-		
+
 		parameters.put("total", total);
 		parameters.put("td", taxableValue);
 		parameters.put("gst", gst);
-		
+
 		String sourceFileName = this.getClass().getClassLoader().getResource("report/Blank_A4.jasper").getPath();
 		String printFileName = null;
 		JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(invoiceItemInfos);
-		
-		 try {
-	    	   printFileName = JasperFillManager.fillReportToFile( 
-	            sourceFileName, parameters, beanColDataSource);
-	         if(printFileName != null){
-	            JasperPrintManager.printReport( printFileName, true);
-	         }
-	      } catch (JRException e) {
-	         e.printStackTrace();
-	      }
+
+		try {
+			printFileName = JasperFillManager.fillReportToFile( 
+					sourceFileName, parameters, beanColDataSource);
+			if(printFileName != null){
+				JasperPrintManager.printReport( printFileName, true);
+			}
+		} catch (JRException e) {
+			e.printStackTrace();
+		}
 	}
-	
+
 	public void fill() throws JRException{
 		JasperPrint jasperPrint = getJasperPrint();
 		JRSaver.saveObject(jasperPrint, "");
 	}
-	
+
 	public JasperPrint getJasperPrint(){
 		if(invoiceUI == null){
 			JOptionPane.showMessageDialog(LeamonERP.frame, "Invoice UI Not found", "Error", JOptionPane.ERROR_MESSAGE);
 			return null;
 		}
-		
-		
+
+
 		String invoiceNum = invoiceUI.getTextFieldInvoiceNum().getText();
 		String invoiceDate = invoiceUI.getDatePickerInvoiceDate().getEditor().getText();
 		String partyName =   invoiceUI.getTextFieldPartyName().getText();
 		String partyCity = invoiceUI.getTextAreaPartyAddress().getText();
 		String partyState = invoiceUI.getTextFieldPartyState().getText();
-		
+
 		String partyTransport = invoiceUI.getTextFieldPartyTransportList().getText();
 		String packets = invoiceUI.getTextFieldGoodsPackets1().getText();
-		
-		
+
+
 		String total = invoiceUI.getTextFieldTotal().getText();
 		String discount = invoiceUI.getTextFieldDiscount().getText();
- 		String taxableValue = invoiceUI.getTextFieldTaxableValue().getText();
+		String taxableValue = invoiceUI.getTextFieldTaxableValue().getText();
 		String gst = invoiceUI.getTextFieldGstTAX().getText();
 		String grandTotal = invoiceUI.getTextFieldGTotal1().getText();
 		String billAmt = invoiceUI.getTextFieldBillAmount().getText();
 		String packingAmount = invoiceUI.getTextFieldPackingAmount().getText();
-		
+
 		List<InvoiceItemInfo> invoiceItemInfos =  ((TableInvoiceModel)invoiceUI.getTableInvoice().getModel()).getInvoiceItemInfos();
-		
+
 		CompanyInfo companyInfo = getCompany();
-		
+
 		HashMap parameters = new HashMap();
 		parameters.put("companyName", companyInfo.getCompanyName());
 		parameters.put("companyAddress", companyInfo.getCompanyAddress());
 		parameters.put("companyMobile", companyInfo.getCompanyMobile());
 		parameters.put("companyState", companyInfo.getCompanyState());
-		
+
 		parameters.put("partyName", partyName);
 		parameters.put("partyCity", partyCity);
 		parameters.put("partyTransport", partyTransport);
-		
+
 		parameters.put("invoiceNum", invoiceNum);
 		parameters.put("billAmount", billAmt);
 		parameters.put("packingAmount", packingAmount);
 		parameters.put("grandTotal", grandTotal);
 		parameters.put("packets", packets);
-		
+
 		parameters.put("total", total);
 		parameters.put("td", discount);
 		parameters.put("gst", gst);
-		
+
 		DefaultJasperReportsContext context = DefaultJasperReportsContext.getInstance();
 		JRPropertiesUtil.getInstance(context).setProperty("net.sf.jasperreports.xpath.executer.factory",
-		    "net.sf.jasperreports.engine.util.xml.JaxenXPathExecuterFactory");
+				"net.sf.jasperreports.engine.util.xml.JaxenXPathExecuterFactory");
 		String reportPath = "";
 		if(Strings.isNullOrEmpty(discount)){
 			reportPath = LeamonERP.getPropertyValue(ERPEnum.REPORTWITHOUTD.name());
@@ -382,15 +392,15 @@ public class InvoicePrintFactory {
 		}
 		LOGGER.info("Report Path : "+ reportPath);
 		try (InputStream compiledInvoiceReport = new FileInputStream(reportPath)){
-			
+
 			JasperDesign jasperDesign = JRXmlLoader.load(compiledInvoiceReport);
 			JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
-			
+
 			JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(invoiceItemInfos);
-			
+
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, beanColDataSource);
 			return jasperPrint;
-			
+
 		} catch (JRException e) {
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
