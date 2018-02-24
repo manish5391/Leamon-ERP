@@ -17,6 +17,7 @@ import leamon.erp.model.AccountInfo;
 public interface AccountMapper {
 	
 	final String getAll = "SELECT * FROM ACCOUNT_INFO WHERE ISENABLE = TRUE"; 
+	final String getAllDeletedAccount = "SELECT * FROM ACCOUNT_INFO WHERE ISENABLE = FALSE ORDER BY LASTUPDATED DESC";//3.7 ghan code
 	final String getById = "SELECT * FROM ACCOUNT_INFO WHERE ID = #{id}";
 	
 	final String insert = "INSERT INTO ACCOUNT_INFO (NAME, NICKNAME, GST_TIN_NUMBER, TRANSPORT, PHONE, ALTERNATE_PHONE, HOUSENUBER, STREET, CITY, STATE, PINCODE, COUNTRY, LANDMARK, "
@@ -34,6 +35,8 @@ public interface AccountMapper {
 	final String deleteById = "DELETE from ACCOUNT_INFO WHERE ID = #{id}";
 	
 	final String disableByID = "UPDATE ACCOUNT_INFO SET ISENABLE = FALSE WHERE ID = #{id}";
+	
+	final String updateByID = "UPDATE ACCOUNT_INFO SET ISENABLE = TRUE WHERE ID = #{id}";//3.7 ghan code
 	
 	final String getByNameCity = "SELECT * FROM ACCOUNT_INFO WHERE NAME = #{name} AND CITY = #{city}";
 
@@ -76,4 +79,36 @@ public interface AccountMapper {
 	@Insert(insert)
 	@Options(useGeneratedKeys = true, keyProperty = "id")
 	void insert(AccountInfo accountInfo);
+	
+	//3.7 ghan code
+	@Select(getAllDeletedAccount)
+	   @Results(value = {
+	      @Result(property = "id", column = "ID"),
+	      @Result(property = "name", column = "NAME"),
+	      @Result(property = "nickName", column = "NICKNAME"),
+	      @Result(property = "gstNumber", column = "GST_TIN_NUMBER"),
+	      @Result(property = "transport", column = "TRANSPORT"),
+	      @Result(property = "phone", column = "PHONE"),
+	      @Result(property = "alternatePhone", column = "ALTERNATE_PHONE"),
+	      @Result(property = "houseShopNumber", column = "HOUSENUBER"),
+	      @Result(property = "street", column = "STREET"),
+	      @Result(property = "city", column = "CITY"),
+	      @Result(property = "state", column = "STATE"),
+	      @Result(property = "pinCode", column = "PINCODE"),
+	      @Result(property = "country", column = "COUNTRY"),
+	      @Result(property = "landMark", column = "LANDMARK"),
+	      @Result(property = "engagedDate", column = "ENGAGEDATE"),
+	      @Result(property = "panCard", column = "PAN"),
+	      @Result(property = "licence", column = "LICENCE"),
+	      @Result(property = "description", column = "DESCRIPTION"),
+	      @Result(property = "imagePath", column = "IMAGEPATH"),
+	      @Result(property = "createdDate", column = "CREATEDDATE"),
+	      @Result(property = "lastUpdated", column = "LASTUPDATED"),
+	      @Result(property = "isEnable", column = "ISENABLE")
+	})
+	public List<AccountInfo> getDeletedAccount();
+	
+	@Update(updateByID)
+	void updateByID(int id);
+	//3.7 end of ghan code
 }

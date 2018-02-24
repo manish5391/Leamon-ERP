@@ -59,6 +59,7 @@ public class LeamonERP extends JFrame {
 	public static StockItemListManager stockItemList;
 	public static StockItemTrashUI stockItemTrash;//3.7 ghan code
 	public static AccountListManager accountListManager;
+	public static AccountTrashUI accountTrashUI;//3.7 ghan code
 
 	public static InventoryUIManager inventoryUIManager;
 	public static InventoryUI inventoryUI;
@@ -704,7 +705,8 @@ public class LeamonERP extends JFrame {
 			LOGGER.error(e);
 		}
 		mnTools.add(mntmTrash);
-		
+		// 3.6 end of Ghanshyam code
+		// 3.7 ghan code
 		JMenuItem mntmStockTrash = new JMenuItem("Stock Item Trash");
 		try {
 			mntmStockTrash.setIcon(new ImageIcon(
@@ -714,7 +716,17 @@ public class LeamonERP extends JFrame {
 		}
 		mntmTrash.add(mntmStockTrash);
 		mntmStockTrash.addActionListener(e -> mntmStockTrashClick(e));
-		// 3.6 end of Ghanshyam code
+		
+		JMenuItem mntmAccountTrash = new JMenuItem("Account Trash");
+		try {
+			mntmAccountTrash.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_TOOLS_UPDATES)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		mntmTrash.add(mntmAccountTrash);
+		mntmAccountTrash.addActionListener(e -> mntmAccountTrashClick(e));
+		// 3.7 end of ghan code
 		try{
 		StockDaoImpl.getInstance().prepareStockIntelliSense();
 		stateCityInfosLoader();
@@ -737,6 +749,7 @@ public class LeamonERP extends JFrame {
 		stockItemList = new StockItemListManager();
 		stockItemTrash=new StockItemTrashUI();//3.7 ghan code
 		accountListManager = new AccountListManager();
+		accountTrashUI = new AccountTrashUI();//3.7 ghan code
 		//framCreator();
 		inventoryUI = new InventoryUI();
 
@@ -975,6 +988,7 @@ public class LeamonERP extends JFrame {
 		stockItemList = new StockItemListManager();
 		stockItemTrash =new StockItemTrashUI();//3.7 ghan code
 		accountListManager = new AccountListManager();
+		accountTrashUI = new AccountTrashUI();//3.7 ghan code
 		//framCreator();
 		inventoryUI = new InventoryUI();
 
@@ -1412,6 +1426,7 @@ public class LeamonERP extends JFrame {
 		return null;
 	}
 	
+	//3.7 ghan code
 	private void mntmStockTrashClick(ActionEvent e) {
 		if(stockItemTrash.isVisible()){
 			try {
@@ -1426,7 +1441,22 @@ public class LeamonERP extends JFrame {
 		}
 		SwingUtilities.updateComponentTreeUI(stockItemTrash);
 	}
-
+	
+	private void mntmAccountTrashClick(ActionEvent e) {
+		if(accountTrashUI.isVisible()){
+			try {
+				accountTrashUI.setSelected(true);
+			} catch (PropertyVetoException e1) {
+				LOGGER.error(e1.toString());
+			}
+			accountTrashUI.moveToFront();
+		}else{
+			desktopPane.add(accountTrashUI);
+			accountTrashUI.setVisible(true);
+		}
+		SwingUtilities.updateComponentTreeUI(accountTrashUI);
+	}
+	//3.7 end of ghan code
 	private Object mntmPaymentManagerClick(ActionEvent e) {
 		// TODO Auto-generated method stub
 		return null;

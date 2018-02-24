@@ -84,6 +84,8 @@ public interface LeamonERPConstants {
 	public static String BUTTON_ACTION_DELETE_ACCOUNT_INFO="DeleteAccountInfo";
 	public static String BUTTON_ACTION_VIEW_ACCOUNT_INFO="ViewAccountInfo";
 	public static String BUTTON_ACTION_EDIT_ACCOUNT_INFO="EditAccountInfo";
+	public static String BUTTON_ACTION_REFRESH_ACCOUNT_TRASH="EditAccountInfo";//3.7 ghan code
+	public static String BUTTON_ACTION_RESTORE_ACCOUNT_TRASH="ViewAccountInfo";//3.7 ghan code
 	
 	public static String MENU_ACTION_REFRESH_STOCK_ITEM="Refresh";
 	public static String MENU_ACTION_VIEW_STOCK_ITEM="View";
@@ -321,6 +323,10 @@ public interface LeamonERPConstants {
 	public static final String IMG_TOOLS_STATE_CITY_EDIT = "Tools/StateAndCity/Edit.png";
 	public static final String IMG_TOOLS_STATE_CITY_DELETE = "Tools/StateAndCity/Delete.png";
 	// 3.6 end of ghan code
+	//3.7 ghan code
 	public static final String IMG_TOOLS_STOCK_TRASH_REFRESH = "Tools/StockTrash/Refresh.png";
 	public static final String IMG_TOOLS_STOCK_TRASH_RESTORE = "Tools/StockTrash/Restore.png";
+	public static final String IMG_TOOLS_ACCOUNT_TRASH_REFRESH = "Tools/AccountTrash/Refresh.png";
+	public static final String IMG_TOOLS_ACCOUNT_TRASH_RESTORE = "Tools/AccountTrash/Restore.png";
+	//3.7 end of ghan code
 }
