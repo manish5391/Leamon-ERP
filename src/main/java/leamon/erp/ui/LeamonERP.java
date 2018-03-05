@@ -76,6 +76,13 @@ public class LeamonERP extends JFrame {
 	public static StateCityUI stateCityUI;
 	/*End*/
 	
+	/*3.8 Release*/
+	public static SaleReportUI saleReportUI;
+	public static PaymentReportUI paymentReportUI;
+	public static StockReportUI stockReportUI;
+	public static PaymentUiManager paymentUiManager;
+	/*End*/
+	
 	public static  List<String> cityCache;
 	public static  List<String> countryCache;
 	public static  List<String> stateCache;
@@ -768,7 +775,10 @@ public class LeamonERP extends JFrame {
 		accountOpeningBalanceUI = new AccountOpeningBalanceUI();
 		stateCityManagerUI = new StateCityManagerUI();
 		stateCityUI = new StateCityUI();
-	
+		saleReportUI = new SaleReportUI();
+		paymentReportUI = new PaymentReportUI();
+		stockReportUI = new StockReportUI();
+		paymentUiManager = new PaymentUiManager();
 		}
 
 	public void initComponents(){
@@ -1397,33 +1407,62 @@ public class LeamonERP extends JFrame {
 	}
 
 	// 3.6 Ghanshyam code for Jmenu on main software
-	private Object mntmSalesReportClick(ActionEvent e) {
-		// TODO Auto-generated method stub
-		return null;
+	private void mntmSalesReportClick(ActionEvent e) {
+		if(saleReportUI.isVisible()){
+			try {
+				saleReportUI.setSelected(true);
+			} catch (PropertyVetoException e1) {
+				LOGGER.error(e1.toString());
+			}
+			saleReportUI.moveToFront();
+		}else{
+			desktopPane.add(saleReportUI);
+			saleReportUI.setVisible(true);
+		}
+		SwingUtilities.updateComponentTreeUI(saleReportUI);
+	
 	}
 
-	private Object mntmStockReportClick(ActionEvent e) {
-		// TODO Auto-generated method stub
-		return null;
+	private void mntmStockReportClick(ActionEvent e) {
+		if(stockReportUI.isVisible()){
+			try {
+				stockReportUI.setSelected(true);
+			} catch (PropertyVetoException e1) {
+				LOGGER.error(e1.toString());
+			}
+			stockReportUI.moveToFront();
+		}else{
+			desktopPane.add(stockReportUI);
+			stockReportUI.setVisible(true);
+		}
+		SwingUtilities.updateComponentTreeUI(stockReportUI);
+	
 	}
 
-	private Object mntmPaymentReportClick(ActionEvent e) {
-		// TODO Auto-generated method stub
-		return null;
+	private void mntmPaymentReportClick(ActionEvent e) {
+		if(paymentReportUI.isVisible()){
+			try {
+				paymentReportUI.setSelected(true);
+			} catch (PropertyVetoException e1) {
+				LOGGER.error(e1.toString());
+			}
+			paymentReportUI.moveToFront();
+		}else{
+			desktopPane.add(paymentReportUI);
+			paymentReportUI.setVisible(true);
+		}
+		SwingUtilities.updateComponentTreeUI(paymentReportUI);
 	}
 
-	private Object mntmCalculatorClick(ActionEvent e) {
+	private void mntmCalculatorClick(ActionEvent e) {
 		try {
 			Runtime.getRuntime().exec("calc");
 		} catch (IOException e1) {
 			LOGGER.error(e);
 		}
-		return this;
 	}
 
-	private Object mntmUpdatesClick(ActionEvent e) {
-		// TODO Auto-generated method stub
-		return null;
+	private void mntmUpdatesClick(ActionEvent e) {
 	}
 	
 	//3.7 ghan code
@@ -1457,19 +1496,25 @@ public class LeamonERP extends JFrame {
 		SwingUtilities.updateComponentTreeUI(accountTrashUI);
 	}
 	//3.7 end of ghan code
-	private Object mntmPaymentManagerClick(ActionEvent e) {
-		// TODO Auto-generated method stub
-		return null;
+	private void mntmPaymentManagerClick(ActionEvent e) {
+		if(paymentUiManager.isVisible()){
+			try {
+				paymentUiManager.setSelected(true);
+			} catch (PropertyVetoException e1) {
+				LOGGER.error(e1.toString());
+			}
+			paymentUiManager.moveToFront();
+		}else{
+			desktopPane.add(paymentUiManager);
+			paymentUiManager.setVisible(true);
+		}
+		SwingUtilities.updateComponentTreeUI(paymentUiManager);
 	}
 
-	private Object hyperlinkBInvoiceManagerClick(ActionEvent e) {
-		// TODO Auto-generated method stub
-		return null;
+	private void hyperlinkBInvoiceManagerClick(ActionEvent e) {
 	}
 
-	private Object hyperlinkWInvoiceManagerClick(ActionEvent e) {
-		// TODO Auto-generated method stub
-		return null;
+	private void hyperlinkWInvoiceManagerClick(ActionEvent e) {
 	}
 	// 3.6 end of Ghanshyam code
 	
