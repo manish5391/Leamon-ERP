@@ -20,29 +20,33 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumnModel;
 
 import org.apache.log4j.Logger;
+import org.jdesktop.swingx.JXHyperlink;
 import org.jdesktop.swingx.JXSearchField;
 import org.jdesktop.swingx.JXTable;
 
 import leamon.erp.db.StockDaoImpl;
 import leamon.erp.model.StockItem;
-import leamon.erp.ui.custom.LeamonTable;
+import leamon.erp.report.factory.InvoicePrintFactory;
+import leamon.erp.report.factory.StockItemListFactory;
+import leamon.erp.ui.custom.StockItemListColorRenderer;
 import leamon.erp.ui.event.FocusEventHandler;
 import leamon.erp.ui.event.KeyListenerHandler;
 import leamon.erp.ui.event.MouseClickHandler;
 import leamon.erp.ui.model.TableStockListItemModel;
 import leamon.erp.util.LeamonERPConstants;
+import leamon.erp.report.factory.InvoicePrintFactory;
 import lombok.Getter;
-import org.jdesktop.swingx.JXHyperlink;
 /**
  * @author Manish Kumar Mishra
  * @date 3 May, 2017
@@ -52,7 +56,8 @@ public class StockItemListManager extends JInternalFrame implements ActionListen
 	
 	static final Logger LOGGER = Logger.getLogger(StockItemListManager.class);
 	
-	private JTable tblStockList;
+	//private JTable tblStockList;
+	private JXTable tblStockList;
 	private JXSearchField textSearchField;
 	private JLabel lblImage;
 	
@@ -64,14 +69,15 @@ public class StockItemListManager extends JInternalFrame implements ActionListen
 		setMaximizable(true);
 		setIconifiable(true);
 		setClosable(true);
-		setBounds(10, 10, 1200, 674);
+		setBounds(3, 30, 1200, 660);
 		
-		tblStockList = new LeamonTable();
+		//tblStockList = new LeamonTable();
+		tblStockList = new JXTable();
         
 		StockDaoImpl daoImpl = StockDaoImpl.getInstance();
 		List<StockItem> stockItems = new ArrayList<StockItem>();
 		try{
-		stockItems = daoImpl.getItemList();
+		stockItems = daoImpl.getItemListWithQuantity();
 		}catch(Exception e){
 			LOGGER.error(e);
 		}
@@ -79,17 +85,12 @@ public class StockItemListManager extends JInternalFrame implements ActionListen
 		tblStockList.setModel(stockListItemModel);
 		tblStockList.setRowHeight(tblStockList.getRowHeight()+20);
 		tblStockList.setAutoCreateRowSorter(true);
-		setColumnWidth(tblStockList);
-		/*tblStockList.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		tblStockList.getColumnModel().getColumn(0).setPreferredWidth(27);
-		tblStockList.getColumnModel().getColumn(1).setPreferredWidth(27);
-		tblStockList.getColumnModel().getColumn(2).setPreferredWidth(77);
-		tblStockList.getColumnModel().getColumn(3).setPreferredWidth(27);
-		tblStockList.getColumnModel().getColumn(4).setPreferredWidth(27);
-		tblStockList.getColumnModel().getColumn(5).setPreferredWidth(27);
-		tblStockList.getColumnModel().getColumn(6).setPreferredWidth(27);
-		tblStockList.getColumnModel().getColumn(7).setPreferredWidth(50);
-		tblStockList.getColumnModel().getColumn(8).setPreferredWidth(127);*/
+		tblStockList.setColumnControlVisible(true);
+		tblStockList.packAll();
+		tblStockList.setDefaultRenderer(Object.class, new StockItemListColorRenderer());//3.5 ghan code
+		// 3.4 ghanshyam code for stock alignment
+		setStockAlignment(tblStockList);
+		// 3.4 end of ghanshyam code
 		tblStockList.setComponentPopupMenu(createPopup());
 		tblStockList.setName(LeamonERPConstants.TABLE_STOCK_ITEMS);
 		tblStockList.addKeyListener(new KeyListenerHandler(tblStockList));
@@ -135,12 +136,8 @@ public class StockItemListManager extends JInternalFrame implements ActionListen
 		JButton btnAddItem = new JButton();
 		btnAddItem.setBackground(Color.WHITE);
 		btnAddItem.setActionCommand(LeamonERPConstants.BUTTON_ACTION_ADD_STOCK_ITEM);
-		//btnAddItem.setBorder(BorderFactory.createEmptyBorder());
-		//btnAddItem.setContentAreaFilled(false);
 		btnAddItem.setIcon(new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_ADD_BUTTON)));
 		btnAddItem.addActionListener(this);
-		//btnAddItem.setBorderPainted(true);
-		//btnAddItem.setFocusPainted(tru/);
 		
 		JButton btnedit = new JButton();
 		btnedit.setIcon(new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_EDIT_BUTTON)));
@@ -160,7 +157,14 @@ public class StockItemListManager extends JInternalFrame implements ActionListen
 		btnDelete.setActionCommand(LeamonERPConstants.BUTTON_ACTION_DELETE_STOCK_ITEM);
 		btnDelete.addActionListener(this);
 		
-		
+		// 3.5 Ghanshyam code for print button
+		JButton btnPrint = new JButton();
+		btnPrint.setBackground(Color.WHITE);
+		btnPrint.setIcon(
+				new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_PRINT_BUTTON)));
+		btnPrint.setActionCommand(LeamonERPConstants.BUTTON_ACTION_PRINT_STOCK_ITEM);
+		btnPrint.addActionListener(this);
+		// 3.5 end of ghanshyam code
 		//textSearchField = new JTextField();
 		textSearchField = new JXSearchField("Search");
 		textSearchField.setFont(new Font("Courier New", Font.BOLD, 36));
@@ -187,6 +191,8 @@ public class StockItemListManager extends JInternalFrame implements ActionListen
 					.addGap(28)
 					.addComponent(btnDelete)
 					.addGap(36)
+					.addComponent(btnPrint)
+					.addGap(28)
 					.addComponent(textSearchField, GroupLayout.PREFERRED_SIZE, 243, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(hprlnkAddStockQuantity, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
@@ -200,6 +206,7 @@ public class StockItemListManager extends JInternalFrame implements ActionListen
 						.addComponent(btnedit)
 						.addComponent(btnView)
 						.addComponent(btnDelete)
+						.addComponent(btnPrint)
 						.addComponent(textSearchField, GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)
 						.addGroup(gl_panel.createSequentialGroup()
 							.addContainerGap()
@@ -236,6 +243,8 @@ public class StockItemListManager extends JInternalFrame implements ActionListen
 				LOGGER.debug("StockItemList[actionPerformed] action command ["+LeamonERPConstants.BUTTON_ACTION_EDIT_STOCK_ITEM+"] inside");
 				viewStockItem(LeamonERPConstants.BUTTON_ACTION_EDIT_STOCK_ITEM);
 				LOGGER.debug("StockItemList[actionPerformed] action command ["+LeamonERPConstants.BUTTON_ACTION_EDIT_STOCK_ITEM+"] end");
+			}else if(btn.getActionCommand()!=null && btn.getActionCommand().equals(LeamonERPConstants.BUTTON_ACTION_PRINT_STOCK_ITEM)){
+				print();
 			}
 		}// end source button 
 		else if (e.getSource() instanceof JMenuItem){  
@@ -360,13 +369,14 @@ public class StockItemListManager extends JInternalFrame implements ActionListen
 	 		}
 	 	}
 	 	try{
-	 	stockItems = StockDaoImpl.getInstance().getItemList();
+	 	stockItems = StockDaoImpl.getInstance().getItemListWithQuantity();
 	 	}catch(Exception e){
 				LOGGER.error(e);
 		}
 	 	LOGGER.debug("Reloading stockitems ["+stockItems.size()+"]");
 	 	model.setStockItems(stockItems);
 	 	tblStockList.setModel(model);
+	 	tblStockList.setDefaultRenderer(Object.class, new StockItemListColorRenderer());//3.5 ghan code
 	 	LOGGER.info(" Successfully disabled stock items ");
 	 	((AbstractTableModel)tblStockList.getModel()).fireTableDataChanged();
 		tblStockList.repaint();
@@ -397,40 +407,17 @@ public class StockItemListManager extends JInternalFrame implements ActionListen
 	public void refreshStockTable(){
 		List<StockItem> stockItems = new  ArrayList<StockItem>();
 		try{
-		stockItems = StockDaoImpl.getInstance().getItemList();
+		stockItems = StockDaoImpl.getInstance().getItemListWithQuantity();
 		}catch(Exception e){
 				LOGGER.error(e);
 		}
 		TableStockListItemModel model  = (TableStockListItemModel)tblStockList.getModel();
 		model.setStockItems(stockItems);
 	 	tblStockList.setModel(model);
+	 	tblStockList.setDefaultRenderer(Object.class, new StockItemListColorRenderer());//3.5 ghan code
 	 	((AbstractTableModel)tblStockList.getModel()).fireTableDataChanged();
 		tblStockList.repaint();
 		//SwingUtilities.updateComponentTreeUI(this);
-	}
-	
-	public void setColumnWidth(JTable table){
-		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-
-		TableColumnModel columnModel =  table.getColumnModel();
-		//columnModel.getColumn(0).setPreferredWidth(70);
-		columnModel.getColumn(1).setPreferredWidth(230);
-		/*columnModel.getColumn(2).setPreferredWidth(115);
-		columnModel.getColumn(3).setPreferredWidth(100);*/
-		//		columnModel.getColumn(4).setPreferredWidth(80);
-		/*columnModel.getColumn(5).setPreferredWidth(100);
-		columnModel.getColumn(6).setPreferredWidth(150);*/
-		//		columnModel.getColumn(7).setPreferredWidth(80);
-		
-		/*tblStockList.getColumnModel().getColumn(0).setPreferredWidth(27);
-		tblStockList.getColumnModel().getColumn(1).setPreferredWidth(27);
-		tblStockList.getColumnModel().getColumn(2).setPreferredWidth(77);
-		tblStockList.getColumnModel().getColumn(3).setPreferredWidth(27);
-		tblStockList.getColumnModel().getColumn(4).setPreferredWidth(27);
-		tblStockList.getColumnModel().getColumn(5).setPreferredWidth(27);
-		tblStockList.getColumnModel().getColumn(6).setPreferredWidth(27);
-		tblStockList.getColumnModel().getColumn(7).setPreferredWidth(50);
-		tblStockList.getColumnModel().getColumn(8).setPreferredWidth(127);*/
 	}
 	
 	public void hprlnkAddStockQuantityClick(ActionEvent e){
@@ -482,4 +469,23 @@ public class StockItemListManager extends JInternalFrame implements ActionListen
 		SwingUtilities.updateComponentTreeUI(this);
 		LOGGER.info("StockItemList[viewStockItem] end");
 	}
+	
+	// 3.4 ghanshyam code for stock alignment
+	private void setStockAlignment(JXTable tblStockList) {
+		tblStockList.setAutoResizeMode(JXTable.AUTO_RESIZE_OFF);
+		TableColumnModel columnModel = tblStockList.getColumnModel();
+		DefaultTableCellRenderer dtcr1 = new DefaultTableCellRenderer();
+		dtcr1.setHorizontalAlignment(SwingConstants.RIGHT);
+		columnModel.getColumn(4).setCellRenderer(dtcr1);
+		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
+		dtcr.setHorizontalAlignment(SwingConstants.LEFT);
+		columnModel.getColumn(5).setCellRenderer(dtcr);
+	}
+	// 3.4 end of ghanshyam code
+	// 3.5 ghanshyam code for print
+	private void print() {
+		StockItemListFactory stockItemListFactory = new StockItemListFactory(this);
+		stockItemListFactory.print();
+	}
+	// 3.5 end of ghanshyam code for print
 }

@@ -15,11 +15,13 @@ public interface LeamonERPConstants {
 	public static final Integer VERTICAL_GAP 	= 	50;
 	public static final Integer HORIZONTAL_GAP 	=	50;
 	
+	
 	public static final String IMG_SAVE="";
 	
 	public static final String IMG_SAVE_BUTTON="save_button.png";
 	public static final String IMG_EDIT_BUTTON="edit_button.png";
 	public static final String IMG_DELETE_BUTTON="delete_button.png";
+	public static final String IMG_PRINT_BUTTON="print_button.png";//3.5 ghanshyam code for print stcok item
 	public static final String IMG_ADD_BUTTON="add_button.png";
 	public static final String IMG_SAVE_BTN="save_btn.png";
 	public static final String IMG_CLEAR_BUTTON = "clear_button.png";
@@ -70,6 +72,9 @@ public interface LeamonERPConstants {
 	
 	public static String BUTTON_ACTION_ADD_STOCK_ITEM="AddStockItem";
 	public static String BUTTON_ACTION_DELETE_STOCK_ITEM="DeleteStockItem";
+	public static String BUTTON_ACTION_REFRESH_STOCK_ITEM="RefreshStockItem";//3.7 ghan code
+	public static String BUTTON_ACTION_RESTORE_STOCK_ITEM="RestoreStockItem";//3.7 ghan code
+	public static String BUTTON_ACTION_PRINT_STOCK_ITEM="PrintStockItem";//3.5 ghanshyam code for print stcok item
 	public static String BUTTON_ACTION_VIEW_STOCK_ITEM="ViewStockItem";
 	public static String BUTTON_ACTION_EDIT_STOCK_ITEM="EditStockItem";
 	public static String BUTTON_ACTION_UPLOAD_IMAGE_STOCK_ITEM="UploadImage";
@@ -79,6 +84,8 @@ public interface LeamonERPConstants {
 	public static String BUTTON_ACTION_DELETE_ACCOUNT_INFO="DeleteAccountInfo";
 	public static String BUTTON_ACTION_VIEW_ACCOUNT_INFO="ViewAccountInfo";
 	public static String BUTTON_ACTION_EDIT_ACCOUNT_INFO="EditAccountInfo";
+	public static String BUTTON_ACTION_REFRESH_ACCOUNT_TRASH="EditAccountInfo";//3.7 ghan code
+	public static String BUTTON_ACTION_RESTORE_ACCOUNT_TRASH="ViewAccountInfo";//3.7 ghan code
 	
 	public static String MENU_ACTION_REFRESH_STOCK_ITEM="Refresh";
 	public static String MENU_ACTION_VIEW_STOCK_ITEM="View";
@@ -103,9 +110,11 @@ public interface LeamonERPConstants {
 	String TEXTFIELD_NAME_DESCRIPTION = "txtDescription";
 	String TEXTFIELD_NAME_SOCK_ITEM_SERACH = "textSearchField";
 	String TEXTFIELD_NAME_ACCOUNT_INFO_SERACH = "textSearchFieldAccountInfo";
+	String TEXTFIELD_NAME_STATE_CITY_SERACH = "textSearchFieldStateCity";
 
 	/*Account info*/
 	String TEXTFIELD_ACCOUNT_PHONE="txtAccountPhone";
+	String TEXTFIELD_ACCOUNT_ALTERNATE_PHONE="txtAccountAlternatePhone";//ghan code
 	String TEXTFIELD_ACCOUNT_NAME="txtAccountName";
 	String TEXTFIELD_ACCOUNT_NICK_NAME="txtAccountNickName";
 	String TEXTFIELD_ACCOUNT_GST="txtAccountGST";
@@ -152,6 +161,9 @@ public interface LeamonERPConstants {
 	String TABLE_STOCK_ITEMS="TableStockItems";
 	String TABLE_ACCOUNT_INFO_LIST="TableAccountList";
 	String TABLE_INVENTORY="TableInventory";
+	/*Release 3.6*/
+	String TABLE_STATE_CITY="TableStateCity";
+	/*End*/
 	
 	final Integer TABLE_INVENTORY_SNO = 0;
 	Integer TABLE_INVENTORY_DESC_OF_GOODS = 1;
@@ -184,10 +196,24 @@ public interface LeamonERPConstants {
 	String TABLE_HEADER_AMOUNT="Amount";
 	String TABLE_HEADER_ADJUST="Adjust";
 	String TABLE_HEADER_STATUS="STATUS";
+	String TABLE_HEADER_BILL_DATE="Invoice Date";
 	String TABLE_HEADER_RECEIVED_PAYMENT="Received";
 	String TABLE_HEADER_REMAINING_PAYMENT="Remaining";
 	String TYPE_BILL_AMOUNT_ADJUSTMENT="BA"; //Billing Amount
 	String TYPE_AMOUNT_WITHOUT_BILL_ADJUSTMENT="WA"; //without billing amount
+	String TABLE_HEADER_BILL_NO="Bill No.";
+	String TABLE_HEADER_INVOICE_DATE="Invoice Date";
+	String TABLE_HEADER_PARTY_NAME="Party Name";
+	String TABLE_HEADER_B_AMOUNT="B Amt.";
+	String TABLE_HEADER_W_AMOUNT="W Amt.";
+	String TABLE_HEADER_B_STATUS="B Status";
+	String TABLE_HEADER_W_STATUS="W Status";
+	String TABLE_HEADER_G_TOTAL="G.Total";
+	String TABLE_HEADER_B_RECEIVED_AMOUNT="B Rec. Amt.";
+	String TABLE_HEADER_W_RECEIVED_AMOUNT="W Rec. Amt";
+	String TABLE_HEADER_B_REMARK="B Remark";
+	String TABLE_HEADER_W_REMARK="W Remark";
+	String TABLE_HEADER_DESC="Desc";
 	
 	String ACTION_COMMAND_="DESCRIPTIONS";
 	
@@ -219,7 +245,88 @@ public interface LeamonERPConstants {
 	String TEXTFIELD_INVOICE_ADDRESS = "textFieldADDRESS";
 	
 	String TABLE_PAYMENT = "TablePayment";
+	String TABLE_PAYMENT_RECEIVED_SUMMARY = "TablePaymentSummary";
 	
 	
+	String CITY_PROMPT_MSG = "- - Select City - -";
 	
+	//3.4 ghanshyam code
+	public static final String STOCK_UNIT="doz"; 
+	String TEXTFIELD_INVOICE_TEXT_FIELD_COL1="textFieldCol1";
+	String TEXTFIELD_INVOICE_TEXT_FIELD_COL2="textFieldCol2";
+	String TEXTFIELD_INVOICE_TEXT_FIELD_COL1_VAL="textFieldCol1Val";
+	String TEXTFIELD_INVOICE_TEXT_FIELD_COL2_VAL="textFieldCol2Val";
+	String INVOICE_UI_COL1_COL2_OPERATION="+";
+	//3.4 end of ghanshyam code
+
+	// 3.6 ghan code
+	String IMAGE_PATH_LEAMON_ERP = USER_DIR + File.separatorChar + LeamonERPConstants.RESOURCE + File.separatorChar;
+
+	public static final String IMG_COMPANY_MASTER = "CompanyMaster/Company.png";
+	public static final String IMG_COMPANY_INFO = "CompanyMaster/CompanyInfo.png";
+	public static final String IMG_COMPANY_INFO_SAVE = "CompanyMaster/CompanyInfo/Save.png";
+	public static final String IMG_COMPANY_INFO_CLOSE = "CompanyMaster/CompanyInfo/Close.png";
+
+	public static final String IMG_INVOICE_MASTER = "InvoiceMaster/Invoice.png";
+	public static final String IMG_B_INVOICE = "InvoiceMaster/Binvoice.png";
+	public static final String IMG_W_INVOICE = "InvoiceMaster/Winvoice.png";
+	public static final String IMG_INVOICE_MANAGER = "InvoiceMaster/InvoiceManager.png";
+	public static final String IMG_B_W_INVOICE_ADD = "InvoiceMaster/BandWInvoice/Add.png";
+	public static final String IMG_B_W_INVOICE_CLOSE = "InvoiceMaster/BandWInvoice/Close.png";
+	public static final String IMG_B_W_INVOICE_DELETE = "InvoiceMaster/BandWInvoice/Delete.png";
+	public static final String IMG_B_W_INVOICE_PRINT = "InvoiceMaster/BandWInvoice/Print.png";
+	public static final String IMG_B_W_INVOICE_REFERESH = "InvoiceMaster/BandWInvoice/Refresh.png";
+	public static final String IMG_B_W_INVOICE_SAVE = "InvoiceMaster/BandWInvoice/Save.png";
+	public static final String IMG_B_W_INVOICE_UPDATE = "InvoiceMaster/BandWInvoice/Update.png";
+
+	public static final String IMG_PARTY_MASTER = "PartyMaster/Party.png";
+	public static final String IMG_ADD_PARTY = "PartyMaster/add_button.png";
+	public static final String IMG_EDIT_PARTY = "PartyMaster/edit_button.png";
+	public static final String IMG_SEARCH_PARTY = "PartyMaster/view.png";
+	public static final String IMG_DELETE_PARTY = "PartyMaster/delete_button.png";
+
+	public static final String IMG_PAYMENT_MASTER = "PaymentMaster/Payment.png";
+	public static final String IMG_PAYMENT_ADJUSTMENT = "PaymentMaster/Adjustment.png";
+	public static final String IMG_PAYMENT_OPENING_BALANCE = "PaymentMaster/OpeningBalance.png";
+	public static final String IMG_PAYMENT_SUMMARY = "PaymentMaster/Summary.png";
+	public static final String IMG_PAYMENT_MANAGER = "PaymentMaster/PaymentManager.png";
+	public static final String IMG_PAYMENT_MASTER_CLOSE_BUTTON = "PaymentMaster/Close.png";
+	public static final String IMG_PAYMENT_MASTER_REFRESH_BUTTON = "PaymentMaster/Refresh.png";
+	public static final String IMG_PAYMENT_MASTER_SAVE_BUTTON = "PaymentMaster/Save.png";
+	public static final String IMG_PAYMENT_MASTER_PRINT_BUTTON = "PaymentMaster/Print.png";
+
+	public static final String IMG_REPORT_MASTER = "ReportMaster/Report.png";
+	public static final String IMG_PAYMENT_REPORT = "ReportMaster/PaymentReport.png";
+	public static final String IMG_SALES_REPORT = "ReportMaster/SalesReport.png";
+	public static final String IMG_STOCK_REPORT = "ReportMaster/StockReport.png";
+
+	public static final String IMG_STOCK_MASTER = "StockMaster/Stock.png";
+	public static final String IMG_ADD_STOCK = "StockMaster/add_button.png";
+	public static final String IMG_EDIT_STOCK = "StockMaster/edit_button.png";
+	public static final String IMG_SEARCH_STOCK = "StockMaster/view.png";
+	public static final String IMG_DELETE_STOCK = "StockMaster/delete_button.png";
+
+	public static final String IMG_THEME_MASTER = "Theme/Theme.png";
+	public static final String IMG_CLASSIC_THEME = "Theme/Classic.png";
+	public static final String IMG_DEFAULT_THEME = "Theme/Default.png";
+	public static final String IMG_MORTIS_THEME = "Theme/Mortis.png";
+	public static final String IMG_NIMBUS_THEME = "Theme/Nimbus.png";
+	public static final String IMG_WINDOW_THEME = "Theme/Window.png";
+
+	public static final String IMG_TOOLS_MASTER = "Tools/Tools.png";
+	public static final String IMG_TOOLS_STATE_AND_CITY = "Tools/StateAndCity.png";
+	public static final String IMG_TOOLS_CALCULATOR = "Tools/Calculator.png";
+	public static final String IMG_TOOLS_TRASH = "Tools/Trash.png";
+	public static final String IMG_TOOLS_UPDATES = "Tools/Updates.png";
+	public static final String IMG_TOOLS_STATE_CITY_CLEAR = "Tools/StateAndCity/Clear.png";
+	public static final String IMG_TOOLS_STATE_CITY_SAVE = "Tools/StateAndCity/Save.png";
+	public static final String IMG_TOOLS_STATE_CITY_EDIT = "Tools/StateAndCity/Edit.png";
+	public static final String IMG_TOOLS_STATE_CITY_DELETE = "Tools/StateAndCity/Delete.png";
+	// 3.6 end of ghan code
+	//3.7 ghan code
+	public static final String IMG_TOOLS_STOCK_TRASH_REFRESH = "Tools/StockTrash/Refresh.png";
+	public static final String IMG_TOOLS_STOCK_TRASH_RESTORE = "Tools/StockTrash/Restore.png";
+	public static final String IMG_TOOLS_ACCOUNT_TRASH_REFRESH = "Tools/AccountTrash/Refresh.png";
+	public static final String IMG_TOOLS_ACCOUNT_TRASH_RESTORE = "Tools/AccountTrash/Restore.png";
+	//3.7 end of ghan code
 }

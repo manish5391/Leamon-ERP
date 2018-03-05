@@ -12,9 +12,9 @@ import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
@@ -27,15 +27,16 @@ import org.jdesktop.swingx.JXTextField;
 
 import com.google.common.base.Strings;
 
+import leamon.erp.db.OperationInfoDaoImpl;
 import leamon.erp.db.StockDaoImpl;
 import leamon.erp.db.StockQuantityDaoImpl;
 import leamon.erp.model.InvoiceItemInfo;
+import leamon.erp.model.OperationInfo;
 import leamon.erp.model.StockItem;
 import leamon.erp.model.StockItemQuantity;
 import leamon.erp.ui.InvoiceUI;
 import leamon.erp.ui.LeamonERP;
 import leamon.erp.ui.model.TableInvoiceModel;
-import leamon.erp.ui.model.TableStockListItemModel;
 import leamon.erp.util.LeamonERPConstants;
 import lombok.Getter;
 
@@ -47,6 +48,11 @@ public class InvoiceUiEventHandler implements KeyListener, ActionListener, Mouse
 	private JXButton nextBtnComponent;
 	private InvoiceUI invoiceUI; 
 	private JTextArea nextTextAreaComponent;
+	
+
+	//3.3.2 Ghanshyam code
+	public static int INVOICE_UI_EVENT_HANDLER_MAGIC_COUNT=0;
+	//3.3.2 end of ghanshyam code
 	
 	public InvoiceUiEventHandler(JXTextField nextComponent){
 		this.nextComponent = nextComponent;
@@ -193,9 +199,45 @@ public class InvoiceUiEventHandler implements KeyListener, ActionListener, Mouse
 				}else if(textField.getName().equals(LeamonERPConstants.TEXTFIELD_INVOICE_PACKET2)){
 					copyPacket2(invoiceUI);
 					nextComponent.requestFocus();
-				}
-				else{
-					if(nextComponent!=null){
+				}else if(textField.getName().equals(LeamonERPConstants.TEXTFIELD_INVOICE_TEXT_FIELD_COL1)) {
+					nextComponent.requestFocus();
+				} else if (textField.getName().equals(LeamonERPConstants.TEXTFIELD_INVOICE_TEXT_FIELD_COL1_VAL)) {
+					if (validateCol1Name()) {
+						if (validateCol1Val()) {
+							calcGrandTotal(invoiceUI);
+							nextComponent.requestFocus();
+						} else {
+							JOptionPane.showMessageDialog(invoiceUI, "Please enter valid value", "Leamon-ERP",
+									JOptionPane.ERROR_MESSAGE);
+							invoiceUI.getTextFieldCol1Val().requestFocusInWindow();
+						}
+
+					} else {
+						JOptionPane.showMessageDialog(invoiceUI, "Col1 Field can not be blank", "Leamon-ERP",
+								JOptionPane.ERROR_MESSAGE);
+						invoiceUI.getTextFieldCol1().requestFocusInWindow();
+					}
+				} else if (textField.getName().equals(LeamonERPConstants.TEXTFIELD_INVOICE_TEXT_FIELD_COL2)) {
+					nextComponent.requestFocus();
+				} else if (textField.getName().equals(LeamonERPConstants.TEXTFIELD_INVOICE_TEXT_FIELD_COL2_VAL)) {
+					if (validateCol2Name()) {
+						if (validateCol2Val()) {
+							calcGrandTotal(invoiceUI);
+							nextComponent.requestFocus();
+						} else {
+							JOptionPane.showMessageDialog(invoiceUI, "Please enter valid value", "Leamon-ERP",
+									JOptionPane.ERROR_MESSAGE);
+							invoiceUI.getTextFieldCol2Val().requestFocusInWindow();
+						}
+
+					} else {
+						JOptionPane.showMessageDialog(invoiceUI, "Col2 Field can not be blank", "Leamon-ERP",
+								JOptionPane.ERROR_MESSAGE);
+						invoiceUI.getTextFieldCol2().requestFocusInWindow();
+					}
+				} else {
+					if (nextComponent != null) {
+						System.out.println(textField.getName());
 						nextComponent.requestFocus();
 					}
 					if(nextTextAreaComponent!=null && nextTextAreaComponent.getName().equals(LeamonERPConstants.TEXTFIELD_INVOICE_ADDRESS)){
@@ -294,9 +336,11 @@ public class InvoiceUiEventHandler implements KeyListener, ActionListener, Mouse
 			return;
 		}
 		
-		Integer qtyValue  = 0;
+		//Integer qtyValue  = 0;
+		Double qtyValue=0d;
 		try{
-			qtyValue = Integer.valueOf(qtyStr);
+			//qtyValue = Integer.valueOf(qtyStr);
+			qtyValue = Double.valueOf(qtyStr);
 		}catch(Exception exp){
 			invoiceUI.getTextFieldProductQty().setText("0");
 		}
@@ -355,6 +399,17 @@ public class InvoiceUiEventHandler implements KeyListener, ActionListener, Mouse
 				LOGGER.error(e);
 			}
 		}
+		
+		//3.3.2 Ghanshyam code
+		//saving new item in stock database
+		if(!stockItemExist()){
+			if(saveStockItem()) {
+			}else {
+				JOptionPane.showMessageDialog(invoiceUI, "Item can not be saved connect with technical team","Leamon-ERP",JOptionPane.ERROR_MESSAGE);
+				invoiceUI.getTextFieldProductDesc().requestFocusInWindow();
+			}
+		}
+		//3.3.2 End of ghanshyam code
 		
 		InvoiceItemInfo info = InvoiceItemInfo.builder()
 				.description(productDescValue)
@@ -545,6 +600,37 @@ public class InvoiceUiEventHandler implements KeyListener, ActionListener, Mouse
 		double grandTotal = taxableAmt+taxVal;
 		/*BigDecimal bd = new BigDecimal(grandTotal);
 		bd = bd.setScale(2, BigDecimal.ROUND_HALF_EVEN);*/
+		//3.4 ghanshyam code
+		List<OperationInfo> operationInfo=new ArrayList<OperationInfo>();
+		try {
+			operationInfo = OperationInfoDaoImpl.getInstance().getItemList();
+			String col1ValName = ui.getTextFieldCol1Val().getName();
+			String col2ValName = ui.getTextFieldCol2Val().getName();
+			if (!Strings.isNullOrEmpty(col1ValName)
+					&& col1ValName.equals(LeamonERPConstants.TEXTFIELD_INVOICE_TEXT_FIELD_COL1_VAL)) {
+				OperationInfo operationInfoAction = operationInfo.stream().filter(
+						s -> s.getPropertyname().equals(LeamonERPConstants.TEXTFIELD_INVOICE_TEXT_FIELD_COL1_VAL))
+						.findFirst().orElse(null);
+				if (operationInfoAction.getPropertyvalue().equals(LeamonERPConstants.INVOICE_UI_COL1_COL2_OPERATION)) {
+					grandTotal = grandTotal + Double.parseDouble(ui.getTextFieldCol1Val().getText());
+				} else {
+					grandTotal = grandTotal - Double.parseDouble(ui.getTextFieldCol1Val().getText());
+				}
+			}
+			if (!Strings.isNullOrEmpty(col2ValName)
+					&& col2ValName.equals(LeamonERPConstants.TEXTFIELD_INVOICE_TEXT_FIELD_COL2_VAL)) {
+				OperationInfo operationInfoAction = operationInfo.stream().filter(
+						s -> s.getPropertyname().equals(LeamonERPConstants.TEXTFIELD_INVOICE_TEXT_FIELD_COL2_VAL))
+						.findFirst().orElse(null);
+				if (operationInfoAction.getPropertyvalue().equals(LeamonERPConstants.INVOICE_UI_COL1_COL2_OPERATION)) {
+					grandTotal = grandTotal + Double.parseDouble(ui.getTextFieldCol2Val().getText());
+				} else {
+					grandTotal = grandTotal - Double.parseDouble(ui.getTextFieldCol2Val().getText());
+				}
+			}
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}//3.4 end of ghanshyam code
 		ui.getTextFieldGTotal1().setText(String.valueOf(getRoundff(grandTotal)));
 		ui.getTextFieldGtotal2().setText(String.valueOf(getRoundff(grandTotal)));
 	}
@@ -626,6 +712,11 @@ public class InvoiceUiEventHandler implements KeyListener, ActionListener, Mouse
 		}
 		
 		String billAmtVal = ui.getTextFieldBillAmount().getText();
+		/*Release 3.7*/
+		if(Strings.isNullOrEmpty(billAmtVal)){
+			ui.getTextFieldBillAmount().setText("0");
+		}
+		/*end*/
 		String gvalue= ui.getTextFieldGtotal2().getText();
 		
 		double billAmt = 0;
@@ -699,9 +790,17 @@ public class InvoiceUiEventHandler implements KeyListener, ActionListener, Mouse
 	
 	private boolean invoiceProductQtyHandler(JTextField textField){
 		String qty = textField.getText();
-		int qtyVal = 0;
-		try{
-			qtyVal =Integer.parseInt(qty);
+		// 3.3.2 Ghanshyam code to accept quantity in decimal for stock unit in DOZ
+		String unit = invoiceUI.getTextFieldProductUnit().getText();
+		if (qty.contains(".") && !Strings.isNullOrEmpty(unit)
+				&& !unit.equalsIgnoreCase(LeamonERPConstants.STOCK_UNIT)) {
+			JOptionPane.showMessageDialog(invoiceUI, "Please enter valid value for quantity decimal accept only for stock unit doz", "Leamon-ERP",
+					JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		double qtyVal = 0; // 3.3.2 ghanshyam code data type changed from int to double
+		try {
+			qtyVal =Double.parseDouble(qty);
 		}catch(Exception exp){
 			LOGGER.equals(exp);
 		}
@@ -712,28 +811,39 @@ public class InvoiceUiEventHandler implements KeyListener, ActionListener, Mouse
 		} catch (Exception exp) {
 			LOGGER.error(exp);
 		}
-		if(Strings.isNullOrEmpty(invoiceUI.getHiddenLabelStockId().getText())){
-			return false;
+		if (Strings.isNullOrEmpty(invoiceUI.getHiddenLabelStockId().getText())) {
+			// 3.3.2 Ghanshyam code to add new item in stock
+			InvoiceUiEventHandler.INVOICE_UI_EVENT_HANDLER_MAGIC_COUNT++;
+			if (InvoiceUiEventHandler.INVOICE_UI_EVENT_HANDLER_MAGIC_COUNT > 1) {
+				if (saveStockItem()) {
+					InvoiceUiEventHandler.INVOICE_UI_EVENT_HANDLER_MAGIC_COUNT = 0;
+				} else {
+					JOptionPane.showMessageDialog(invoiceUI, "Item can not be saved connect with technical team",
+							"Leamon-ERP", JOptionPane.ERROR_MESSAGE);
+					nextComponent.requestFocus();
+				}
+			} else {
+				return false;
+			} // 3.3.2 ghanshyam code end
+			
 		}
-
+		
 		StockItemQuantity matchedItemQuantity = stockItemQuantities.stream()
-				.filter(s -> s.getStokItemid() == (Integer.parseInt(invoiceUI.getHiddenLabelStockId().getText())))
+				.filter(s -> s.getStokItemid().intValue() == (Integer.parseInt(invoiceUI.getHiddenLabelStockId().getText())))
 				.findFirst().orElse(null);
 
-		if(matchedItemQuantity != null){
-			int fetchedQuantity = 0;
-			try{
-				fetchedQuantity = Integer.valueOf(matchedItemQuantity.getQuantity());
-
+		if (matchedItemQuantity != null) {
+			double fetchedQuantity = 0;
+			try {
+				fetchedQuantity = Double.valueOf(matchedItemQuantity.getQuantity());
 				TableInvoiceModel model = (TableInvoiceModel) invoiceUI.getTableInvoice().getModel();
-				List<InvoiceItemInfo> invoiceItemInfos =  model.getInvoiceItemInfos();
-				int totalOrderedQuantity = 0;
+				List<InvoiceItemInfo> invoiceItemInfos = model.getInvoiceItemInfos();
+				double totalOrderedQuantity = 0;
 				totalOrderedQuantity = invoiceItemInfos.stream().filter(e -> (null !=e.getStockItemId())
-						&& e.getStockItemId() == matchedItemQuantity.getStokItemid()).map(InvoiceItemInfo::getQty)
-						.mapToInt(Integer::parseInt).sum();
+						&& e.getStockItemId().intValue() == matchedItemQuantity.getStokItemid().intValue()).map(InvoiceItemInfo::getQty)
+						.mapToDouble(Double::parseDouble).sum();
 
-				
-				int maxTotalQty = totalOrderedQuantity + qtyVal;
+				double maxTotalQty = totalOrderedQuantity + qtyVal;
 				if(maxTotalQty > fetchedQuantity){
 					//JOptionPane.showMessageDialog(invoiceUI, "insufficient storage. Please add stock","Leamon-ERP : Stock",JOptionPane.ERROR_MESSAGE);
 					int option  = JOptionPane.showConfirmDialog(invoiceUI, "insufficient storage. \nDo you want to add stock?",
@@ -759,7 +869,7 @@ public class InvoiceUiEventHandler implements KeyListener, ActionListener, Mouse
 				StockItem stockItemPresent =null;
 				try{
 					List<StockItem> stockItems = StockDaoImpl.getInstance().getItemList();
-					stockItemPresent = stockItems.stream().filter(e -> e.getId() == Integer.parseInt(invoiceUI.getHiddenLabelStockId().getText())).findAny().orElse(null);
+					stockItemPresent = stockItems.stream().filter(e -> e.getId().intValue() == Integer.parseInt(invoiceUI.getHiddenLabelStockId().getText())).findAny().orElse(null);
 				}catch(Exception exp){
 					LOGGER.error(exp);
 				}
@@ -770,4 +880,101 @@ public class InvoiceUiEventHandler implements KeyListener, ActionListener, Mouse
 		}
 		
 	}
+	
+	//3.3.2 Ghanshyam code
+	//checking if item already exist in stock
+	private boolean stockItemExist() {
+		try {
+			
+			List<StockItem> stockItems = StockDaoImpl.getInstance().getItemList();
+			StockItem stockItemPresent = stockItems.stream().filter(e ->
+			!Strings.isNullOrEmpty(e.getName()) && e.getName().equals(invoiceUI.getTextFieldProductDesc().getText()) 
+			&& (!Strings.isNullOrEmpty(e.getSize())  && e.getSize().equals(invoiceUI.getTextFieldProductSize().getText()))
+			&& (!Strings.isNullOrEmpty(e.getSaleunit())  && e.getSaleunit().equals(invoiceUI.getTextFieldProductUnit().getText()))		
+					).findAny().orElse(null);
+			if(null==stockItemPresent) {
+				return false;
+			}else {
+				return true;
+			}
+			
+		} catch (Exception e) {
+			LOGGER.error(e);
+			JOptionPane.showMessageDialog(invoiceUI, "Exception while checking stock item in database connect with technical team","Leamon-ERP",JOptionPane.ERROR_MESSAGE);
+			invoiceUI.getTextFieldProductDesc().requestFocusInWindow();
+			return true;
+		}
+		
+	}
+
+	//saving new item in stock database
+	public boolean saveStockItem() {
+		StockItem stockItem = StockItem.builder().name(invoiceUI.getTextFieldProductDesc().getText())
+				.size(invoiceUI.getTextFieldProductSize().getText())
+				.saleunit(invoiceUI.getTextFieldProductUnit().getText()).isEnable(true)
+				.build();
+		try {
+			StockDaoImpl.getInstance().save(stockItem);
+			JLabel jlabel=new JLabel();
+			jlabel.setText(String.valueOf(stockItem.getId()));
+			invoiceUI.setHiddenLabelStockId(jlabel);
+			LeamonERP.stockItemList.refreshStockTable();
+			return true;
+		} catch (Exception e) {
+			LOGGER.error(e);
+			JOptionPane.showMessageDialog(invoiceUI, "Exception while saving stock item in database connect with technical team","Leamon-ERP",JOptionPane.ERROR_MESSAGE);
+			invoiceUI.getTextFieldProductDesc().requestFocusInWindow();
+			return false;
+		}
+	}//3.3.2 end of ghanshyam code
+	
+	//3.4 ghanshyam code to validate col1val and col2val
+	private boolean validateCol1Name() {
+		if (invoiceUI == null) {
+			return false;
+		}
+		if (!Strings.isNullOrEmpty(invoiceUI.getTextFieldCol1Val().getText())
+				&& Strings.isNullOrEmpty(invoiceUI.getTextFieldCol1().getText())) {
+			return false;
+		}
+		return true;
+	}
+
+	private boolean validateCol2Name() {
+		if (invoiceUI == null) {
+			return false;
+		}
+		if (!Strings.isNullOrEmpty(invoiceUI.getTextFieldCol2Val().getText())
+				&& Strings.isNullOrEmpty(invoiceUI.getTextFieldCol2().getText())) {
+			return false;
+		}
+		return true;
+	}
+	
+	private boolean validateCol1Val() {
+		Double col1Val = 0d;
+		try {
+			if (!Strings.isNullOrEmpty(invoiceUI.getTextFieldCol1Val().getText())) {
+				col1Val = Double.parseDouble(invoiceUI.getTextFieldCol1Val().getText());
+				return true;
+			}
+		} catch (Exception exp) {
+			return false;
+		}
+		return true;
+	}
+
+	private boolean validateCol2Val() {
+		Double col2Val = 0d;
+		try {
+			if (!Strings.isNullOrEmpty(invoiceUI.getTextFieldCol2Val().getText())) {
+				col2Val = Double.parseDouble(invoiceUI.getTextFieldCol2Val().getText());
+				return true;
+			}
+		} catch (Exception exp) {
+			return false;
+		}
+		return true;
+	}
+	//3.4 end of ghanshyam code
 }

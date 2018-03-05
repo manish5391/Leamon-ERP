@@ -465,8 +465,8 @@ public class InventoryUI extends JInternalFrame implements ActionListener {
 					}
 					InventoryInfo info = tableInventoryItemModel.getInventoryInfos().get(iniventoryInfondex);
 					if(info.getIsTotalRow()){
-						LeamonERP.grandTotalUI.setDefaultData(info.getValueOfGoods());
-						LeamonERP.openGTCalculatr();
+//						LeamonERP.grandTotalUI.setDefaultData(info.getValueOfGoods());
+//						LeamonERP.openGTCalculatr();
 					}
 				}else if(selectedColumn ==LeamonERPConstants.TABLE_INVENTORY_DISCOUNT){
 					TableInventoryItemModel tableInventoryItemModel = (TableInventoryItemModel) tblInventory.getModel();

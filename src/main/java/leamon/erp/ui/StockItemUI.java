@@ -3,7 +3,6 @@ package leamon.erp.ui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
-import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -19,8 +18,6 @@ import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -34,7 +31,6 @@ import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
-import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -47,7 +43,6 @@ import javax.swing.plaf.BorderUIResource;
 import javax.swing.table.TableCellRenderer;
 
 import org.apache.log4j.Logger;
-import org.apache.poi.xslf.model.TextBodyPropertyFetcher;
 
 import com.google.common.base.Strings;
 
@@ -103,7 +98,7 @@ public class StockItemUI extends JInternalFrame implements ActionListener{
 		setMaximizable(true);
 		setClosable(true);
 		setDefaultCloseOperation(JInternalFrame.DISPOSE_ON_CLOSE);
-		setBounds(10, 10, 1000, 524);
+		setBounds(3, 30, 1000, 524);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.WHITE);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -218,7 +213,7 @@ public class StockItemUI extends JInternalFrame implements ActionListener{
 		btnSave.setFont(new Font("DialogInput", Font.BOLD, 14));
 		btnSave.setActionCommand(LeamonERPConstants.BUTTON_ACTION_ADD_STOCK_ITEM);
 		btnSave.setMnemonic(KeyEvent.VK_S);
-		btnSave.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK), "Save");
+		btnSave.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.ALT_DOWN_MASK), "Save");//3.6 release Ghanshyam code
 		btnSave.getActionMap().put("Save", getSaveAction());
 		btnSave.addActionListener(this);
 		
@@ -237,7 +232,7 @@ public class StockItemUI extends JInternalFrame implements ActionListener{
 		btnDelete.setBackground(Color.WHITE);
 		btnDelete.setActionCommand(LeamonERPConstants.BUTTON_ACTION_DELETE_STOCK_ITEM);
 		btnDelete.setMnemonic(KeyEvent.VK_D);
-		btnDelete.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_DOWN_MASK), "Delete");
+		btnDelete.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.ALT_DOWN_MASK), "Delete");//3.6 release Ghanshyam code
 		btnDelete.getActionMap().put("Delete", getDeleteAction());
 		btnDelete.addActionListener(this);
 		
@@ -250,7 +245,7 @@ public class StockItemUI extends JInternalFrame implements ActionListener{
 		btnEdit.setBackground(Color.WHITE);
 		btnEdit.setActionCommand(LeamonERPConstants.BUTTON_ACTION_EDIT_STOCK_ITEM);
 		btnEdit.setMnemonic(KeyEvent.VK_E);
-		btnEdit.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.CTRL_DOWN_MASK), "Edit");
+		btnEdit.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.ALT_DOWN_MASK), "Edit");//3.6 release Ghanshyam code
 		btnEdit.getActionMap().put("Edit", getEditAction());
 		btnEdit.addActionListener(this);
 		
@@ -263,7 +258,7 @@ public class StockItemUI extends JInternalFrame implements ActionListener{
 		btnClear.setBackground(Color.WHITE);
 		btnClear.setActionCommand("CleaR");
 		btnClear.setMnemonic(KeyEvent.VK_R);
-		btnClear.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK), "Clear");
+		btnClear.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.ALT_DOWN_MASK), "Clear");//3.6 release Ghanshyam code
 		btnClear.getActionMap().put("Clear", getClearAction());
 		btnClear.addActionListener(this);
 		
@@ -310,8 +305,8 @@ public class StockItemUI extends JInternalFrame implements ActionListener{
 		lblShape.setForeground((Color) null);
 		lblShape.setFont(new Font("DialogInput", Font.BOLD, 16));
 		
-		JLabel lblSaleUnit = new JLabel("Sale Unit");
-		lblSaleUnit.setBounds(16, 94, 90, 22);
+		JLabel lblSaleUnit = new JLabel("Unit");
+		lblSaleUnit.setBounds(16, 94, 59, 22);
 		lblSaleUnit.setForeground((Color) null);
 		lblSaleUnit.setFont(new Font("DialogInput", Font.BOLD, 16));
 		
@@ -398,7 +393,7 @@ public class StockItemUI extends JInternalFrame implements ActionListener{
 		label_4 = new JLabel("*");
 		label_4.setForeground(Color.RED);
 		label_4.setFont(new Font("DialogInput", Font.BOLD, 16));
-		label_4.setBounds(110, 94, 16, 22);
+		label_4.setBounds(56, 94, 16, 22);
 		panel.add(label_4);
 		
 		label_5 = new JLabel("*");
@@ -816,7 +811,7 @@ public class StockItemUI extends JInternalFrame implements ActionListener{
 				saveStockItem();
 			}
 		};
-		saveAction.putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
+		saveAction.putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.ALT_DOWN_MASK));//3.6 release Ghanshyam code
 		return saveAction;
 	}
 	
@@ -828,7 +823,7 @@ public class StockItemUI extends JInternalFrame implements ActionListener{
 				deleteStockItem();
 			}
 		};
-		deleteAction.putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_DOWN_MASK));
+		deleteAction.putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.ALT_DOWN_MASK));//3.6 release Ghanshyam code
 		return deleteAction;
 	}
 	
@@ -840,7 +835,7 @@ public class StockItemUI extends JInternalFrame implements ActionListener{
 				editStockItem();
 			}
 		};
-		editAction .putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.CTRL_DOWN_MASK));
+		editAction .putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.ALT_DOWN_MASK));//3.6 release Ghanshyam code
 		return editAction;
 	}
 	public Action getClearAction(){
@@ -851,7 +846,7 @@ public class StockItemUI extends JInternalFrame implements ActionListener{
 				clear();
 			}
 		};
-		editAction .putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK));
+		editAction .putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.ALT_DOWN_MASK));//3.6 release Ghanshyam code
 		return editAction;
 	}
 	

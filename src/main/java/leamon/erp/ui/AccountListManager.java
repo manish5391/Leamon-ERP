@@ -34,10 +34,10 @@ import javax.swing.table.AbstractTableModel;
 
 import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXSearchField;
+import org.jdesktop.swingx.JXTable;
 
 import leamon.erp.db.AccountDaoImpl;
 import leamon.erp.model.AccountInfo;
-import leamon.erp.ui.custom.LeamonTable;
 import leamon.erp.ui.event.FocusEventHandler;
 import leamon.erp.ui.event.KeyListenerHandler;
 import leamon.erp.ui.event.ListSelectionListenerHandler;
@@ -59,7 +59,8 @@ public class AccountListManager extends JInternalFrame implements ActionListener
 	private JButton btnView;
 	private JButton btnDelete;
 	private JXSearchField textSearchField;
-	private LeamonTable leamonTableAccountInfo;
+	//private LeamonTable leamonTableAccountInfo;
+	private JXTable leamonTableAccountInfo;
 	private JLabel labelImage;
 	
 	public AccountListManager() {
@@ -71,9 +72,9 @@ public class AccountListManager extends JInternalFrame implements ActionListener
 		setMaximizable(true);
 		setIconifiable(true);
 		setClosable(true);
-		setBounds(10, 10, 1200, 674);
+		setBounds(3, 30, 1200, 660);
 		
-		leamonTableAccountInfo = new LeamonTable();
+		leamonTableAccountInfo = new JXTable();
 		AccountDaoImpl daoImpl = AccountDaoImpl.getInstance();
 		List<AccountInfo> accountInfos = new ArrayList<>();
 		try{
@@ -91,6 +92,8 @@ public class AccountListManager extends JInternalFrame implements ActionListener
 		leamonTableAccountInfo.addKeyListener(new KeyListenerHandler(leamonTableAccountInfo));
 		leamonTableAccountInfo.addMouseListener(new MouseClickHandler());
 		leamonTableAccountInfo.getSelectionModel().addListSelectionListener(new ListSelectionListenerHandler(leamonTableAccountInfo));
+		leamonTableAccountInfo.setColumnControlVisible(true);
+		leamonTableAccountInfo.packAll();
 		
 		toolBar = new JToolBar();
 		toolBar.setRollover(true);

@@ -6,12 +6,14 @@ import java.sql.Timestamp;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Builder
 @Data
 @ToString
 @AllArgsConstructor
+@NoArgsConstructor
 public class StockItemQuantity implements Serializable, Comparable<StockItemQuantity>{
 	private Integer id;
 	private Integer stokItemid;

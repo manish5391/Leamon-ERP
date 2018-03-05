@@ -4,14 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
-import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigInteger;
 import java.nio.file.CopyOption;
 import java.nio.file.Files;
@@ -19,18 +16,17 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.sql.Timestamp;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
-import javax.swing.JFormattedTextField;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -41,10 +37,8 @@ import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
-import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.ListCellRenderer;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
@@ -59,6 +53,7 @@ import org.jdesktop.swingx.prompt.PromptSupport;
 
 import com.google.common.base.Strings;
 
+import leamon.erp.component.helper.LeamonAutoAccountInfoTextFieldSuggestor;
 import leamon.erp.db.AccountDaoImpl;
 import leamon.erp.model.AccountInfo;
 import leamon.erp.model.StateCityInfo;
@@ -74,6 +69,7 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 
 	private JXDatePicker txtEngageDate;
 	private JXTextField txtPhone;
+	private JXTextField txtAlternatePhone;//3.5 Ghanshyam code to add alternate number
 	private JXTextField txtName;
 	private JXTextField txtHouseShopNum;
 	private JXTextField txtStreet;
@@ -112,13 +108,16 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 	private JLabel label_3;
 	private JLabel lblCode;
 
+	//3.4 Ghanshyam code for account name auto suggestor
+	private LeamonAutoAccountInfoTextFieldSuggestor<List<AccountInfo>, AccountInfo> leamonAutoAccountIDTextFieldSuggestor;
+	//3.4 end of ghanshyam code 
 
 	public AccountInfoUI() {
 		setTitle("Account info");
 		setIconifiable(true);
 		setMaximizable(true);
 		setClosable(true);
-		setBounds(10, 10, 799, 534);
+		setBounds(3, 30, 799, 534);
 
 
 		JPanel pnlStock = new JPanel();
@@ -190,12 +189,15 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		lblLicence.setFont(new Font("DialogInput", Font.BOLD, 16));
 
 		txtName = new JXTextField();
-		txtName.setBounds(246, 46, 244, 23);
+		txtName.setBounds(86, 46, 444, 23);
 		txtName.setName(LeamonERPConstants.TEXTFIELD_ACCOUNT_NAME); 
 		txtName.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
 		txtName.addKeyListener(new AccountInfoKeyListener());
 		txtName.setFont(new Font("DialogInput", Font.PLAIN, 16));
 		txtName.setPrompt("Account Name");
+		//3.4 Ghanshyam code for autoNamesuggestor
+		autoNameSuggestor(txtName);
+		//3.4 end of ghanshyam code
 
 		txtNickName = new JXTextField();
 		txtNickName.setBounds(246, 75, 244, 23);
@@ -222,12 +224,22 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		txtTransport.addKeyListener(new AccountInfoKeyListener());
 
 		txtPhone = new JXTextField();
-		txtPhone.setBounds(246, 248, 244, 23);
+		txtPhone.setBounds(246, 248, 120, 23);//3.5 Ghanshyam code to decrease width of phone number
 		txtPhone.setPrompt("Phone Number");
 		txtPhone.setName(LeamonERPConstants.TEXTFIELD_ACCOUNT_PHONE);
 		txtPhone.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
 		txtPhone.addKeyListener(new AccountInfoKeyListener());
 		txtPhone.setFont(new Font("DialogInput", Font.PLAIN, 16));
+
+		// 3.5 Ghanshyam code to add alternate number
+		txtAlternatePhone = new JXTextField();
+		txtAlternatePhone.setBounds(390, 248, 130, 23);// ghan code
+		txtAlternatePhone.setPrompt("Alternate No.");
+		txtAlternatePhone.setName(LeamonERPConstants.TEXTFIELD_ACCOUNT_ALTERNATE_PHONE);
+		txtAlternatePhone.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
+		txtAlternatePhone.addKeyListener(new AccountInfoKeyListener());
+		txtAlternatePhone.setFont(new Font("DialogInput", Font.PLAIN, 16));
+		// end of Ghanshyam code
 
 		txtHouseShopNum = new JXTextField();
 		txtHouseShopNum.setBounds(246, 283, 244, 23);
@@ -334,7 +346,7 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		btnClear.setFont(new Font("DialogInput", Font.BOLD, 14));
 		btnClear.setBackground(Color.WHITE);
 		btnClear.setMnemonic(KeyEvent.VK_R);
-		btnClear.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK), "Clear");
+		btnClear.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.ALT_DOWN_MASK), "Clear");
 		btnClear.getActionMap().put("Clear", getClearAction());
 		btnClear.addActionListener(e -> btnClearClick(e));
 
@@ -348,7 +360,7 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		btnEdit.setBackground(Color.WHITE);
 		btnEdit.setName(LeamonERPConstants.BUTTON_ACTION_EDIT_ACCOUNT_INFO);
 		btnEdit.setMnemonic(KeyEvent.VK_E);
-		btnEdit.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.CTRL_DOWN_MASK), "Edit");
+		btnEdit.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.ALT_DOWN_MASK), "Edit");
 		btnEdit.getActionMap().put("Edit", getEditAction());
 		btnEdit.addActionListener(this);
 
@@ -361,7 +373,7 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		btnSave.setName(LeamonERPConstants.BUTTON_ACTION_ADD_ACCOUNT_INFO);
 		btnSave.setBackground(Color.WHITE);
 		btnSave.setMnemonic(KeyEvent.VK_S);
-		btnSave.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK), "Save");
+		btnSave.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.ALT_DOWN_MASK), "Save");
 		btnSave.getActionMap().put("Save", getSaveAction());
 		btnSave.addActionListener(this);
 
@@ -374,7 +386,7 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		btnDelete.setFont(new Font("DialogInput", Font.BOLD, 14));
 		btnDelete.setBackground(Color.WHITE);
 		btnDelete.setMnemonic(KeyEvent.VK_D);
-		btnDelete.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_DOWN_MASK), "Delete");
+		btnDelete.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.ALT_DOWN_MASK), "Delete");
 		btnDelete.getActionMap().put("Delete", getDeleteAction());
 		btnDelete.setName(LeamonERPConstants.BUTTON_ACTION_DELETE_ACCOUNT_INFO);
 
@@ -432,7 +444,7 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		btnUploadImage.addKeyListener(new CustomKeyListener());
 		btnUploadImage.setMnemonic(KeyEvent.VK_U);
 		btnUploadImage.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_U,
-				KeyEvent.CTRL_DOWN_MASK), "Upload Image");
+				KeyEvent.ALT_DOWN_MASK), "Upload Image");
 		btnUploadImage.getActionMap().put("Upload Image", getUploadImageAction());
 
 		JLabel lblDescription = new JLabel("Description");
@@ -476,6 +488,7 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		pnlStock.add(lblTransportName);
 		pnlStock.add(txtTransport);
 		pnlStock.add(txtPhone);
+		pnlStock.add(txtAlternatePhone);//3.5 Ghanshyam code to add alternate phone number
 		pnlStock.add(btnClear);
 		pnlStock.add(btnEdit);
 		pnlStock.add(btnSave);
@@ -579,6 +592,8 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 					}else if(source!=null && source.getName()!=null && source.getName().equals(LeamonERPConstants.TEXTFIELD_ACCOUNT_GST)){
 						txtPhone.requestFocus();
 					}else if(source!=null && source.getName()!=null && source.getName().equals(LeamonERPConstants.TEXTFIELD_ACCOUNT_PHONE)){
+						txtAlternatePhone.requestFocus();
+					}else if(source!=null && source.getName()!=null && source.getName().equals(LeamonERPConstants.TEXTFIELD_ACCOUNT_ALTERNATE_PHONE)){
 						txtHouseShopNum.requestFocus();
 					}
 					else if(source!=null && source.getName()!=null && source.getName().equals(LeamonERPConstants.TEXTFIELD_ACCOUNT_HOUSE)){
@@ -705,6 +720,7 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		String state = ((JTextField)comboBoxState.getEditor().getEditorComponent()).getText();
 
 		String phone = txtPhone.getText();
+		String alternatePhone=txtAlternatePhone.getText();//3.5 Ghanshyam code to alternate number
 		String houseNum = txtHouseShopNum.getText();
 		String street = txtStreet.getText();
 
@@ -748,16 +764,25 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		AccountInfo accountInfo =AccountInfo.builder().build();
 
 		BigInteger bigPhone;
+		BigInteger bigAlternatePhone;//ghan code
 		try{
 			bigPhone = new BigInteger(phone);
+			//ghan code
+			if(!Strings.isNullOrEmpty(alternatePhone)) {
+				bigAlternatePhone= new BigInteger(alternatePhone);
+			}else {
+				bigAlternatePhone =new BigInteger("0");
+			}
+			//end ghan code
 		}catch(Exception e){
 			LOGGER.error(e);
 			bigPhone = new BigInteger("0");
+			bigAlternatePhone =new BigInteger("0");//ghan code
 		}
 
 		try{
 			accountInfo = AccountInfo.builder().name(name).nickName(nickName).gstNumber(tinGST).transport(transport).
-					phone(bigPhone).houseShopNumber(houseNum)
+					phone(bigPhone).alternatePhone(bigAlternatePhone).houseShopNumber(houseNum)
 					.street(street).city(city).state(state).country(country).landMark(landMark)
 					.engagedDate(new Timestamp(txtEngageDate.getDate().getTime())).panCard(pan).licence(licence)
 					.createdDate(new Timestamp(System.currentTimeMillis())).description(description)
@@ -839,6 +864,7 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		String tinGST = txtGSTNumber.getText();
 		String transport = txtTransport.getText();
 		String phone = txtPhone.getText();
+		String alternatePhone=txtAlternatePhone.getText();//3.5 Ghanshyam code to alternate number
 		String houseNum = txtHouseShopNum.getText();
 		String street = txtStreet.getText();
 		String city = ((JTextField)comboBoxCity.getEditor().getEditorComponent()).getText();
@@ -875,16 +901,25 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		AccountInfo accountInfo = AccountInfo.builder().build();
 
 		BigInteger bigPhone;
+		BigInteger bigAlternatePhone;//ghan code
 		try{
 			bigPhone = new BigInteger(phone);
+			//ghan code
+			if(!Strings.isNullOrEmpty(alternatePhone)) {
+				bigAlternatePhone= new BigInteger(alternatePhone);
+			}else {
+				bigAlternatePhone =new BigInteger("0");
+			}
+			//end ghan code
 		}catch(Exception e){
 			LOGGER.error(e);
 			bigPhone = new BigInteger("0");
+			bigAlternatePhone =new BigInteger("0");
 		}
 		
 		try{
 			accountInfo = AccountInfo.builder().name(name).nickName(nickName).gstNumber(tinGST).transport(transport).
-					phone(bigPhone).houseShopNumber(houseNum)
+					phone(bigPhone).alternatePhone(bigAlternatePhone).houseShopNumber(houseNum)
 					.street(street).city(city).state(state).country(country).landMark(landMark)
 					.engagedDate(new Timestamp(txtEngageDate.getDate().getTime())).panCard(pan).licence(licence)
 					.createdDate(new Timestamp(System.currentTimeMillis())).description(description)
@@ -978,6 +1013,14 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		txtGSTNumber.setText(si.getGstNumber());
 		txtTransport.setText(si.getTransport());
 		txtPhone.setText(""+si.getPhone());
+		
+		if(null == si.getAlternatePhone()){
+			txtAlternatePhone.setText(LeamonERPConstants.EMPTY_STR);
+		}else{
+			txtAlternatePhone.setText(si.getAlternatePhone().toString());
+		}
+		
+		//3.5 Ghanshyam code to alternate number
 		txtHouseShopNum.setText(si.getHouseShopNumber());
 		txtStreet.setText(si.getStreet());
 		fmtTxtPinCode.setText(""+si.getPinCode());
@@ -1008,7 +1051,12 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		if(Strings.isNullOrEmpty(item)){
 			return ;
 		}
-		StateCityInfo stateCityInfo = LeamonERP.stateCityInfos.stream().filter(ele -> ele.getCity().equals(item)).findFirst().get();
+		StateCityInfo stateCityInfo = null;
+		try{
+			stateCityInfo = LeamonERP.stateCityInfos.stream().filter(ele -> ele.getCity().equals(item)).findFirst().get();
+		}catch(Exception exp){
+			LOGGER.error(exp);
+		}
 		if(null != stateCityInfo){
 			comboBoxState.setSelectedItem(stateCityInfo.getState());
 			textFieldSCode.setText(stateCityInfo.getStateCode());
@@ -1102,6 +1150,7 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 
 	private void registerFocusEvent(){
 		txtPhone.addFocusListener(new FocusListenerHandler());
+		txtAlternatePhone.addFocusListener(new FocusListenerHandler());//3.5 Ghanshyam code to alternate number
 		txtName.addFocusListener(new FocusListenerHandler());
 		txtHouseShopNum.addFocusListener(new FocusListenerHandler());
 		txtStreet.addFocusListener(new FocusListenerHandler());
@@ -1126,6 +1175,7 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		txtGSTNumber.setText(LeamonERPConstants.EMPTY_STR);
 		txtTransport.setText(LeamonERPConstants.EMPTY_STR);
 		txtPhone.setText(LeamonERPConstants.EMPTY_STR);
+		txtAlternatePhone.setText(LeamonERPConstants.EMPTY_STR);//3.5 Ghanshyam code to alternate number
 		txtHouseShopNum.setText(LeamonERPConstants.EMPTY_STR);
 		txtStreet.setText(LeamonERPConstants.EMPTY_STR);
 		((JTextField)comboBoxCity.getEditor().getEditorComponent()).setText(LeamonERPConstants.EMPTY_STR);
@@ -1155,11 +1205,11 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		Action saveAction = new AbstractAction("Save") {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				LOGGER.info("ctrl + s clicked");
+				LOGGER.info("alt + s clicked");
 				save();
 			}
 		};
-		saveAction.putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
+		saveAction.putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.ALT_DOWN_MASK));
 		return saveAction;
 	}
 
@@ -1167,11 +1217,11 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		Action deleteAction = new AbstractAction("Delete") {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				LOGGER.info("ctrl + D clicked");
+				LOGGER.info("alt + D clicked");
 				delete();
 			}
 		};
-		deleteAction.putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_DOWN_MASK));
+		deleteAction.putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.ALT_DOWN_MASK));
 		return deleteAction;
 	}
 
@@ -1179,22 +1229,22 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		Action editAction = new AbstractAction("Edit") {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				LOGGER.info("ctrl + E clicked");
+				LOGGER.info("alt + E clicked");
 				edit();
 			}
 		};
-		editAction .putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.CTRL_DOWN_MASK));
+		editAction .putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.ALT_DOWN_MASK));
 		return editAction;
 	}
 	public Action getClearAction(){
 		Action editAction = new AbstractAction("Clear") {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				LOGGER.info("ctrl + R clicked");
+				LOGGER.info("alt + R clicked");
 				clear();
 			}
 		};
-		editAction .putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK));
+		editAction .putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.ALT_DOWN_MASK));
 		return editAction;
 	}
 	
@@ -1202,11 +1252,25 @@ public class AccountInfoUI extends JInternalFrame implements ActionListener {
 		Action editAction = new AbstractAction("Upload Image") {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				LOGGER.info("ctrl + U clicked");
+				LOGGER.info("alt + U clicked");
 				imageShower();
 			}
 		};
-		editAction .putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK));
+		editAction .putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.ALT_DOWN_MASK));
 		return editAction;
 	}
+
+	// 3.4 Ghanshyam code for account name auto suggestor
+	private void autoNameSuggestor(JTextField txtName) {
+		List<AccountInfo> accountInfos = new ArrayList<>();
+		try {
+			accountInfos = AccountDaoImpl.getInstance().getItemList();
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		leamonAutoAccountIDTextFieldSuggestor = new LeamonAutoAccountInfoTextFieldSuggestor<List<AccountInfo>, AccountInfo>(
+				txtName, this);
+		leamonAutoAccountIDTextFieldSuggestor.setItems(accountInfos);
+	}
+	// 3.4 end of ghanshyam code
 }

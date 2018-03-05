@@ -1,39 +1,8 @@
 package leamon.erp.ui;
 
-import java.awt.EventQueue;
-
-import javax.swing.JInternalFrame;
-import javax.swing.JPanel;
 import java.awt.Color;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-
-import leamon.erp.component.helper.LeamonAutoStockItemTextFieldSuggestor;
-import leamon.erp.db.StockDaoImpl;
-import leamon.erp.db.StockQuantityDaoImpl;
-import leamon.erp.model.StockItem;
-import leamon.erp.model.StockItemQuantity;
-import leamon.erp.ui.event.InvoiceUiEventHandler;
-import leamon.erp.util.LeamonERPConstants;
-import lombok.Getter;
-
-import javax.swing.border.TitledBorder;
-
-import org.apache.log4j.Logger;
-
-import com.google.common.base.Strings;
-
-import javax.swing.border.BevelBorder;
+import java.awt.EventQueue;
 import java.awt.Font;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -42,13 +11,38 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JSeparator;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
+import javax.swing.JSeparator;
 import javax.swing.JSpinner;
-import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.KeyStroke;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.UIManager;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
+
+import org.apache.log4j.Logger;
+
+import com.google.common.base.Strings;
+
+import leamon.erp.component.helper.LeamonAutoStockItemTextFieldSuggestor;
+import leamon.erp.db.StockDaoImpl;
+import leamon.erp.db.StockQuantityDaoImpl;
+import leamon.erp.model.StockItem;
+import leamon.erp.model.StockItemQuantity;
+import leamon.erp.util.LeamonERPConstants;
+import lombok.Getter;
 /**
  * 
  * @author Leamon india Inc.
@@ -100,7 +94,7 @@ public class StockItemQuantityUI extends JInternalFrame implements KeyListener{
 		setMaximizable(true);
 		setIconifiable(true);
 		setTitle("Stock Item Quantity");
-		setBounds(100, 100, 876, 474);
+		setBounds(3, 30, 876, 474);
 		getContentPane().setLayout(null);
 		
 		JPanel panel = new JPanel();
@@ -568,7 +562,7 @@ public class StockItemQuantityUI extends JInternalFrame implements KeyListener{
 		StockItem stockItemPresent =null;
 		try{
 			List<StockItem> stockItems = StockDaoImpl.getInstance().getItemList();
-			stockItemPresent = stockItems.stream().filter(e -> e.getId() == stockItemQuantity.getStokItemid()).findAny().orElse(null);
+			stockItemPresent = stockItems.stream().filter(e -> e.getId().intValue() == stockItemQuantity.getStokItemid().intValue()).findAny().orElse(null);
 		}catch(Exception exp){
 			LOGGER.error(exp);
 		}

@@ -33,6 +33,11 @@ public class MouseClickHandler implements MouseListener{
 				}else if (table.getName().equals(LeamonERPConstants.TABLE_PAYMENT)){
 					/*payment ui - open invoice*/
 					LeamonERP.paymentUI.openInvoice("View");
+				}else if (table.getName().equals(LeamonERPConstants.TABLE_PAYMENT_RECEIVED_SUMMARY)){
+					/*payment ui - open invoice*/
+					LeamonERP.paymentReceivedUI.openInvoice("View");
+				}else if(LeamonERPConstants.TABLE_STATE_CITY.equals(table.getName())){ /*Release 3.6*/
+					LeamonERP.stateCityManagerUI.getBtnView().doClick();
 				}
 			}
 		}else{

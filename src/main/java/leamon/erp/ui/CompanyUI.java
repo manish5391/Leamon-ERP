@@ -1,6 +1,5 @@
 package leamon.erp.ui;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -8,8 +7,16 @@ import java.awt.event.KeyListener;
 import java.sql.Timestamp;
 import java.util.List;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -17,10 +24,7 @@ import javax.swing.KeyStroke;
 import javax.swing.border.EmptyBorder;
 
 import org.apache.log4j.Logger;
-import org.jdesktop.swingx.JXLabel;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-
+import org.jdesktop.swingx.JXTextArea;
 import org.jdesktop.swingx.JXTextField;
 import org.jdesktop.swingx.prompt.PromptSupport;
 
@@ -29,16 +33,8 @@ import com.google.common.base.Strings;
 import leamon.erp.db.CompanyInfoDaoImpl;
 import leamon.erp.model.CompanyInfo;
 import leamon.erp.model.StateCityInfo;
-import leamon.erp.ui.AccountInfoUI.AccountInfoKeyListener;
 import leamon.erp.util.LeamonERPConstants;
 import leamon.erp.util.LeamonUtil;
-
-import org.jdesktop.swingx.JXTextArea;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JButton;
 
 public class CompanyUI extends JInternalFrame{
 
@@ -87,7 +83,7 @@ public class CompanyUI extends JInternalFrame{
 	 */
 	public CompanyUI() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 375, 558);
+		setBounds(3, 30, 375, 558);
 		setTitle("Leamon-ERP: Comapny Info");
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -190,14 +186,33 @@ public class CompanyUI extends JInternalFrame{
 		btnSave = new JButton("Save");
 		btnSave.setBounds(109, 498, 91, 23);
 		contentPane.add(btnSave);
+		// 3.6 ghan code
+		try {
+			btnSave.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_COMPANY_INFO_SAVE)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		// 3.6 end of ghan code
 		btnSave.addActionListener(e -> btnSaveClick(e));
 		btnSave.setMnemonic(KeyEvent.VK_S);
-		btnSave.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK), "Save");
+		btnSave.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.ALT_DOWN_MASK), "Save");//3.6 ghan code
 		btnSave.getActionMap().put("Save", getSaveAction());
 
 		JButton btnClose = new JButton("Close");
 		btnClose.setBounds(267, 498, 91, 23);
 		contentPane.add(btnClose);
+		// 3.6 ghan code
+		try {
+			btnClose.setIcon(new ImageIcon(
+					LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_COMPANY_INFO_CLOSE)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		btnClose.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+				.put(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.ALT_DOWN_MASK), "Close");
+		btnClose.getActionMap().put("Close", getCloseAction());
+		// 3.6 end of ghan code
 		btnClose.addActionListener(e -> btnCloseClick(e));
 
 		JLabel lblCity = new JLabel("City");
@@ -429,12 +444,27 @@ public class CompanyUI extends JInternalFrame{
 		Action saveAction = new AbstractAction("Save") {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				LOGGER.info("ctrl + s clicked");
+				LOGGER.info("ALT + s clicked");
 				save();
 			}
 		};
-		saveAction.putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
+		saveAction.putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.ALT_DOWN_MASK));
 		return saveAction;
 	}
+	
+	// 3.6 ghan code
+	private Action getCloseAction() {
+
+		Action closeAction = new AbstractAction("Close") {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				LOGGER.info("ALT + c clicked");
+				dispose();
+			}
+		};
+		closeAction.putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.ALT_DOWN_MASK));
+		return closeAction;
+	}
+	// 3.6 end of ghan code
 
 }

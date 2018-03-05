@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
@@ -40,12 +39,6 @@ import leamon.erp.db.StockDaoImpl;
 import leamon.erp.model.StateCityInfo;
 import leamon.erp.ui.custom.BGImagePanel;
 import leamon.erp.util.LeamonERPConstants;
-import lombok.Getter;
-
-import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-
-import javax.swing.JLabel;
 
 public class LeamonERP3 extends JFrame {
 
@@ -61,7 +54,7 @@ public class LeamonERP3 extends JFrame {
 
 	public static InventoryUIManager inventoryUIManager;
 	public static InventoryUI inventoryUI;
-	public static GrandTotalUI grandTotalUI;
+//	public static GrandTotalUI grandTotalUI;
 	public static CompanyUI companyUI;
 	public static InvoiceSearchUI invoiceSearchUI;
 
@@ -294,7 +287,7 @@ public class LeamonERP3 extends JFrame {
 		//framCreator();
 		inventoryUI = new InventoryUI();
 
-		grandTotalUI = new GrandTotalUI();
+//		grandTotalUI = new GrandTotalUI();
 		
 		companyUI = new CompanyUI();
 		
@@ -497,25 +490,25 @@ public class LeamonERP3 extends JFrame {
 		}
 	}
 	
-	public static void openGTCalculatr(){
-		if(grandTotalUI.isVisible()){
-			try {
-				grandTotalUI.setSelected(true);
-			} catch (PropertyVetoException e1) {
-				LOGGER.error(e1.toString());
-			}
-			grandTotalUI.moveToFront();
-		}else{
-			desktopPane.add(grandTotalUI);
-			grandTotalUI.setVisible(true);
-			try {
-				grandTotalUI.setSelected(true);
-			} catch (PropertyVetoException e1) {
-				LOGGER.error(e1.toString());
-			}
-			grandTotalUI.moveToFront();
-		}
-	}
+//	public static void openGTCalculatr(){
+//		if(grandTotalUI.isVisible()){
+//			try {
+//				grandTotalUI.setSelected(true);
+//			} catch (PropertyVetoException e1) {
+//				LOGGER.error(e1.toString());
+//			}
+//			grandTotalUI.moveToFront();
+//		}else{
+//			desktopPane.add(grandTotalUI);
+//			grandTotalUI.setVisible(true);
+//			try {
+//				grandTotalUI.setSelected(true);
+//			} catch (PropertyVetoException e1) {
+//				LOGGER.error(e1.toString());
+//			}
+//			grandTotalUI.moveToFront();
+//		}
+//	}
 
 	public void framCreator(){
 		SwingUtilities.invokeLater(() -> {

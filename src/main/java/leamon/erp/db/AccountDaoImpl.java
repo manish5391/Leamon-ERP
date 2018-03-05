@@ -91,6 +91,48 @@ public class AccountDaoImpl implements LeamonERPDao<AccountInfo>{
 		LOGGER.info("AccountDaoImpl[update] end.");
 	}
 	
+	//3.7 ghan code
+	public List<AccountInfo> getDeletedAccount() throws Exception{
+		LOGGER.info("AccountDaoImpl[getDeletedAccount] inside.");
+		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
+		AccountMapper accountInfoMapper= session.getMapper(AccountMapper.class);
+		List<AccountInfo> accountInfos = accountInfoMapper.getDeletedAccount();
+		session.close();
+		LOGGER.info("AccountDaoImpl[getDeletedAccount] end.");
+		return accountInfos;
+	}
 	
+	public void delete(AccountInfo item) throws Exception{
+		LOGGER.info("AccountDaoImpl[delete] inside.");
+		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
+		AccountMapper accountItemMapper= session.getMapper(AccountMapper.class);
+		try{
+		accountItemMapper.delete(item.getId());
+		session.commit();
+		}catch(Exception exp){
+			session.rollback();
+			throw exp;
+		}finally{
+			session.close();
+		}
+		LOGGER.info("AccountDaoImpl[delete] end.");
+	}
+	
+	public void updateByID(AccountInfo item) throws Exception {
+		LOGGER.info("AccountDaoImpl[updateByID] inside.");
+		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
+		AccountMapper accountMapper= session.getMapper(AccountMapper.class);
+		try{
+		accountMapper.updateByID(item.getId());
+		session.commit();
+		}catch(Exception exp){
+			session.rollback();
+			throw exp;
+		}finally{
+			session.close();
+		}
+		LOGGER.info("AccountDaoImpl[updateByID] end.");
+	}
+	//3.7 end of ghan code
 	
 }

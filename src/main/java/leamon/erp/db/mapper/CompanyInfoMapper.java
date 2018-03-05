@@ -10,7 +10,6 @@ import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
-import leamon.erp.model.AccountInfo;
 import leamon.erp.model.CompanyInfo;
 
 public interface CompanyInfoMapper {

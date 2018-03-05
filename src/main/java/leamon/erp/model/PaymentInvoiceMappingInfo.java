@@ -1,7 +1,6 @@
 package leamon.erp.model;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.sql.Timestamp;
 
 import lombok.AllArgsConstructor;
@@ -35,6 +34,9 @@ public class PaymentInvoiceMappingInfo implements Serializable, Comparable<Payme
 	private Timestamp createdDate;
 	private Timestamp lastUpdated;
 	private boolean isEnable;
+	
+	/*Release 3.4*/
+	private Integer openingBalanceID;
 	
 	@Override
 	public int compareTo(PaymentInvoiceMappingInfo o) {

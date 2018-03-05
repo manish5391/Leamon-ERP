@@ -11,7 +11,6 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import leamon.erp.model.PaymentReceivedInfo;
-import leamon.erp.model.PaymentReceivedInfo;
 
 public interface PaymentReceivedMapper {
 	final String getAll = "SELECT * FROM PAYMENT_RECEIVED_INFO WHERE ISENABLE = TRUE ORDER BY ID"; 

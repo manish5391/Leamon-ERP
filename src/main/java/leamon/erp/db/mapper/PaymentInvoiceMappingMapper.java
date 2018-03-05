@@ -19,12 +19,12 @@ public interface PaymentInvoiceMappingMapper {
 	final String getAll = "SELECT * FROM PAYMENT_INVOICE_MAPPING WHERE ISENABLE = TRUE"; 
 	final String getById = "SELECT * FROM PAYMENT_INVOICE_MAPPING WHERE ID = #{id}";
 	
-	final String insert = "INSERT INTO PAYMENT_INVOICE_MAPPING (PAYMENTID, INVOICEID, CREATEDDATE, LASTUPDATED, ISENABLE) "
+	final String insert = "INSERT INTO PAYMENT_INVOICE_MAPPING (PAYMENTID, INVOICEID, OPENINGBALANCEID, CREATEDDATE, LASTUPDATED, ISENABLE) "
 						+ "VALUES ( "
-						+ "#{paymentReceivedInfo}, #{invoiceInfoID}, #{createdDate}, #{lastUpdated}, #{isEnable})";
+						+ "#{paymentReceivedInfo}, #{invoiceInfoID}, #{openingBalanceID}, #{createdDate}, #{lastUpdated}, #{isEnable})";
 	
 	final String update = "UPDATE PAYMENT_INVOICE_MAPPING SET PAYMENTID = #{paymentReceivedInfo}, INVOICEID = #{invoiceInfoID}, "
-						+ "LASTUPDATED = #{lastUpdated} "
+						+ "OPENINGBALANCEID = #{openingBalanceID}, LASTUPDATED = #{lastUpdated} "
 						+ " WHERE ID = #{id}";
 	
 	final String deleteById = "DELETE from PAYMENT_INVOICE_MAPPING WHERE ID = #{id}";
@@ -38,6 +38,7 @@ public interface PaymentInvoiceMappingMapper {
 	      
 	      @Result(property = "paymentReceivedInfo", column = "PAYMENTID"),
 	      @Result(property = "invoiceInfoID", column = "INVOICEID"),
+	      @Result(property = "openingBalanceID", column = "OPENINGBALANCEID"),
 	      
 	      @Result(property = "createdDate", column = "CREATEDDATE"),
 	      @Result(property = "lastUpdated", column = "LASTUPDATED"),

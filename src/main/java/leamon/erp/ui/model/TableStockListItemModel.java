@@ -23,7 +23,17 @@ public class TableStockListItemModel extends AbstractTableModel{
 	
 	private static final Logger LOGGER = Logger.getLogger(TableStockListItemModel.class);
 	
-	private final String [] columnName = new String[] {"ID", "NAME", "PRODUCT CODE", "SIZE", "UNIT", "FINISH", "SHAPE", "SALE UNIT", "DESCRIPTION"};
+	private final String [] columnName = new String[] {
+			"ID", 
+			"NAME", 
+			"PRODUCT CODE", 
+			"SIZE", 
+			"QUANTITY",
+			"UNIT", 
+			"FINISH", 
+			"SHAPE", 
+			"DESCRIPTION"
+			};
 	private List<StockItem> stockItems;
 	
 	public TableStockListItemModel(List<StockItem> stockItems){
@@ -52,10 +62,10 @@ public class TableStockListItemModel extends AbstractTableModel{
 			case 1: temp = stockItems.get(rowIndex).getName(); break;
 			case 2: temp = stockItems.get(rowIndex).getProductCode(); break;
 			case 3: temp = stockItems.get(rowIndex).getSize(); break;
-			case 4: temp = stockItems.get(rowIndex).getUnit(); break;
-			case 5: temp = stockItems.get(rowIndex).getFinish(); break;
-			case 6: temp = stockItems.get(rowIndex).getShape(); break;
-			case 7: temp = stockItems.get(rowIndex).getSaleunit(); break;
+			case 4: temp = stockItems.get(rowIndex).getStockItemQuantity()!=null?stockItems.get(rowIndex).getStockItemQuantity().getQuantity():""; break;
+			case 5: temp = stockItems.get(rowIndex).getSaleunit(); break;
+			case 6: temp = stockItems.get(rowIndex).getFinish(); break;
+			case 7: temp = stockItems.get(rowIndex).getShape(); break;
 			case 8: temp = stockItems.get(rowIndex).getDescription(); break;
 		}
 		return temp;

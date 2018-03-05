@@ -6,7 +6,6 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.log4j.Logger;
 
 import leamon.erp.db.mapper.StateCityInfoMapper;
-import leamon.erp.db.mapper.StockMapper;
 import leamon.erp.db.util.MyBatsUtil;
 import leamon.erp.model.StateCityInfo;
 
@@ -36,20 +35,84 @@ public class StateCityDaoImpl implements  LeamonERPDao<StateCityInfo>{
 		LOGGER.info("StateCityDaoImpl[getItemList]");
 		return stateCityItems;
 	}
-
+	
+	public List<StateCityInfo> getItemListIncludingDisabled() throws Exception {
+		LOGGER.info("StateCityDaoImpl[getItemList] inside.");
+		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
+		StateCityInfoMapper stateCityMapper= session.getMapper(StateCityInfoMapper.class);
+		List<StateCityInfo> stateCityItems = stateCityMapper.getAllIncludingDisabledID();
+		session.close();
+		LOGGER.info("StateCityDaoImpl[getItemList]");
+		return stateCityItems;
+	}
+	
+	/**
+	 * Get unique state 
+	 * @author Manish Kmar Mishra
+	 * @date FEB 21,2018
+	 * @return
+	 * @throws Exception
+	 */
+	public List<StateCityInfo> getItemListDistinctState() throws Exception {
+		LOGGER.info("StateCityDaoImpl[getItemListDistinctState] inside.");
+		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
+		StateCityInfoMapper stateCityMapper= session.getMapper(StateCityInfoMapper.class);
+		List<StateCityInfo> stateCityItems = stateCityMapper.getAllDistinctState();
+		session.close();
+		LOGGER.info("StateCityDaoImpl[getItemListDistinctState]");
+		return stateCityItems;
+	}
+	
 	@Override
 	public void save(StateCityInfo item) throws Exception {
-		
+		LOGGER.info("StateCityDaoImpl[save] inside.");
+		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
+		StateCityInfoMapper stateCityMapper= session.getMapper(StateCityInfoMapper.class);
+		try{
+			stateCityMapper.insert(item);
+			session.commit();
+		}catch(Exception exp){
+			session.rollback();
+			throw exp;
+		}finally{
+			session.close();
+		}
+		LOGGER.info("LeamonERPDaoImpl[save] id ["+item.getId()+"] after insert.");
+		LOGGER.info("StateCityDaoImpl[save] End.");
 	}
 
 	@Override
 	public void disable(StateCityInfo item) throws Exception {
-		
+		LOGGER.info("StateCityDaoImpl[disable] inside.");
+		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
+		StateCityInfoMapper stateCityMapper= session.getMapper(StateCityInfoMapper.class);
+		try{
+			stateCityMapper.disableStateCityInfoByID(item);
+			session.commit();
+			}catch(Exception exp){
+				session.rollback();
+				throw exp;
+			}finally{
+				session.close();
+			}
+		LOGGER.info("StateCityDaoImpl[disable] End.");
 	}
 
 	@Override
 	public void update(StateCityInfo item) throws Exception {
-		
+		LOGGER.info("StateCityDaoImpl[update] inside.");
+		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
+		StateCityInfoMapper stateCityMapper= session.getMapper(StateCityInfoMapper.class);
+		try{
+			stateCityMapper.update(item);
+			session.commit();
+			}catch(Exception exp){
+				session.rollback();
+				throw exp;
+			}finally{
+				session.close();
+			}
+		LOGGER.info("StateCityDaoImpl[update] End.");
 	}
 	
 }
