@@ -214,6 +214,8 @@ public interface LeamonERPConstants {
 	String TABLE_HEADER_B_REMARK="B Remark";
 	String TABLE_HEADER_W_REMARK="W Remark";
 	String TABLE_HEADER_DESC="Desc";
+	String TABLE_HEADER_DATE="Date";
+	String TABLE_HEADER_TYPE="Type";
 	
 	String ACTION_COMMAND_="DESCRIPTIONS";
 	
