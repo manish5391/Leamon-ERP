@@ -41,6 +41,7 @@ import leamon.erp.ui.InvoiceUI;
 import leamon.erp.ui.InvoiceUILegal;
 import leamon.erp.ui.PaymentReceivedSummaryUI;
 import leamon.erp.ui.PaymentUI;
+import leamon.erp.ui.PaymentUiManager;
 import leamon.erp.ui.model.AccountInfoInvoiceListCellRender;
 
 public class LeamonAutoAccountInfoTextFieldSuggestor <T extends List<E>, E> extends JWindow implements KeyListener, FocusListener, ActionListener, MouseListener {
@@ -133,6 +134,11 @@ public class LeamonAutoAccountInfoTextFieldSuggestor <T extends List<E>, E> exte
 			if(isBinvoiceInstance(ui) && !Strings.isNullOrEmpty(((InvoiceUILegal)ui).getTextFieldPartyName().getText())){
 				((InvoiceUILegal)ui).getTextAreaPartyAddress().requestFocus();
 			}
+			
+			if(isPaymentUiManager(ui) && !Strings.isNullOrEmpty(((PaymentUiManager)ui).getTextFieldPartyName().getText())){
+				((PaymentUiManager)ui).getComboBox().requestFocus();
+			}
+			
 			return;
 		} 
 		if(parent == null) {
@@ -342,6 +348,19 @@ public class LeamonAutoAccountInfoTextFieldSuggestor <T extends List<E>, E> exte
 		return false;
 	}
 	
+	/**
+	 * @since Version : 3.8 
+	 * @date Mar 07,2018
+	 * @param frame
+	 * @return
+	 */
+	private boolean isPaymentUiManager(JInternalFrame frame){
+		if(frame instanceof PaymentUiManager){
+			return true;
+		}
+		return false;
+	}
+	
 	private void setAccountInfoData(JInternalFrame ui ,AccountInfo info){
 		
 		if(isInvoiceInstance(ui)){
@@ -368,6 +387,13 @@ public class LeamonAutoAccountInfoTextFieldSuggestor <T extends List<E>, E> exte
 		if(isBinvoiceInstance(ui)){
 			InvoiceUILegal invoiceBui = (InvoiceUILegal) ui;
 			invoiceBui.setAccountInfo(info);
+		}
+		/*End*/
+		
+		/*Release 3.8 */
+		if(isPaymentUiManager(ui)){
+			PaymentUiManager paymentUiManager = (PaymentUiManager) ui;
+			paymentUiManager.setAccountInfo(info);
 		}
 		/*End*/
 	}
