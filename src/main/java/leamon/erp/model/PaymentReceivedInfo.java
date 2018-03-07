@@ -48,6 +48,11 @@ public class PaymentReceivedInfo implements Serializable, Comparable<PaymentRece
 	private Timestamp lastUpdated;
 	private boolean isEnable;
 	
+	/*Release 3.8 only for search puprpose*/
+	private String startDate;
+	private String endDate;
+	/*End*/
+	
 	@Override
 	public int compareTo(PaymentReceivedInfo o) {
 		
