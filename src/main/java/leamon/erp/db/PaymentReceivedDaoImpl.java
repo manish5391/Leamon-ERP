@@ -1,5 +1,6 @@
 package leamon.erp.db;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
@@ -42,6 +43,20 @@ public class PaymentReceivedDaoImpl implements  LeamonERPDao<PaymentReceivedInfo
 		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
 		PaymentReceivedMapper paymentReceivedInfoMapper= session.getMapper(PaymentReceivedMapper.class);
 		List<PaymentReceivedInfo> paymentReceivedInfos = paymentReceivedInfoMapper.getAll();
+		session.close();
+		LOGGER.info("PaymentReceivedDaoImpl[getPaymentReceivedInfoList] end.");
+		return paymentReceivedInfos;
+	}
+	
+	/**
+	 * @date Mar 07,18 
+	 * @author Manish Kumar Mishra
+	 */
+	public List<PaymentReceivedInfo> getItemListWithAccountInfo() throws Exception {
+		LOGGER.info("PaymentReceivedDaoImpl[getPaymentReceivedInfoList] inside.");
+		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
+		PaymentReceivedMapper paymentReceivedInfoMapper= session.getMapper(PaymentReceivedMapper.class);
+		List<PaymentReceivedInfo> paymentReceivedInfos = paymentReceivedInfoMapper.getAllWithAccountInfo();
 		session.close();
 		LOGGER.info("PaymentReceivedDaoImpl[getPaymentReceivedInfoList] end.");
 		return paymentReceivedInfos;
@@ -99,8 +114,27 @@ public class PaymentReceivedDaoImpl implements  LeamonERPDao<PaymentReceivedInfo
 		}
 		LOGGER.info("PaymentReceivedDaoImpl[update] end.");
 	}
+	
+	/*------------Release 3.8 : Filter criteria----------------*/
+	public List<PaymentReceivedInfo> getItemListByPartyName(String partyInfoID) throws Exception {
+		LOGGER.info("PaymentReceivedDaoImpl[getItemListByPartyName] inside.");
+		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
+		PaymentReceivedMapper paymentReceivedInfoMapper= session.getMapper(PaymentReceivedMapper.class);
+		List<PaymentReceivedInfo> paymentReceivedInfos = paymentReceivedInfoMapper.getAllByPartyName(partyInfoID);
+		session.close();
+		LOGGER.info("PaymentReceivedDaoImpl[getPaymentReceivedInfoList] end.");
+		return paymentReceivedInfos;
+	}
+	
+	public List<PaymentReceivedInfo> getItemListByStartDate(Date startDate) throws Exception {
+		LOGGER.info("PaymentReceivedDaoImpl[getItemListByPartyName] inside.");
+		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
+		PaymentReceivedMapper paymentReceivedInfoMapper= session.getMapper(PaymentReceivedMapper.class);
+		List<PaymentReceivedInfo> paymentReceivedInfos = paymentReceivedInfoMapper.getAllByStartDate(startDate);
+		session.close();
+		LOGGER.info("PaymentReceivedDaoImpl[getPaymentReceivedInfoList] end.");
+		return paymentReceivedInfos;
+	}
 
-
-
-
+	/*---------------End---------------*/
 }
