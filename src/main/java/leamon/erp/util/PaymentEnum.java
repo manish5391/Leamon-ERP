@@ -8,7 +8,7 @@ package leamon.erp.util;
  *
  */
 public enum PaymentEnum {
-	
+	N(" "),
 	W("W"),
 	B("B"),
 	BOTH("Both");
