@@ -133,6 +133,8 @@ public interface PaymentReceivedMapper {
 	})
 	public AccountInfo getAccountInfo();
 	
+	
+	
 	/*--------------Filter Queries--------------------*/
 	@Select(getAllByPartyName)
 	   @Results(value = {
@@ -176,27 +178,6 @@ public interface PaymentReceivedMapper {
 	})
 	public List<PaymentReceivedInfo> getAllByStartDate(@Param("startDate") Date startDate) throws Exception;
 	
-	@Select(getAllByStartEndDate)
-	   @Results(value = {
-	      @Result(property = "id", column = "ID"),
-	      @Result(property = "partyInfoID", column = "PARTYINFOID"),
-	      @Result(property = "receivedPayment", column = "RECEIVEDPAYMENT"),
-	      @Result(property = "adjustedPayment", column = "ADJUSTEDPAYMENT"),
-	      @Result(property = "remainingAmount", column = "REMAININGAMOUNT"),
-	      @Result(property = "status", column = "STATUS"),
-	      @Result(property = "remark", column = "REMARK"),
-	      @Result(property = "type", column = "TYPE"),
-	      @Result(property = "receivedDate", column = "RECEIVEDDATE"),
-	      
-	      @Result(property = "createdDate", column = "CREATEDDATE"),
-	      @Result(property = "lastUpdated", column = "LASTUPDATED"),
-	      @Result(property = "isEnable", column = "ISENABLE"),
-	      
-	      @Result(property = "accountInfo", javaType=AccountInfo.class, column = "PARTYINFOID"
-	      , one =@One(select="getAccountInfo"))
-	})
-	public List<PaymentReceivedInfo> getAllByStartEndDate(PaymentReceivedInfo paymentReceivedInfo) throws Exception;
-	
 	@Select(getAllByType)
 	   @Results(value = {
 	      @Result(property = "id", column = "ID"),
@@ -216,7 +197,92 @@ public interface PaymentReceivedMapper {
 	      @Result(property = "accountInfo", javaType=AccountInfo.class, column = "PARTYINFOID"
 	      , one =@One(select="getAccountInfo"))
 	})
-	public List<PaymentReceivedInfo> getAllByType(PaymentReceivedInfo paymentReceivedInfo) throws Exception;
+	public List<PaymentReceivedInfo> getAllByType(String type) throws Exception;
+	
+	@Select(getAllByStartEndDate)
+	   @Results(value = {
+	      @Result(property = "id", column = "ID"),
+	      @Result(property = "partyInfoID", column = "PARTYINFOID"),
+	      @Result(property = "receivedPayment", column = "RECEIVEDPAYMENT"),
+	      @Result(property = "adjustedPayment", column = "ADJUSTEDPAYMENT"),
+	      @Result(property = "remainingAmount", column = "REMAININGAMOUNT"),
+	      @Result(property = "status", column = "STATUS"),
+	      @Result(property = "remark", column = "REMARK"),
+	      @Result(property = "type", column = "TYPE"),
+	      @Result(property = "receivedDate", column = "RECEIVEDDATE"),
+	      
+	      @Result(property = "createdDate", column = "CREATEDDATE"),
+	      @Result(property = "lastUpdated", column = "LASTUPDATED"),
+	      @Result(property = "isEnable", column = "ISENABLE"),
+	      
+	      @Result(property = "accountInfo", javaType=AccountInfo.class, column = "PARTYINFOID"
+	      , one =@One(select="getAccountInfo"))
+	})
+	public List<PaymentReceivedInfo> getAllByStartEndDate(@Param("startDate") Date startDate, @Param("endDate") Date endDate) throws Exception;
+	
+	
+	@Select(getAllByStartDateEndDatePartyName)
+	   @Results(value = {
+	      @Result(property = "id", column = "ID"),
+	      @Result(property = "partyInfoID", column = "PARTYINFOID"),
+	      @Result(property = "receivedPayment", column = "RECEIVEDPAYMENT"),
+	      @Result(property = "adjustedPayment", column = "ADJUSTEDPAYMENT"),
+	      @Result(property = "remainingAmount", column = "REMAININGAMOUNT"),
+	      @Result(property = "status", column = "STATUS"),
+	      @Result(property = "remark", column = "REMARK"),
+	      @Result(property = "type", column = "TYPE"),
+	      @Result(property = "receivedDate", column = "RECEIVEDDATE"),
+	      
+	      @Result(property = "createdDate", column = "CREATEDDATE"),
+	      @Result(property = "lastUpdated", column = "LASTUPDATED"),
+	      @Result(property = "isEnable", column = "ISENABLE"),
+	      
+	      @Result(property = "accountInfo", javaType=AccountInfo.class, column = "PARTYINFOID"
+	      , one =@One(select="getAccountInfo"))
+	})
+	public List<PaymentReceivedInfo> getAllByStartEndDatePartyName(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("partyInfoID")String partyInfoID) throws Exception;
+	
+	@Select(getAllByStartDateEndDateType)
+	   @Results(value = {
+	      @Result(property = "id", column = "ID"),
+	      @Result(property = "partyInfoID", column = "PARTYINFOID"),
+	      @Result(property = "receivedPayment", column = "RECEIVEDPAYMENT"),
+	      @Result(property = "adjustedPayment", column = "ADJUSTEDPAYMENT"),
+	      @Result(property = "remainingAmount", column = "REMAININGAMOUNT"),
+	      @Result(property = "status", column = "STATUS"),
+	      @Result(property = "remark", column = "REMARK"),
+	      @Result(property = "type", column = "TYPE"),
+	      @Result(property = "receivedDate", column = "RECEIVEDDATE"),
+	      
+	      @Result(property = "createdDate", column = "CREATEDDATE"),
+	      @Result(property = "lastUpdated", column = "LASTUPDATED"),
+	      @Result(property = "isEnable", column = "ISENABLE"),
+	      
+	      @Result(property = "accountInfo", javaType=AccountInfo.class, column = "PARTYINFOID"
+	      , one =@One(select="getAccountInfo"))
+	})
+	public List<PaymentReceivedInfo> getAllByStartEndDateType(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("type")String type) throws Exception;
+	
+	@Select(getAllByStartDateEndDatePartyNamePaymentType)
+	   @Results(value = {
+	      @Result(property = "id", column = "ID"),
+	      @Result(property = "partyInfoID", column = "PARTYINFOID"),
+	      @Result(property = "receivedPayment", column = "RECEIVEDPAYMENT"),
+	      @Result(property = "adjustedPayment", column = "ADJUSTEDPAYMENT"),
+	      @Result(property = "remainingAmount", column = "REMAININGAMOUNT"),
+	      @Result(property = "status", column = "STATUS"),
+	      @Result(property = "remark", column = "REMARK"),
+	      @Result(property = "type", column = "TYPE"),
+	      @Result(property = "receivedDate", column = "RECEIVEDDATE"),
+	      
+	      @Result(property = "createdDate", column = "CREATEDDATE"),
+	      @Result(property = "lastUpdated", column = "LASTUPDATED"),
+	      @Result(property = "isEnable", column = "ISENABLE"),
+	      
+	      @Result(property = "accountInfo", javaType=AccountInfo.class, column = "PARTYINFOID"
+	      , one =@One(select="getAccountInfo"))
+	})
+	public List<PaymentReceivedInfo> getAllByStartEndDatePartyNameType(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("partyInfoID")String partyInfoID, @Param("type")String type) throws Exception;
 	
 	/*-------------End--------------------*/
 }

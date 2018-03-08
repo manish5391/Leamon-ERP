@@ -127,7 +127,7 @@ public class PaymentReceivedDaoImpl implements  LeamonERPDao<PaymentReceivedInfo
 	}
 	
 	public List<PaymentReceivedInfo> getItemListByStartDate(Date startDate) throws Exception {
-		LOGGER.info("PaymentReceivedDaoImpl[getItemListByPartyName] inside.");
+		LOGGER.info("PaymentReceivedDaoImpl[getItemListByStartDate] inside.");
 		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
 		PaymentReceivedMapper paymentReceivedInfoMapper= session.getMapper(PaymentReceivedMapper.class);
 		List<PaymentReceivedInfo> paymentReceivedInfos = paymentReceivedInfoMapper.getAllByStartDate(startDate);
@@ -136,5 +136,52 @@ public class PaymentReceivedDaoImpl implements  LeamonERPDao<PaymentReceivedInfo
 		return paymentReceivedInfos;
 	}
 
+	public List<PaymentReceivedInfo> getItemListByType(String type) throws Exception {
+		LOGGER.info("PaymentReceivedDaoImpl[getItemListByType] inside.");
+		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
+		PaymentReceivedMapper paymentReceivedInfoMapper= session.getMapper(PaymentReceivedMapper.class);
+		List<PaymentReceivedInfo> paymentReceivedInfos = paymentReceivedInfoMapper.getAllByType(type);
+		session.close();
+		LOGGER.info("PaymentReceivedDaoImpl[getItemListByType] end.");
+		return paymentReceivedInfos;
+	}
+	
+	public List<PaymentReceivedInfo> getItemListByStartEndDate(Date startDate, Date endDate) throws Exception {
+		LOGGER.info("PaymentReceivedDaoImpl[getItemListByStartEndDate] inside.");
+		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
+		PaymentReceivedMapper paymentReceivedInfoMapper= session.getMapper(PaymentReceivedMapper.class);
+		List<PaymentReceivedInfo> paymentReceivedInfos = paymentReceivedInfoMapper.getAllByStartEndDate(startDate,endDate);
+		session.close();
+		LOGGER.info("PaymentReceivedDaoImpl[getItemListByStartEndDate] end.");
+		return paymentReceivedInfos;
+	}
+	public List<PaymentReceivedInfo> searchByStartEndDatePartyName(Date startDate, Date endDate, String partyInfoID) throws Exception {
+		LOGGER.info("PaymentReceivedDaoImpl[searchByStartEndDatePartyName] inside.");
+		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
+		PaymentReceivedMapper paymentReceivedInfoMapper= session.getMapper(PaymentReceivedMapper.class);
+		List<PaymentReceivedInfo> paymentReceivedInfos = paymentReceivedInfoMapper.getAllByStartEndDatePartyName(startDate,endDate, partyInfoID);
+		session.close();
+		LOGGER.info("PaymentReceivedDaoImpl[searchByStartEndDatePartyName] end.");
+		return paymentReceivedInfos;
+	}
+	public List<PaymentReceivedInfo> searchByStartEndDateType(Date startDate, Date endDate, String type) throws Exception {
+		LOGGER.info("PaymentReceivedDaoImpl[searchByStartEndDatePartyName] inside.");
+		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
+		PaymentReceivedMapper paymentReceivedInfoMapper= session.getMapper(PaymentReceivedMapper.class);
+		List<PaymentReceivedInfo> paymentReceivedInfos = paymentReceivedInfoMapper.getAllByStartEndDateType(startDate,endDate, type);
+		session.close();
+		LOGGER.info("PaymentReceivedDaoImpl[searchByStartEndDatePartyName] end.");
+		return paymentReceivedInfos;
+	}
+	
+	public List<PaymentReceivedInfo> searchByStartEndDatePartyNameType(Date startDate, Date endDate, String partyInfoID, String type) throws Exception {
+		LOGGER.info("PaymentReceivedDaoImpl[searchByStartEndDatePartyNameType] inside.");
+		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
+		PaymentReceivedMapper paymentReceivedInfoMapper= session.getMapper(PaymentReceivedMapper.class);
+		List<PaymentReceivedInfo> paymentReceivedInfos = paymentReceivedInfoMapper.getAllByStartEndDatePartyNameType(startDate,endDate, partyInfoID,type);
+		session.close();
+		LOGGER.info("PaymentReceivedDaoImpl[searchByStartEndDatePartyNameType] end.");
+		return paymentReceivedInfos;
+	}
 	/*---------------End---------------*/
 }

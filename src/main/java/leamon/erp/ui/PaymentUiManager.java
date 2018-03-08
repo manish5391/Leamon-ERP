@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -38,6 +39,7 @@ import javax.swing.JScrollPane;
 import org.jdesktop.swingx.JXTable;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -48,6 +50,9 @@ import org.jdesktop.swingx.plaf.basic.SpinningCalendarHeaderHandler;
 import com.google.common.base.Strings;
 
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.persistence.EnumType;
@@ -163,7 +168,7 @@ public class PaymentUiManager extends JInternalFrame {
 		JPanel panel_1 = new JPanel();
 		panel_1.setLayout(null);
 		panel_1.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
-		panel_1.setBounds(0, 474, 847, 34);
+		panel_1.setBounds(0, 474, 906, 34);
 		getContentPane().add(panel_1);
 
 		buttonExcel = new JXButton();
@@ -177,12 +182,28 @@ public class PaymentUiManager extends JInternalFrame {
 		panel_1.add(buttonPrint);
 
 		buttonClose = new JButton("Close");
-		buttonClose.setBounds(743, 6, 94, 23);
+		buttonClose.setBounds(802, 6, 94, 23);
+		buttonClose.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.ALT_DOWN_MASK), "Close");
+		buttonClose.getActionMap().put("Close", getCloseAction());
+		try {
+			buttonClose.setIcon(new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_PAYMENT_MASTER_CLOSE_BUTTON)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		panel_1.add(buttonClose);
+		buttonClose.addActionListener(e -> buttonCloseClick(e));
 
 		buttonRefresh = new JButton("Refresh");
-		buttonRefresh.setBounds(639, 6, 94, 23);
+		buttonRefresh.setBounds(698, 6, 94, 23);
+		buttonRefresh.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.ALT_DOWN_MASK), "Clear");
+		buttonRefresh.getActionMap().put("Clear", getClearAction());
+		try {
+			buttonRefresh.setIcon(new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP.concat(LeamonERPConstants.IMG_PAYMENT_MASTER_REFRESH_BUTTON)));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 		panel_1.add(buttonRefresh);
+		buttonRefresh.addActionListener(e -> buttonRefreshClick(e));
 
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setBounds(0, 44, 906, 431);
@@ -393,6 +414,13 @@ public class PaymentUiManager extends JInternalFrame {
 		LOGGER.info(CLASS_NAME+"[deleteAccountInfo] end");
 	}
 
+	private void buttonCloseClick(ActionEvent e){
+		this.dispose();
+	}
+	
+	private void buttonRefreshClick(ActionEvent e){
+		clear();
+	}
 	private void btnSearchClick(ActionEvent e){
 		String startDate= datePickerStartDate.getEditor().getText();
 		String endDate= datePickerEndDate.getEditor().getText();
@@ -401,18 +429,50 @@ public class PaymentUiManager extends JInternalFrame {
 		if(Strings.isNullOrEmpty(textFieldPartyName.getText())){
 			accountInfo = null;
 		}
-		
+
 		/*only by party name*/
 		if(accountInfo!=null && Strings.isNullOrEmpty(startDate) && PaymentEnum.N.name().equals(type)){
 			searchByPartyName();
 		}
-		
-		/*only be start date*/
-		if(!Strings.isNullOrEmpty(startDate) && accountInfo==null && PaymentEnum.N.name().equals(type)){
+
+		/*only by start date*/
+		if(!Strings.isNullOrEmpty(startDate) && Strings.isNullOrEmpty(endDate) && accountInfo==null && PaymentEnum.N.name().equals(type)){
 			Date startDateValue = datePickerStartDate.getDate();
 			searchByStartDate(startDateValue);
 		}
-		
+
+		/*only by type*/
+		if(!PaymentEnum.N.name().equals(type) && Strings.isNullOrEmpty(startDate) && accountInfo==null){
+			searchByType(type);
+		}
+
+		/*between date range*/
+		if(!Strings.isNullOrEmpty(startDate) && !Strings.isNullOrEmpty(endDate) && accountInfo == null && PaymentEnum.N.name().equals(type)){
+			Date startDateValue = datePickerStartDate.getDate();
+			Date endDateValue = datePickerEndDate.getDate();
+			searchByStartEndDate(startDateValue,endDateValue);
+		}
+
+		/*between date range & Party Name*/
+		if(!Strings.isNullOrEmpty(startDate) && !Strings.isNullOrEmpty(endDate) && accountInfo != null && PaymentEnum.N.name().equals(type)){
+			Date startDateValue = datePickerStartDate.getDate();
+			Date endDateValue = datePickerEndDate.getDate();
+			searchByStartEndDatePartyName(startDateValue,endDateValue);
+		}
+
+		/*between date range & Type*/
+		if(!Strings.isNullOrEmpty(startDate) && !Strings.isNullOrEmpty(endDate) && accountInfo == null && !PaymentEnum.N.name().equals(type)){
+			Date startDateValue = datePickerStartDate.getDate();
+			Date endDateValue = datePickerEndDate.getDate();
+			searchByStartEndDateType(startDateValue,endDateValue,type);
+		}
+
+		/*between date range & Party Name & Type*/
+		if(!Strings.isNullOrEmpty(startDate) && !Strings.isNullOrEmpty(endDate) && accountInfo != null && !PaymentEnum.N.name().equals(type)){
+			Date startDateValue = datePickerStartDate.getDate();
+			Date endDateValue = datePickerEndDate.getDate();
+			searchByStartEndDatePartyNameType(startDateValue,endDateValue,type);
+		}
 	}
 
 	private void searchByPartyName(){
@@ -424,7 +484,7 @@ public class PaymentUiManager extends JInternalFrame {
 			LOGGER.error(exp);
 		}
 	}
-	
+
 	private void searchByStartDate(Date startDate){
 		try{
 			PaymentReceivedDaoImpl dao = PaymentReceivedDaoImpl.getInstance();
@@ -433,5 +493,127 @@ public class PaymentUiManager extends JInternalFrame {
 		}catch(Exception exp){
 			LOGGER.error(exp);
 		}
+	}
+
+	private void searchByType(String type){
+		try{
+			if(PaymentEnum.B.name().equals(type)){
+				type = ERPEnum.TYPE_PAYMENT_WITH_BILL.name();
+			}
+
+			if(PaymentEnum.W.name().equals(type)){
+				type = ERPEnum.TYPE_PAYMENT_WITHOUT_BILL.name();
+			}
+
+			if(PaymentEnum.BOTH.name().equals(type)){
+				menuItemRefreshClick(null);
+				return;
+			}
+			PaymentReceivedDaoImpl dao = PaymentReceivedDaoImpl.getInstance();
+			List<PaymentReceivedInfo> paymentReceivedInfos = dao.getItemListByType(type);
+			setModel(paymentReceivedInfos);
+		}catch(Exception exp){
+			LOGGER.error(exp);
+		}
+	}
+
+	private void searchByStartEndDate(Date startDate, Date endDate){
+		try{
+			PaymentReceivedDaoImpl dao = PaymentReceivedDaoImpl.getInstance();
+			List<PaymentReceivedInfo> paymentReceivedInfos = dao.getItemListByStartEndDate(startDate, endDate);
+			setModel(paymentReceivedInfos);
+		}catch(Exception exp){
+			LOGGER.error(exp);
+		}
+	}
+
+	private void searchByStartEndDatePartyName(Date startDate, Date endDate){
+		try{
+			PaymentReceivedDaoImpl dao = PaymentReceivedDaoImpl.getInstance();
+			List<PaymentReceivedInfo> paymentReceivedInfos = dao.searchByStartEndDatePartyName(startDate, endDate,accountInfo.getId().toString());
+			setModel(paymentReceivedInfos);
+		}catch(Exception exp){
+			LOGGER.error(exp);
+		}
+	}
+
+	private void searchByStartEndDateType(Date startDate, Date endDate, String type){
+		if(PaymentEnum.B.name().equals(type)){
+			type = ERPEnum.TYPE_PAYMENT_WITH_BILL.name();
+		}
+
+		if(PaymentEnum.W.name().equals(type)){
+			type = ERPEnum.TYPE_PAYMENT_WITHOUT_BILL.name();
+		}
+
+		if(PaymentEnum.BOTH.name().equals(type)){
+			searchByStartEndDate(startDate,endDate);
+			return;
+		}
+		try{
+			PaymentReceivedDaoImpl dao = PaymentReceivedDaoImpl.getInstance();
+			List<PaymentReceivedInfo> paymentReceivedInfos = dao.searchByStartEndDateType(startDate, endDate,type);
+			setModel(paymentReceivedInfos);
+		}catch(Exception exp){
+			LOGGER.error(exp);
+		}
+
+	}
+
+	private void searchByStartEndDatePartyNameType(Date startDate, Date endDate, String type){
+
+		if(PaymentEnum.B.name().equals(type)){
+			type = ERPEnum.TYPE_PAYMENT_WITH_BILL.name();
+		}
+
+		if(PaymentEnum.W.name().equals(type)){
+			type = ERPEnum.TYPE_PAYMENT_WITHOUT_BILL.name();
+		}
+
+		if(PaymentEnum.BOTH.name().equals(type)){
+			searchByStartEndDatePartyName(startDate,endDate);
+			return;
+		}
+
+		try{
+			PaymentReceivedDaoImpl dao = PaymentReceivedDaoImpl.getInstance();
+			List<PaymentReceivedInfo> paymentReceivedInfos = dao.searchByStartEndDatePartyNameType(startDate, endDate,accountInfo.getId().toString(),type);
+			setModel(paymentReceivedInfos);
+		}catch(Exception exp){
+			LOGGER.error(exp);
+		}
+	}
+	
+	private void clear(){
+		accountInfo = null;
+		textFieldPartyName.setText(LeamonERPConstants.EMPTY_STR);
+		setModel(new ArrayList<PaymentReceivedInfo>());
+		datePickerEndDate.getEditor().setText(LeamonERPConstants.EMPTY_STR);
+		datePickerStartDate.getEditor().setText(LeamonERPConstants.EMPTY_STR);
+		comboBox.setSelectedIndex(0);
+	}
+	
+	private Action getCloseAction() {
+
+		Action closeAction = new AbstractAction("Close") {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				LOGGER.info("alt + c clicked");
+				dispose();
+			}
+		};
+		closeAction.putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.ALT_DOWN_MASK));
+		return closeAction;
+	}
+	public Action getClearAction() {
+		Action clearAction = new AbstractAction("Clear") {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				LOGGER.info("alt + R clicked");
+				clear();
+			}
+		};
+		clearAction.putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.ALT_DOWN_MASK));
+		return clearAction;
 	}
 }
