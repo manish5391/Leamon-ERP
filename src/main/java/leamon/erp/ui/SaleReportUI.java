@@ -5,8 +5,12 @@ import java.awt.EventQueue;
 import javax.swing.JInternalFrame;
 import java.awt.Color;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
@@ -17,6 +21,8 @@ import org.jdesktop.swingx.JXDatePicker;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeMap;
 
 import org.jdesktop.swingx.JXTextField;
 import org.jdesktop.swingx.plaf.basic.CalendarHeaderHandler;
@@ -32,13 +38,19 @@ import leamon.erp.model.AccountInfo;
 import leamon.erp.model.InvoiceInfo;
 import leamon.erp.model.SalesReportInfoModel;
 import leamon.erp.ui.model.SalesReportModel;
+import leamon.erp.util.ERPEnum;
 import leamon.erp.util.LeamonERPConstants;
 
 import org.apache.log4j.Logger;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jdesktop.swingx.JXButton;
 import javax.swing.JButton;
 import org.jdesktop.swingx.JXPanel;
 import javax.swing.border.BevelBorder;
+import javax.swing.table.TableModel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
@@ -213,7 +225,49 @@ public class SaleReportUI extends JInternalFrame {
 	}
 
 	private void btnExportToExcelClick(ActionEvent e) {
+		try {
+			int count = 1;
+			XSSFWorkbook wb = new XSSFWorkbook();
+			XSSFSheet ws = wb.createSheet();
+			TreeMap<String, Object[]> data = new TreeMap<>();
+			TableModel model = tableSaleReport.getModel();
+			data.put("0", getColumnName());
+			/*
+			 * data.put("0", new Object[] { model.getColumnName(0), model.getColumnName(1),
+			 * model.getColumnName(2), model.getColumnName(3), model.getColumnName(4),
+			 * model.getColumnName(5)});
+			 */
+			for (int i = 0; i < model.getRowCount(); i++) {
+				data.put(String.valueOf(count), getRowValue(i));
+				count++;
+			}
 
+			Set<String> ids = data.keySet();
+			XSSFRow row;
+			int rowId = 0;
+			for (String key : ids) {
+				row = ws.createRow(rowId++);
+				Object[] values = data.get(key);
+
+				int cellID = 0;
+				for (Object o : values) {
+					XSSFCell cell = row.createCell(cellID++);
+					cell.setCellValue(o.toString());
+				}
+			}
+			String reportPath = LeamonERP.getPropertyValue(ERPEnum.SALEREPORT.name());
+			try {
+				FileOutputStream fos = new FileOutputStream(new File(reportPath));
+				wb.write(fos);
+				fos.close();
+			} catch (Exception ex) {
+				LOGGER.error(ex);
+			}
+
+			JOptionPane.showMessageDialog(this, "File saved at location "+reportPath);
+		} catch (Exception expr) {
+			LOGGER.error(expr);
+		}
 	}
 
 	private void btnPrintBillClick(ActionEvent e) {
@@ -463,5 +517,21 @@ public class SaleReportUI extends JInternalFrame {
 			LOGGER.error(exp);
 		}
 
+	}
+
+	private Object[] getRowValue(int rowIndex) {
+		Object values[] = new Object[tableSaleReport.getColumnCount()];
+		for (int j = 0; j < tableSaleReport.getColumnCount(); j++) {
+			values[j] = tableSaleReport.getValueAt(rowIndex, j).toString();
+		}
+		return values;
+	}
+
+	private Object[] getColumnName() {
+		Object[] values = new Object[tableSaleReport.getModel().getColumnCount()];
+		for (int i = 0; i < tableSaleReport.getModel().getColumnCount(); i++) {
+			values[i] = tableSaleReport.getModel().getColumnName(i);
+		}
+		return values;
 	}
 }

@@ -11,7 +11,7 @@ public class SalesReportModel extends AbstractTableModel{
 
 	private final String [] columnName = new String[] {
 			"Invoice No", 
-			"Party NAME", 
+			"Party Name", 
 			"Bill Number", 
 			"Date", 
 			"B Amount",
