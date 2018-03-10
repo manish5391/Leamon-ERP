@@ -1,6 +1,6 @@
 package leamon.erp.db.mapper;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Delete;
@@ -22,6 +22,17 @@ import leamon.erp.model.InvoiceItemInfo;
 public interface InvoiceMapper {
 	
 	final String getAll = "SELECT * FROM INVOICE_BILL WHERE ISENABLE = TRUE ORDER BY ID";
+	// 3.8 ghan code
+	final String getAllByPartyInfoID = "SELECT * FROM INVOICE_BILL WHERE ISENABLE = TRUE AND PARTYINFOID = #{id}";
+	final String getAllByStartDate= "SELECT * FROM INVOICE_BILL WHERE ISENABLE = TRUE AND TO_DATE(INVOICEDATE, 'DY DD/MM/YYYY')  "
+			+ " >= #{startDate, jdbcType=DATE } ";
+	final String getAllByStartEndDate= "SELECT * FROM INVOICE_BILL WHERE ISENABLE = TRUE AND TO_DATE(INVOICEDATE, 'DY DD/MM/YYYY') "
+			+ " BETWEEN #{startDate, jdbcType=DATE } AND #{endDate, jdbcType=DATE }";
+	final String getAllByStartEndDatePartyInfoID = "SELECT * FROM INVOICE_BILL WHERE ISENABLE = TRUE AND PARTYINFOID = #{id} AND TO_DATE(INVOICEDATE, 'DY DD/MM/YYYY') "
+			+ " BETWEEN #{startDate, jdbcType=DATE } AND #{endDate, jdbcType=DATE }";
+	final String getAllByStartDateAndPartyName = "SELECT * FROM INVOICE_BILL WHERE ISENABLE = TRUE AND PARTYINFOID = #{id} AND TO_DATE(INVOICEDATE, 'DY DD/MM/YYYY')  "
+			+ " >= #{startDate, jdbcType=DATE } ";
+	// 3.8 end of ghan code
 	final String  getAllWithDisabled = "SELECT * FROM INVOICE_BILL ORDER BY ID";
 	final String getById = "SELECT * FROM INVOICE_BILL WHERE ID = #{id}";
 	final String getAllBetweenDate = "SELECT * FROM INVOICE_BILL WHERE TO_DATE(INVOICEDATE, 'DY DD/MM/YYYY')  BETWEEN {D '{fromDate}'} AND {D '{toDate}'}";
@@ -285,4 +296,95 @@ public interface InvoiceMapper {
 	})
 	public List<InvoiceInfo> getAllWithChildAndAccountByDateRange(@Param("fromDate") Date fromDate, @Param("toDate")Date toDate);
 	
+	//3.8 ghan code
+	@Select(getAllByPartyInfoID)
+	   @Results(value = {
+	      @Result(property = "id", column = "ID"),
+	      @Result(property = "partyinfoID", column = "PARTYINFOID"),
+	      @Result(property = "invoicNum", column = "INVOICENUM"),
+	      @Result(property = "invoicDate", column = "INVOICEDATE"),
+	      @Result(property = "billNo", column = "BILL_NO"),
+	      @Result(property = "orderBookedBy", column = "ORDERBOOKBY"),
+	      @Result(property = "transport", column = "TRANSPORT"),
+	      @Result(property = "pktNumber", column = "PACKETNUM"),
+	      @Result(property = "billAmount", column = "BILLAMOUNT"), 
+	      @Result(property = "gstValue", column = "GSTAMOUNT"),
+	      @Result(property = "createdDate", column = "CREATEDDATE"),
+	      @Result(property = "lastUpdated", column = "LASTUPDATEDDATE"),
+	      @Result(property = "isEnable", column = "ISENABLE")
+	})
+	public List<InvoiceInfo> getAllByPartyInfoID(int id);
+	
+	@Select(getAllByStartDate)
+	   @Results(value = {
+	      @Result(property = "id", column = "ID"),
+	      @Result(property = "partyinfoID", column = "PARTYINFOID"),
+	      @Result(property = "invoicNum", column = "INVOICENUM"),
+	      @Result(property = "invoicDate", column = "INVOICEDATE"),
+	      @Result(property = "billNo", column = "BILL_NO"),
+	      @Result(property = "orderBookedBy", column = "ORDERBOOKBY"),
+	      @Result(property = "transport", column = "TRANSPORT"),
+	      @Result(property = "pktNumber", column = "PACKETNUM"),
+	      @Result(property = "billAmount", column = "BILLAMOUNT"), 
+	      @Result(property = "gstValue", column = "GSTAMOUNT"),
+	      @Result(property = "createdDate", column = "CREATEDDATE"),
+	      @Result(property = "lastUpdated", column = "LASTUPDATEDDATE"),
+	      @Result(property = "isEnable", column = "ISENABLE")
+	})
+	public List<InvoiceInfo> getAllByStartDate(@Param("startDate") java.util.Date startDate) throws Exception;
+	
+	@Select(getAllByStartEndDate)
+	   @Results(value = {
+	      @Result(property = "id", column = "ID"),
+	      @Result(property = "partyinfoID", column = "PARTYINFOID"),
+	      @Result(property = "invoicNum", column = "INVOICENUM"),
+	      @Result(property = "invoicDate", column = "INVOICEDATE"),
+	      @Result(property = "billNo", column = "BILL_NO"),
+	      @Result(property = "orderBookedBy", column = "ORDERBOOKBY"),
+	      @Result(property = "transport", column = "TRANSPORT"),
+	      @Result(property = "pktNumber", column = "PACKETNUM"),
+	      @Result(property = "billAmount", column = "BILLAMOUNT"), 
+	      @Result(property = "gstValue", column = "GSTAMOUNT"),
+	      @Result(property = "createdDate", column = "CREATEDDATE"),
+	      @Result(property = "lastUpdated", column = "LASTUPDATEDDATE"),
+	      @Result(property = "isEnable", column = "ISENABLE")
+	})
+	public List<InvoiceInfo> getAllByStartEndDate(@Param("startDate") Date startDate, @Param("endDate") Date endDate) throws Exception;
+	
+	@Select(getAllByStartEndDatePartyInfoID)
+	   @Results(value = {
+	      @Result(property = "id", column = "ID"),
+	      @Result(property = "partyinfoID", column = "PARTYINFOID"),
+	      @Result(property = "invoicNum", column = "INVOICENUM"),
+	      @Result(property = "invoicDate", column = "INVOICEDATE"),
+	      @Result(property = "billNo", column = "BILL_NO"),
+	      @Result(property = "orderBookedBy", column = "ORDERBOOKBY"),
+	      @Result(property = "transport", column = "TRANSPORT"),
+	      @Result(property = "pktNumber", column = "PACKETNUM"),
+	      @Result(property = "billAmount", column = "BILLAMOUNT"), 
+	      @Result(property = "gstValue", column = "GSTAMOUNT"),
+	      @Result(property = "createdDate", column = "CREATEDDATE"),
+	      @Result(property = "lastUpdated", column = "LASTUPDATEDDATE"),
+	      @Result(property = "isEnable", column = "ISENABLE")
+	})
+	public List<InvoiceInfo> getAllByStartEndDatePartyInfoID(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("id") int id) throws Exception;
+	
+	@Select(getAllByStartDateAndPartyName)
+	   @Results(value = {
+	      @Result(property = "id", column = "ID"),
+	      @Result(property = "partyinfoID", column = "PARTYINFOID"),
+	      @Result(property = "invoicNum", column = "INVOICENUM"),
+	      @Result(property = "invoicDate", column = "INVOICEDATE"),
+	      @Result(property = "billNo", column = "BILL_NO"),
+	      @Result(property = "orderBookedBy", column = "ORDERBOOKBY"),
+	      @Result(property = "transport", column = "TRANSPORT"),
+	      @Result(property = "pktNumber", column = "PACKETNUM"),
+	      @Result(property = "billAmount", column = "BILLAMOUNT"), 
+	      @Result(property = "gstValue", column = "GSTAMOUNT"),
+	      @Result(property = "createdDate", column = "CREATEDDATE"),
+	      @Result(property = "lastUpdated", column = "LASTUPDATEDDATE"),
+	      @Result(property = "isEnable", column = "ISENABLE")
+	})
+	public List<InvoiceInfo> getAllByStartDateAndPartyName(@Param("startDate") Date startDate, @Param("id") int id) throws Exception;
+	//3.8 end of ghan code
 }
