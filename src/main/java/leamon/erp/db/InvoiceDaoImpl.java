@@ -1,7 +1,9 @@
 package leamon.erp.db;
 
+import java.util.Date;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.log4j.Logger;
 
@@ -164,4 +166,52 @@ public class InvoiceDaoImpl  implements LeamonERPDao<InvoiceInfo>{
 		LOGGER.info("InvoiceDaoImpl[getAllWithChildAndAccountByDateRange] end.");
 		return InvoiceInfos;
 	}
+	
+	/*-------Release 3.8---Criteria Sql---------------*/
+	public List<InvoiceInfo> getAllInvoiceByPartyName(String partyinfoID)throws Exception{
+		LOGGER.info("InvoiceDaoImpl[getInvoicByPartyName] inside.");
+		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
+		InvoiceMapper invoiceInfoMapper= session.getMapper(InvoiceMapper.class);
+		List<InvoiceInfo> InvoiceInfos = invoiceInfoMapper.getAllInvoiceByPartyName(partyinfoID);
+		session.close();
+		LOGGER.info("InvoiceDaoImpl[getInvoicByPartyName] end.");
+		return InvoiceInfos;
+	}
+	public List<InvoiceInfo> getAllInvoiceByStartDate(Date startDate)throws Exception{
+		LOGGER.info("InvoiceDaoImpl[getInvoicByPartyName] inside.");
+		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
+		InvoiceMapper invoiceInfoMapper= session.getMapper(InvoiceMapper.class);
+		List<InvoiceInfo> InvoiceInfos = invoiceInfoMapper.getAllInvoiceByStartDate(startDate);
+		session.close();
+		LOGGER.info("InvoiceDaoImpl[getInvoicByPartyName] end.");
+		return InvoiceInfos;
+	}
+	public List<InvoiceInfo> getAllInvoiceByStartEndDate(Date startDate,Date endDate)throws Exception{
+		LOGGER.info("InvoiceDaoImpl[getAllInvoiceByStartEndDate] inside.");
+		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
+		InvoiceMapper invoiceInfoMapper= session.getMapper(InvoiceMapper.class);
+		List<InvoiceInfo> InvoiceInfos = invoiceInfoMapper.getAllInvoiceByStartEndDate(startDate,endDate);
+		session.close();
+		LOGGER.info("InvoiceDaoImpl[getAllInvoiceByStartEndDate] end.");
+		return InvoiceInfos;
+	}
+	public List<InvoiceInfo> getAllInvoiceByStartDatePartName(Date startDate, String partyInfoID)throws Exception{
+		LOGGER.info("InvoiceDaoImpl[getAllInvoiceByStartDatePartName] inside.");
+		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
+		InvoiceMapper invoiceInfoMapper= session.getMapper(InvoiceMapper.class);
+		List<InvoiceInfo> InvoiceInfos = invoiceInfoMapper.getAllInvoiceByStartDatePartName(startDate,partyInfoID);
+		session.close();
+		LOGGER.info("InvoiceDaoImpl[getAllInvoiceByStartDatePartName] end.");
+		return InvoiceInfos;
+	}
+	public List<InvoiceInfo> getAllInvoiceByStartEndDatePartyName(Date startDate, Date endDate, String partyInfoID)throws Exception{
+		LOGGER.info("InvoiceDaoImpl[getAllInvoiceByStartEndDatePartName] inside.");
+		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
+		InvoiceMapper invoiceInfoMapper= session.getMapper(InvoiceMapper.class);
+		List<InvoiceInfo> InvoiceInfos = invoiceInfoMapper.getAllInvoiceByStartEndDatePartName(startDate,endDate,partyInfoID);
+		session.close();
+		LOGGER.info("InvoiceDaoImpl[getAllInvoiceByStartEndDatePartName] end.");
+		return InvoiceInfos;
+	}
+	/*----------End------------------------*/
 }
