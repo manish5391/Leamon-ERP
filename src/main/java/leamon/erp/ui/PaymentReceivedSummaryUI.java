@@ -127,14 +127,17 @@ public class PaymentReceivedSummaryUI extends JInternalFrame {
 		panel_1.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		panel_1.setBounds(0, 0, 975, 85);
 		panel.add(panel_1);
+		panel_1.setLayout(null);
 
 		JXLabel label = new JXLabel();
+		label.setBounds(18, 19, 71, 16);
 		label.setText("Party Name");
 		label.setForeground(Color.BLACK);
 		label.setFont(new Font("Trebuchet MS", Font.BOLD, 13));
 		panel_1.add(label);
 
 		textFieldPartyName = new JXTextField();
+		textFieldPartyName.setBounds(94, 17, 264, 21);
 		textFieldPartyName.setPrompt("Select Party Name                ");
 		textFieldPartyName.setName("txtPartyName");
 		textFieldPartyName.setFont(new Font("DialogInput", Font.PLAIN, 14));
@@ -143,6 +146,7 @@ public class PaymentReceivedSummaryUI extends JInternalFrame {
 		panel_1.add(textFieldPartyName);
 
 		JXLabel lblSearchBy = new JXLabel();
+		lblSearchBy.setBounds(363, 19, 32, 16);
 		lblSearchBy.setText("From");
 		lblSearchBy.setForeground(Color.BLACK);
 		lblSearchBy.setFont(new Font("Trebuchet MS", Font.BOLD, 13));
@@ -150,24 +154,28 @@ public class PaymentReceivedSummaryUI extends JInternalFrame {
 
 		DateFormat df = new SimpleDateFormat("EEE dd/MM/yyyy");
 		datePickerFrom = new JXDatePicker((Date) null);
+		datePickerFrom.setBounds(400, 16, 112, 22);
 		datePickerFrom .setFormats(df);
 		datePickerFrom.getEditor().setEnabled(true);
 		datePickerFrom.getMonthView().setZoomable(true);
 		panel_1.add(datePickerFrom);
 
 		JXLabel lblTo = new JXLabel();
+		lblTo.setBounds(517, 19, 15, 16);
 		lblTo.setText("To");
 		lblTo.setForeground(Color.BLACK);
 		lblTo.setFont(new Font("Trebuchet MS", Font.BOLD, 13));
 		panel_1.add(lblTo);
 
 		datePickerTo = new JXDatePicker((Date) null);
+		datePickerTo.setBounds(537, 16, 112, 22);
 		datePickerTo .setFormats(df);
 		datePickerTo.getEditor().setEnabled(true);
 		datePickerTo.getMonthView().setZoomable(true);
 		panel_1.add(datePickerTo);
 
 		JPanel panel_4 = new JPanel();
+		panel_4.setBounds(654, 7, 161, 41);
 		panel_4.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		panel_4.setBackground(new Color(102, 205, 170));
 		panel_1.add(panel_4);
@@ -192,10 +200,12 @@ public class PaymentReceivedSummaryUI extends JInternalFrame {
 		bg.add(chckbxBoth);
 
 		btnSearch = new JXButton();
+		btnSearch.setBounds(431, 49, 149, 23);
 		btnSearch.setText("Search Payment History");
 		btnSearch.addActionListener(e -> btnSearchClick(e));
 
 		comboBoxCity = new JComboBox();
+		comboBoxCity.setBounds(825, 18, 102, 22);
 		comboBoxCity.setName("txtAccountCity");
 		comboBoxCity.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
 		comboBoxCity.setBackground(Color.WHITE);
@@ -205,6 +215,7 @@ public class PaymentReceivedSummaryUI extends JInternalFrame {
 		panel_1.add(comboBoxCity);
 
 		comboBoxSatus = new JComboBox();
+		comboBoxSatus.setBounds(308, 49, 102, 19);
 		comboBoxSatus.setModel(new DefaultComboBoxModel(InvoicePaymentStatusEnum.values()));
 		comboBoxSatus.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
 		comboBoxSatus.setBackground(Color.WHITE);
