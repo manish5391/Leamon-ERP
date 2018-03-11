@@ -81,6 +81,7 @@ public class LeamonERP extends JFrame {
 	public static PaymentReportUI paymentReportUI;
 	public static StockReportUI stockReportUI;
 	public static PaymentUiManager paymentUiManager;
+	public static OpeningBalanceManagerUI openingBalanceManagerUI;
 	/*End*/
 	
 	public static  List<String> cityCache;
@@ -561,6 +562,11 @@ public class LeamonERP extends JFrame {
 			LOGGER.error(e);
 		}
 		mntmPayment_Manager.addActionListener(e -> mntmPaymentManagerClick(e));
+		
+		/*Added from 3.8 Release*/
+		JMenuItem mntmOpeningBalanceManager = new JMenuItem("Opening Balance Manager");
+		mnPaymentMaster.add(mntmOpeningBalanceManager);
+		mntmOpeningBalanceManager.addActionListener(e -> mntmOpeningBalanceManagerClick(e));
 		mnPaymentMaster.add(mntmPayment_Manager);
 		// 3.6 end of ghan code
 		
@@ -779,6 +785,7 @@ public class LeamonERP extends JFrame {
 		paymentReportUI = new PaymentReportUI();
 		stockReportUI = new StockReportUI();
 		paymentUiManager = new PaymentUiManager();
+		openingBalanceManagerUI = new  OpeningBalanceManagerUI();
 		}
 
 	public void initComponents(){
@@ -1539,5 +1546,22 @@ public class LeamonERP extends JFrame {
 			stateCityManagerUI.setVisible(true);
 		}
 		SwingUtilities.updateComponentTreeUI(stateCityManagerUI);
+	}
+	
+	private void mntmOpeningBalanceManagerClick(ActionEvent e){
+
+		if(openingBalanceManagerUI.isVisible()){
+			try {
+				openingBalanceManagerUI.setSelected(true);
+			} catch (PropertyVetoException e1) {
+				LOGGER.error(e1.toString());
+			}
+			openingBalanceManagerUI.moveToFront();
+		}else{
+			desktopPane.add(openingBalanceManagerUI);
+			openingBalanceManagerUI.setVisible(true);
+		}
+		SwingUtilities.updateComponentTreeUI(openingBalanceManagerUI);
+	
 	}
 }
