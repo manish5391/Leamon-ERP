@@ -16,14 +16,18 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import org.jdesktop.swingx.JXDatePicker;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -59,13 +63,17 @@ import javax.persistence.EnumType;
 
 import leamon.erp.component.helper.LeamonAutoAccountInfoTextFieldSuggestor;
 import leamon.erp.db.AccountDaoImpl;
+import leamon.erp.db.InvoiceDaoImpl;
+import leamon.erp.db.OpeningBalanceDaoImpl;
 import leamon.erp.db.PaymentReceivedDaoImpl;
 import leamon.erp.model.AccountInfo;
 import leamon.erp.model.InvoiceInfo;
+import leamon.erp.model.OpeningBalanceInfo;
 import leamon.erp.model.PaymentReceivedInfo;
 import leamon.erp.ui.custom.PaymentReceivedSummaryTableCellRenderer;
 import leamon.erp.ui.model.GenericModelWithSnp;
 import leamon.erp.ui.model.TableAccountInfoListModel;
+import leamon.erp.ui.model.TablePaymentInvoiceOpeningBalanceModel;
 import leamon.erp.ui.model.TablePaymentReceivedHistoryModel;
 import leamon.erp.ui.model.TablePaymentReceivedSummaryModel;
 import leamon.erp.util.ERPEnum;
@@ -77,6 +85,7 @@ import lombok.Getter;
 public class PaymentUiManager extends JInternalFrame {
 
 	private JXTable tablePayment;
+	private JXTable tablePaymentInvoice;
 
 	private JXDatePicker datePickerStartDate;
 	private JXDatePicker datePickerEndDate;
@@ -92,6 +101,8 @@ public class PaymentUiManager extends JInternalFrame {
 	private JLabel labelTotalPayment;
 	private JComboBox comboBox;
 
+	private JTabbedPane tabbedPane;
+	
 	private AccountInfo accountInfo;
 	private LeamonAutoAccountInfoTextFieldSuggestor<List<AccountInfo>, AccountInfo> leamonAutoAccountIDTextFieldSuggestor;
 
@@ -205,7 +216,7 @@ public class PaymentUiManager extends JInternalFrame {
 		panel_1.add(buttonRefresh);
 		buttonRefresh.addActionListener(e -> buttonRefreshClick(e));
 
-		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setBounds(0, 44, 906, 431);
 		getContentPane().add(tabbedPane);
 
@@ -253,6 +264,9 @@ public class PaymentUiManager extends JInternalFrame {
 
 		JScrollPane scrollPane_1 = new JScrollPane();
 		panelPaymentInvoice.add(scrollPane_1, BorderLayout.CENTER);
+		
+		tablePaymentInvoice = new JXTable();
+		scrollPane_1.setViewportView(tablePaymentInvoice);
 
 		JXPanel panelPaymentInvoiceMapping = new JXPanel();
 		panelPaymentInvoiceMapping.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
@@ -432,48 +446,120 @@ public class PaymentUiManager extends JInternalFrame {
 
 		/*only by party name*/
 		if(accountInfo!=null && Strings.isNullOrEmpty(startDate) && PaymentEnum.N.name().equals(type)){
-			searchByPartyName();
+			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT){
+				searchByPartyName();
+			}
+			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT_INVOICE){
+				searchPaymentInvoiceByPartyName();
+			}
+			
+			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT_INVOICE_MAPPING){
+				//TODO
+			}
 		}
 
 		/*only by start date*/
 		if(!Strings.isNullOrEmpty(startDate) && Strings.isNullOrEmpty(endDate) && accountInfo==null && PaymentEnum.N.name().equals(type)){
 			Date startDateValue = datePickerStartDate.getDate();
-			searchByStartDate(startDateValue);
+			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT){
+				searchByStartDate(startDateValue);
+			}
+			
+			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT_INVOICE){
+				searchPaymentInvoiceByStartDate(startDateValue);
+			}
+			
+			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT_INVOICE_MAPPING){
+				//TODO
+			}
 		}
 
 		/*only by type*/
 		if(!PaymentEnum.N.name().equals(type) && Strings.isNullOrEmpty(startDate) && accountInfo==null){
-			searchByType(type);
+			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT){
+				searchByType(type);
+			}
+			
+			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT_INVOICE){
+				JOptionPane.showMessageDialog(this, "Not Applicable", "Leamon-ERP Warning",JOptionPane.WARNING_MESSAGE);
+				return ;
+			}
+			
+			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT_INVOICE_MAPPING){
+				//TODO
+			}
 		}
 
 		/*between date range*/
 		if(!Strings.isNullOrEmpty(startDate) && !Strings.isNullOrEmpty(endDate) && accountInfo == null && PaymentEnum.N.name().equals(type)){
 			Date startDateValue = datePickerStartDate.getDate();
 			Date endDateValue = datePickerEndDate.getDate();
-			searchByStartEndDate(startDateValue,endDateValue);
+			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT){
+				searchByStartEndDate(startDateValue,endDateValue);
+			}
+			
+			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT_INVOICE){
+				searchPaymentInvoiceByStartEndDate(startDateValue,endDateValue);
+			}
+			
+			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT_INVOICE_MAPPING){
+				//TODO
+			}
 		}
 
 		/*between date range & Party Name*/
 		if(!Strings.isNullOrEmpty(startDate) && !Strings.isNullOrEmpty(endDate) && accountInfo != null && PaymentEnum.N.name().equals(type)){
 			Date startDateValue = datePickerStartDate.getDate();
 			Date endDateValue = datePickerEndDate.getDate();
-			searchByStartEndDatePartyName(startDateValue,endDateValue);
+			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT){
+				searchByStartEndDatePartyName(startDateValue,endDateValue);
+			}
+			
+			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT_INVOICE){
+				searchPaymentInvoiceByStartEndDatePartyName(startDateValue,endDateValue);
+			}
+			
+			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT_INVOICE_MAPPING){
+				//TODO
+			}
 		}
 
 		/*between date range & Type*/
 		if(!Strings.isNullOrEmpty(startDate) && !Strings.isNullOrEmpty(endDate) && accountInfo == null && !PaymentEnum.N.name().equals(type)){
 			Date startDateValue = datePickerStartDate.getDate();
 			Date endDateValue = datePickerEndDate.getDate();
-			searchByStartEndDateType(startDateValue,endDateValue,type);
+			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT){
+				searchByStartEndDateType(startDateValue,endDateValue,type);
+			}
+			
+			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT_INVOICE){
+				JOptionPane.showMessageDialog(this, "Not Applicable", "Leamon-ERP Warning",JOptionPane.WARNING_MESSAGE);
+				return ;
+			}
+			
+			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT_INVOICE_MAPPING){
+				//TODO
+			}
 		}
 
 		/*between date range & Party Name & Type*/
 		if(!Strings.isNullOrEmpty(startDate) && !Strings.isNullOrEmpty(endDate) && accountInfo != null && !PaymentEnum.N.name().equals(type)){
 			Date startDateValue = datePickerStartDate.getDate();
 			Date endDateValue = datePickerEndDate.getDate();
-			searchByStartEndDatePartyNameType(startDateValue,endDateValue,type);
+			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT){
+				searchByStartEndDatePartyNameType(startDateValue,endDateValue,type);
+			}
+			
+			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT_INVOICE){
+				JOptionPane.showMessageDialog(this, "Not Applicable", "Leamon-ERP Warning",JOptionPane.WARNING_MESSAGE);
+				return ;
+			}
+			
+			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT_INVOICE_MAPPING){
+				//TODO
+			}
 		}
-	}
+	}//end button serach click
 
 	private void searchByPartyName(){
 		try{
@@ -561,7 +647,7 @@ public class PaymentUiManager extends JInternalFrame {
 	}
 
 	private void searchByStartEndDatePartyNameType(Date startDate, Date endDate, String type){
-
+		
 		if(PaymentEnum.B.name().equals(type)){
 			type = ERPEnum.TYPE_PAYMENT_WITH_BILL.name();
 		}
@@ -582,6 +668,182 @@ public class PaymentUiManager extends JInternalFrame {
 		}catch(Exception exp){
 			LOGGER.error(exp);
 		}
+	}
+	
+	private void searchPaymentInvoiceByPartyName(){
+		try{
+			List<PaymentReceivedInfo> paymentReceivedInfos = PaymentReceivedDaoImpl.getInstance().getItemListByPartyName(accountInfo.getId().toString());
+			List<OpeningBalanceInfo> openingBalanceInfos = OpeningBalanceDaoImpl.getInstance().getAllOpeningBalanceByPartyName(accountInfo.getId().toString());
+			List<InvoiceInfo> invoiceInfos = InvoiceDaoImpl.getInstance().getAllInvoiceByPartyName(accountInfo.getId().toString());
+			
+			java.util.LinkedList<Object> list = new java.util.LinkedList<Object>();
+			
+			list.addAll(paymentReceivedInfos);
+			list.addAll(openingBalanceInfos);
+			list.addAll(invoiceInfos);
+			
+			/*try{
+			Collections.sort(list, new Comparator<Object>() {
+				@Override
+				public int compare(Object o1, Object o2) {
+					
+					Timestamp t1 = null;
+					Timestamp t2 = null;
+					if(o1 instanceof PaymentReceivedInfo){
+						t1 = ((PaymentReceivedInfo)o1).getLastUpdated();
+					}else if(o1 instanceof OpeningBalanceInfo){
+						t1 = ((OpeningBalanceInfo)o1).getLastUpdated();
+					}else if(o1 instanceof InvoiceInfo){
+						t1 = ((InvoiceInfo)o1).getLastUpdated();
+					}
+					
+					if(o2 instanceof PaymentReceivedInfo){
+						t2 = ((PaymentReceivedInfo)o2).getLastUpdated();
+					}else if(o2 instanceof OpeningBalanceInfo){
+						t2 = ((OpeningBalanceInfo)o2).getLastUpdated();
+					}else if(o2 instanceof InvoiceInfo){
+						t2 = ((InvoiceInfo)o2).getLastUpdated();
+					}
+					return t1.compareTo(t2);
+				}
+				
+			});
+			}catch(Exception exp){
+				LOGGER.error("Failed to sort by date : "+exp);
+			}*/
+			sortByDate(list);
+			setPaymentInvoiceModel(list);
+		}catch(Exception exp){
+			LOGGER.error(exp);
+		}
+	}
+	
+	private void searchPaymentInvoiceByStartDate(Date startDate){
+
+		try{
+			List<PaymentReceivedInfo> paymentReceivedInfos = PaymentReceivedDaoImpl.getInstance().getItemListByStartDate(startDate);
+			List<OpeningBalanceInfo> openingBalanceInfos = OpeningBalanceDaoImpl.getInstance().getAllOpeningBalanceByStartDate(startDate);
+			List<InvoiceInfo> invoiceInfos = InvoiceDaoImpl.getInstance().getAllInvoiceByStartDate(startDate);
+			
+			java.util.LinkedList<Object> list = new java.util.LinkedList<Object>();
+			
+			list.addAll(paymentReceivedInfos);
+			list.addAll(openingBalanceInfos);
+			list.addAll(invoiceInfos);
+			
+			/*try{
+			Collections.sort(list, new Comparator<Object>() {
+				@Override
+				public int compare(Object o1, Object o2) {
+					
+					Timestamp t1 = null;
+					Timestamp t2 = null;
+					if(o1 instanceof PaymentReceivedInfo){
+						t1 = ((PaymentReceivedInfo)o1).getLastUpdated();
+					}else if(o1 instanceof OpeningBalanceInfo){
+						t1 = ((OpeningBalanceInfo)o1).getLastUpdated();
+					}else if(o1 instanceof InvoiceInfo){
+						t1 = ((InvoiceInfo)o1).getLastUpdated();
+					}
+					
+					if(o2 instanceof PaymentReceivedInfo){
+						t2 = ((PaymentReceivedInfo)o2).getLastUpdated();
+					}else if(o2 instanceof OpeningBalanceInfo){
+						t2 = ((OpeningBalanceInfo)o2).getLastUpdated();
+					}else if(o2 instanceof InvoiceInfo){
+						t2 = ((InvoiceInfo)o2).getLastUpdated();
+					}
+					return t1.compareTo(t2);
+				}
+				
+			});
+			}catch(Exception exp){
+				LOGGER.error("Failed to sort by date : "+exp);
+			}*/
+			sortByDate(list);
+			setPaymentInvoiceModel(list);
+		}catch(Exception exp){
+			LOGGER.error(exp);
+		}
+	
+	}
+	
+	private void searchPaymentInvoiceByStartEndDate(Date startDate, Date endDate){
+
+		try{
+			List<PaymentReceivedInfo> paymentReceivedInfos = PaymentReceivedDaoImpl.getInstance().getItemListByStartEndDate(startDate, endDate);
+			List<OpeningBalanceInfo> openingBalanceInfos = OpeningBalanceDaoImpl.getInstance().getAllOpeningBalanceByStartEndDate(startDate, endDate);
+			List<InvoiceInfo> invoiceInfos = InvoiceDaoImpl.getInstance().getAllInvoiceByStartEndDate(startDate, endDate);
+			
+			java.util.LinkedList<Object> list = new java.util.LinkedList<Object>();
+			
+			list.addAll(paymentReceivedInfos);
+			list.addAll(openingBalanceInfos);
+			list.addAll(invoiceInfos);
+			
+			/*try{
+			Collections.sort(list, new Comparator<Object>() {
+				@Override
+				public int compare(Object o1, Object o2) {
+					
+					Timestamp t1 = null;
+					Timestamp t2 = null;
+					if(o1 instanceof PaymentReceivedInfo){
+						t1 = ((PaymentReceivedInfo)o1).getLastUpdated();
+					}else if(o1 instanceof OpeningBalanceInfo){
+						t1 = ((OpeningBalanceInfo)o1).getLastUpdated();
+					}else if(o1 instanceof InvoiceInfo){
+						t1 = ((InvoiceInfo)o1).getLastUpdated();
+					}
+					
+					if(o2 instanceof PaymentReceivedInfo){
+						t2 = ((PaymentReceivedInfo)o2).getLastUpdated();
+					}else if(o2 instanceof OpeningBalanceInfo){
+						t2 = ((OpeningBalanceInfo)o2).getLastUpdated();
+					}else if(o2 instanceof InvoiceInfo){
+						t2 = ((InvoiceInfo)o2).getLastUpdated();
+					}
+					return t1.compareTo(t2);
+				}
+				
+			});
+			}catch(Exception exp){
+				LOGGER.error("Failed to sort by date : "+exp);
+			}*/
+			sortByDate(list);
+			setPaymentInvoiceModel(list);
+		}catch(Exception exp){
+			LOGGER.error(exp);
+		}
+	
+	}
+	
+	private void searchPaymentInvoiceByStartEndDatePartyName(Date startDate, Date endDate){
+		try{
+			List<PaymentReceivedInfo> paymentReceivedInfos = PaymentReceivedDaoImpl.getInstance().searchByStartEndDatePartyName(startDate, endDate, accountInfo.getId().toString());
+			List<OpeningBalanceInfo> openingBalanceInfos = OpeningBalanceDaoImpl.getInstance().getAllOpeningBalanceByStartEndDatePartyName(startDate, endDate, accountInfo.getId().toString());
+			List<InvoiceInfo> invoiceInfos = InvoiceDaoImpl.getInstance().getAllInvoiceByStartEndDatePartyName(startDate, endDate, accountInfo.getId().toString());
+			
+			java.util.LinkedList<Object> list = new java.util.LinkedList<Object>();
+			
+			list.addAll(paymentReceivedInfos);
+			list.addAll(openingBalanceInfos);
+			list.addAll(invoiceInfos);
+			
+			sortByDate(list);
+			setPaymentInvoiceModel(list);
+		}catch(Exception exp){
+			LOGGER.error(exp);
+		}
+	}
+	
+	private void setPaymentInvoiceModel(List<Object> list){
+		List<Integer> snos = IntStream.range(1, 1+list.size()).boxed().collect(Collectors.toList());
+		GenericModelWithSnp<List<Object>, Object> paymentOpeningBalanceInvoiceHistoryModel = 
+				new GenericModelWithSnp<List<Object>, Object>(list, snos);
+		TablePaymentInvoiceOpeningBalanceModel  tableModel = new TablePaymentInvoiceOpeningBalanceModel(paymentOpeningBalanceInvoiceHistoryModel);
+		tablePaymentInvoice.setModel(tableModel);
+		tablePaymentInvoice.packAll();
 	}
 	
 	private void clear(){
@@ -615,5 +877,37 @@ public class PaymentUiManager extends JInternalFrame {
 		};
 		clearAction.putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.ALT_DOWN_MASK));
 		return clearAction;
+	}
+	
+	private void sortByDate(java.util.LinkedList<Object> list){
+		try{
+			Collections.sort(list, new Comparator<Object>() {
+				@Override
+				public int compare(Object o1, Object o2) {
+					
+					Timestamp t1 = null;
+					Timestamp t2 = null;
+					if(o1 instanceof PaymentReceivedInfo){
+						t1 = ((PaymentReceivedInfo)o1).getLastUpdated();
+					}else if(o1 instanceof OpeningBalanceInfo){
+						t1 = ((OpeningBalanceInfo)o1).getLastUpdated();
+					}else if(o1 instanceof InvoiceInfo){
+						t1 = ((InvoiceInfo)o1).getLastUpdated();
+					}
+					
+					if(o2 instanceof PaymentReceivedInfo){
+						t2 = ((PaymentReceivedInfo)o2).getLastUpdated();
+					}else if(o2 instanceof OpeningBalanceInfo){
+						t2 = ((OpeningBalanceInfo)o2).getLastUpdated();
+					}else if(o2 instanceof InvoiceInfo){
+						t2 = ((InvoiceInfo)o2).getLastUpdated();
+					}
+					return t1.compareTo(t2);
+				}
+				
+			});
+			}catch(Exception exp){
+				LOGGER.error("Failed to sort by date : "+exp);
+			}
 	}
 }
