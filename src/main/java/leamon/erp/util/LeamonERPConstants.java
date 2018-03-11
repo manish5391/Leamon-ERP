@@ -331,4 +331,13 @@ public interface LeamonERPConstants {
 	public static final String IMG_TOOLS_ACCOUNT_TRASH_REFRESH = "Tools/AccountTrash/Refresh.png";
 	public static final String IMG_TOOLS_ACCOUNT_TRASH_RESTORE = "Tools/AccountTrash/Restore.png";
 	//3.7 end of ghan code
+	
+	/*----Release 3.8-----*/
+	public static final int TABBED_PAYMENT = 0;
+	public static final int TABBED_PAYMENT_INVOICE = 1;
+	public static final int TABBED_PAYMENT_INVOICE_MAPPING = 2;
+	public static final String INVOICE= "Invoice";
+	public static final String OPENING_BALANCE= "Opening Balance";
+	public static final String PAYMENT= "PAYMENT";
+	/*----End------------*/
 }
