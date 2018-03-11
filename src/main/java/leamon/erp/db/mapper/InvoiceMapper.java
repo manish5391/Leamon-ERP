@@ -1,6 +1,6 @@
 package leamon.erp.db.mapper;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Delete;
@@ -58,6 +58,17 @@ public interface InvoiceMapper {
 	final String deleteById = "DELETE from INVOICE_BILL WHERE ID = #{id}";
 	
 	final String disableByID = "UPDATE INVOICE_BILL SET ISENABLE = FALSE WHERE ID = #{id}";
+	
+	/*-----------Criteria SQL----------------*/
+	String selectByPartyName = "SELECT * FROM INVOICE_BILL WHERE ISENABLE = TRUE AND PARTYINFOID = #{partyInfoID} ORDER BY LASTUPDATEDDATE";
+	String selectByStartDate = "SELECT * FROM INVOICE_BILL WHERE ISENABLE = TRUE AND TO_DATE(CREATEDDATE, 'DY DD/MM/YYYY') = #{startDate, jdbcType=DATE } ORDER BY LASTUPDATEDDATE";
+	String selectByStartEndDate = "SELECT * FROM INVOICE_BILL WHERE ISENABLE = TRUE AND TO_DATE(CREATEDDATE, 'DY DD/MM/YYYY') BETWEEN #{startDate, jdbcType=DATE }"
+			+ " AND #{endDate, jdbcType=DATE } ORDER BY LASTUPDATEDDATE";
+	String selectByStartDatePartyName = "SELECT * FROM INVOICE_BILL WHERE ISENABLE = TRUE AND TO_DATE(CREATEDDATE, 'DY DD/MM/YYYY') = #{startDate, jdbcType=DATE } "
+			+ " AND PARTYINFOID = #{partyInfoID} ORDER BY LASTUPDATEDDATE";
+	String selectByStartEndDatePartyName = "SELECT * FROM INVOICE_BILL WHERE ISENABLE = TRUE AND TO_DATE(CREATEDDATE, 'DY DD/MM/YYYY') BETWEEN #{startDate, jdbcType=DATE } "
+			+ " AND #{endDate, jdbcType=DATE } AND PARTYINFOID = #{partyInfoID} ORDER BY LASTUPDATEDDATE";
+	/*-----------End-------------------------*/
 	
 	@Select(getAll)
 	   @Results(value = {
@@ -285,4 +296,210 @@ public interface InvoiceMapper {
 	})
 	public List<InvoiceInfo> getAllWithChildAndAccountByDateRange(@Param("fromDate") Date fromDate, @Param("toDate")Date toDate);
 	
+	/*---------Release 3.8--Search Criteria----*/
+	@Select(selectByPartyName)
+	@Results(value = {
+		      @Result(property = "id", column = "ID"),
+		      @Result(property = "partyinfoID", column = "PARTYINFOID"),
+		      @Result(property = "invoicNum", column = "INVOICENUM"),
+		      @Result(property = "invoicDate", column = "INVOICEDATE"),
+		      @Result(property = "billNo", column = "BILL_NO"),
+		      @Result(property = "orderBookedBy", column = "ORDERBOOKBY"),
+		      @Result(property = "transport", column = "TRANSPORT"),
+		      @Result(property = "pktNumber", column = "PACKETNUM"),
+		      @Result(property = "billAmount", column = "BILLAMOUNT"), //GSTAMOUNT
+		      @Result(property = "gstValue", column = "GSTAMOUNT"), //BILLAMOUNT
+		      @Result(property = "grBiltyNumber", column = "GRNUMBER"), //BILLAMOUNT
+		      
+		      @Result(property = "col1Name", column = "COL1NAME"), 
+		      @Result(property = "col2Name", column = "COL2NAME"), 
+		      @Result(property = "col1Val", column = "COL1VAL"), 
+		      @Result(property = "col2Val", column = "COL2VAL"), 
+		      @Result(property = "col1Operator", column = "COL1OPERATOR"), 
+		      @Result(property = "col2Operator", column = "COL2OPERATOR"), 
+		      @Result(property = "withoutBillAmount", column = "WITHOUTBILLAMOUNT"), //WITHOUTBILLAMOUNT
+		      
+		      /*Release 3.6*/
+		      @Result(property = "remainingBillAmount", column = "REMAININGBILLAMOUNT"), //WITHOUTBILLAMOUNT
+		      @Result(property = "remainingWithoutBillAmount", column = "REMAININGWITHOUTBILLAMOUNT"), //WITHOUTBILLAMOUNT
+		      @Result(property = "paidBillAmount", column = "PAIDBILLAMOUNT"), //WITHOUTBILLAMOUNT
+		      @Result(property = "paidWithoutBillAmount", column = "PAIDWITHOUTBILLAMOUNT"), //WITHOUTBILLAMOUNT
+		      @Result(property = "paidStatus", column = "PAIDSTATUS"), //WITHOUTBILLAMOUNT
+		      @Result(property = "wpaidstatus", column = "WPAIDSTATUS"), //WITHOUTBILLAMOUNT
+		      /*End*/
+		      
+		      @Result(property = "createdDate", column = "CREATEDDATE"),
+		      @Result(property = "lastUpdated", column = "LASTUPDATEDDATE"),
+		      @Result(property = "isEnable", column = "ISENABLE"),
+		      @Result(property = "items", javaType=List.class, column = "ID"
+		      , many=@Many(select="getAllInvoiceItems")),
+		      @Result(property = "accountInfo", javaType=AccountInfo.class, column = "PARTYINFOID"
+		      , one =@One(select="getAccountInfo"))
+	})
+	public List<InvoiceInfo> getAllInvoiceByPartyName(@Param("partyInfoID")String partyInfoID) throws Exception;
+	
+	@Select(selectByStartDate)
+	@Results(value = {
+		      @Result(property = "id", column = "ID"),
+		      @Result(property = "partyinfoID", column = "PARTYINFOID"),
+		      @Result(property = "invoicNum", column = "INVOICENUM"),
+		      @Result(property = "invoicDate", column = "INVOICEDATE"),
+		      @Result(property = "billNo", column = "BILL_NO"),
+		      @Result(property = "orderBookedBy", column = "ORDERBOOKBY"),
+		      @Result(property = "transport", column = "TRANSPORT"),
+		      @Result(property = "pktNumber", column = "PACKETNUM"),
+		      @Result(property = "billAmount", column = "BILLAMOUNT"), //GSTAMOUNT
+		      @Result(property = "gstValue", column = "GSTAMOUNT"), //BILLAMOUNT
+		      @Result(property = "grBiltyNumber", column = "GRNUMBER"), //BILLAMOUNT
+		      
+		      @Result(property = "col1Name", column = "COL1NAME"), 
+		      @Result(property = "col2Name", column = "COL2NAME"), 
+		      @Result(property = "col1Val", column = "COL1VAL"), 
+		      @Result(property = "col2Val", column = "COL2VAL"), 
+		      @Result(property = "col1Operator", column = "COL1OPERATOR"), 
+		      @Result(property = "col2Operator", column = "COL2OPERATOR"), 
+		      @Result(property = "withoutBillAmount", column = "WITHOUTBILLAMOUNT"), //WITHOUTBILLAMOUNT
+		      
+		      /*Release 3.6*/
+		      @Result(property = "remainingBillAmount", column = "REMAININGBILLAMOUNT"), //WITHOUTBILLAMOUNT
+		      @Result(property = "remainingWithoutBillAmount", column = "REMAININGWITHOUTBILLAMOUNT"), //WITHOUTBILLAMOUNT
+		      @Result(property = "paidBillAmount", column = "PAIDBILLAMOUNT"), //WITHOUTBILLAMOUNT
+		      @Result(property = "paidWithoutBillAmount", column = "PAIDWITHOUTBILLAMOUNT"), //WITHOUTBILLAMOUNT
+		      @Result(property = "paidStatus", column = "PAIDSTATUS"), //WITHOUTBILLAMOUNT
+		      @Result(property = "wpaidstatus", column = "WPAIDSTATUS"), //WITHOUTBILLAMOUNT
+		      /*End*/
+		      
+		      @Result(property = "createdDate", column = "CREATEDDATE"),
+		      @Result(property = "lastUpdated", column = "LASTUPDATEDDATE"),
+		      @Result(property = "isEnable", column = "ISENABLE"),
+		      @Result(property = "items", javaType=List.class, column = "ID"
+		      , many=@Many(select="getAllInvoiceItems")),
+		      @Result(property = "accountInfo", javaType=AccountInfo.class, column = "PARTYINFOID"
+		      , one =@One(select="getAccountInfo"))
+	})
+	public List<InvoiceInfo> getAllInvoiceByStartDate(@Param("startDate") Date startDate)  throws Exception;
+	
+	@Select(selectByStartEndDate)
+	@Results(value = {
+		      @Result(property = "id", column = "ID"),
+		      @Result(property = "partyinfoID", column = "PARTYINFOID"),
+		      @Result(property = "invoicNum", column = "INVOICENUM"),
+		      @Result(property = "invoicDate", column = "INVOICEDATE"),
+		      @Result(property = "billNo", column = "BILL_NO"),
+		      @Result(property = "orderBookedBy", column = "ORDERBOOKBY"),
+		      @Result(property = "transport", column = "TRANSPORT"),
+		      @Result(property = "pktNumber", column = "PACKETNUM"),
+		      @Result(property = "billAmount", column = "BILLAMOUNT"), //GSTAMOUNT
+		      @Result(property = "gstValue", column = "GSTAMOUNT"), //BILLAMOUNT
+		      @Result(property = "grBiltyNumber", column = "GRNUMBER"), //BILLAMOUNT
+		      
+		      @Result(property = "col1Name", column = "COL1NAME"), 
+		      @Result(property = "col2Name", column = "COL2NAME"), 
+		      @Result(property = "col1Val", column = "COL1VAL"), 
+		      @Result(property = "col2Val", column = "COL2VAL"), 
+		      @Result(property = "col1Operator", column = "COL1OPERATOR"), 
+		      @Result(property = "col2Operator", column = "COL2OPERATOR"), 
+		      @Result(property = "withoutBillAmount", column = "WITHOUTBILLAMOUNT"), //WITHOUTBILLAMOUNT
+		      
+		      /*Release 3.6*/
+		      @Result(property = "remainingBillAmount", column = "REMAININGBILLAMOUNT"), //WITHOUTBILLAMOUNT
+		      @Result(property = "remainingWithoutBillAmount", column = "REMAININGWITHOUTBILLAMOUNT"), //WITHOUTBILLAMOUNT
+		      @Result(property = "paidBillAmount", column = "PAIDBILLAMOUNT"), //WITHOUTBILLAMOUNT
+		      @Result(property = "paidWithoutBillAmount", column = "PAIDWITHOUTBILLAMOUNT"), //WITHOUTBILLAMOUNT
+		      @Result(property = "paidStatus", column = "PAIDSTATUS"), //WITHOUTBILLAMOUNT
+		      @Result(property = "wpaidstatus", column = "WPAIDSTATUS"), //WITHOUTBILLAMOUNT
+		      /*End*/
+		      
+		      @Result(property = "createdDate", column = "CREATEDDATE"),
+		      @Result(property = "lastUpdated", column = "LASTUPDATEDDATE"),
+		      @Result(property = "isEnable", column = "ISENABLE"),
+		      @Result(property = "items", javaType=List.class, column = "ID"
+		      , many=@Many(select="getAllInvoiceItems")),
+		      @Result(property = "accountInfo", javaType=AccountInfo.class, column = "PARTYINFOID"
+		      , one =@One(select="getAccountInfo"))
+	})
+	public List<InvoiceInfo> getAllInvoiceByStartEndDate(@Param("startDate") Date startDate, @Param("endDate") Date endDate)  throws Exception;;
+	
+	@Select(selectByStartDatePartyName)
+	@Results(value = {
+		      @Result(property = "id", column = "ID"),
+		      @Result(property = "partyinfoID", column = "PARTYINFOID"),
+		      @Result(property = "invoicNum", column = "INVOICENUM"),
+		      @Result(property = "invoicDate", column = "INVOICEDATE"),
+		      @Result(property = "billNo", column = "BILL_NO"),
+		      @Result(property = "orderBookedBy", column = "ORDERBOOKBY"),
+		      @Result(property = "transport", column = "TRANSPORT"),
+		      @Result(property = "pktNumber", column = "PACKETNUM"),
+		      @Result(property = "billAmount", column = "BILLAMOUNT"), //GSTAMOUNT
+		      @Result(property = "gstValue", column = "GSTAMOUNT"), //BILLAMOUNT
+		      @Result(property = "grBiltyNumber", column = "GRNUMBER"), //BILLAMOUNT
+		      
+		      @Result(property = "col1Name", column = "COL1NAME"), 
+		      @Result(property = "col2Name", column = "COL2NAME"), 
+		      @Result(property = "col1Val", column = "COL1VAL"), 
+		      @Result(property = "col2Val", column = "COL2VAL"), 
+		      @Result(property = "col1Operator", column = "COL1OPERATOR"), 
+		      @Result(property = "col2Operator", column = "COL2OPERATOR"), 
+		      @Result(property = "withoutBillAmount", column = "WITHOUTBILLAMOUNT"), //WITHOUTBILLAMOUNT
+		      
+		      /*Release 3.6*/
+		      @Result(property = "remainingBillAmount", column = "REMAININGBILLAMOUNT"), //WITHOUTBILLAMOUNT
+		      @Result(property = "remainingWithoutBillAmount", column = "REMAININGWITHOUTBILLAMOUNT"), //WITHOUTBILLAMOUNT
+		      @Result(property = "paidBillAmount", column = "PAIDBILLAMOUNT"), //WITHOUTBILLAMOUNT
+		      @Result(property = "paidWithoutBillAmount", column = "PAIDWITHOUTBILLAMOUNT"), //WITHOUTBILLAMOUNT
+		      @Result(property = "paidStatus", column = "PAIDSTATUS"), //WITHOUTBILLAMOUNT
+		      @Result(property = "wpaidstatus", column = "WPAIDSTATUS"), //WITHOUTBILLAMOUNT
+		      /*End*/
+		      
+		      @Result(property = "createdDate", column = "CREATEDDATE"),
+		      @Result(property = "lastUpdated", column = "LASTUPDATEDDATE"),
+		      @Result(property = "isEnable", column = "ISENABLE"),
+		      @Result(property = "items", javaType=List.class, column = "ID"
+		      , many=@Many(select="getAllInvoiceItems")),
+		      @Result(property = "accountInfo", javaType=AccountInfo.class, column = "PARTYINFOID"
+		      , one =@One(select="getAccountInfo"))
+	})
+	public List<InvoiceInfo> getAllInvoiceByStartDatePartName(@Param("startDate") Date startDate, @Param("partyInfoID")String partyInfoID)  throws Exception;;
+	
+	@Select(selectByStartEndDatePartyName)
+	@Results(value = {
+		      @Result(property = "id", column = "ID"),
+		      @Result(property = "partyinfoID", column = "PARTYINFOID"),
+		      @Result(property = "invoicNum", column = "INVOICENUM"),
+		      @Result(property = "invoicDate", column = "INVOICEDATE"),
+		      @Result(property = "billNo", column = "BILL_NO"),
+		      @Result(property = "orderBookedBy", column = "ORDERBOOKBY"),
+		      @Result(property = "transport", column = "TRANSPORT"),
+		      @Result(property = "pktNumber", column = "PACKETNUM"),
+		      @Result(property = "billAmount", column = "BILLAMOUNT"), //GSTAMOUNT
+		      @Result(property = "gstValue", column = "GSTAMOUNT"), //BILLAMOUNT
+		      @Result(property = "grBiltyNumber", column = "GRNUMBER"), //BILLAMOUNT
+		      
+		      @Result(property = "col1Name", column = "COL1NAME"), 
+		      @Result(property = "col2Name", column = "COL2NAME"), 
+		      @Result(property = "col1Val", column = "COL1VAL"), 
+		      @Result(property = "col2Val", column = "COL2VAL"), 
+		      @Result(property = "col1Operator", column = "COL1OPERATOR"), 
+		      @Result(property = "col2Operator", column = "COL2OPERATOR"), 
+		      @Result(property = "withoutBillAmount", column = "WITHOUTBILLAMOUNT"), //WITHOUTBILLAMOUNT
+		      
+		      /*Release 3.6*/
+		      @Result(property = "remainingBillAmount", column = "REMAININGBILLAMOUNT"), //WITHOUTBILLAMOUNT
+		      @Result(property = "remainingWithoutBillAmount", column = "REMAININGWITHOUTBILLAMOUNT"), //WITHOUTBILLAMOUNT
+		      @Result(property = "paidBillAmount", column = "PAIDBILLAMOUNT"), //WITHOUTBILLAMOUNT
+		      @Result(property = "paidWithoutBillAmount", column = "PAIDWITHOUTBILLAMOUNT"), //WITHOUTBILLAMOUNT
+		      @Result(property = "paidStatus", column = "PAIDSTATUS"), //WITHOUTBILLAMOUNT
+		      @Result(property = "wpaidstatus", column = "WPAIDSTATUS"), //WITHOUTBILLAMOUNT
+		      /*End*/
+		      
+		      @Result(property = "createdDate", column = "CREATEDDATE"),
+		      @Result(property = "lastUpdated", column = "LASTUPDATEDDATE"),
+		      @Result(property = "isEnable", column = "ISENABLE"),
+		      @Result(property = "items", javaType=List.class, column = "ID"
+		      , many=@Many(select="getAllInvoiceItems")),
+		      @Result(property = "accountInfo", javaType=AccountInfo.class, column = "PARTYINFOID"
+		      , one =@One(select="getAccountInfo"))
+	})
+	public List<InvoiceInfo> getAllInvoiceByStartEndDatePartName(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("partyInfoID")String partyInfoID) throws Exception;;
+	/*-----------End----------------*/
 }

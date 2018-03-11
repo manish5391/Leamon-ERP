@@ -1,7 +1,9 @@
 package leamon.erp.db;
 
+import java.util.Date;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.log4j.Logger;
 
@@ -89,4 +91,56 @@ public class OpeningBalanceDaoImpl implements LeamonERPDao<OpeningBalanceInfo>{
 		}
 		LOGGER.info("OpeningBalanceDaoImpl[update] end.");
 	}
+	
+	/*-------Release 3.8---Filtere Criteria Sql----------------*/
+	public List<OpeningBalanceInfo> getAllOpeningBalanceByPartyName(String partyInfoID) throws Exception{
+		LOGGER.info("OpeningBalanceDaoImpl[getAllOpeningBalanceByPartyName] inside.");
+		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
+		OpeningBalanceMapper openingBalInfoMapper= session.getMapper(OpeningBalanceMapper.class);
+		List<OpeningBalanceInfo> openingBalanceInfos = openingBalInfoMapper.getAllOpeningBalanceByPartyName(partyInfoID);
+		session.close();
+		LOGGER.info("OpeningBalanceDaoImpl[getAllOpeningBalanceByPartyName] end.");
+		return openingBalanceInfos;
+	}
+	
+	public List<OpeningBalanceInfo> getAllOpeningBalanceByStartDate(java.util.Date startDate) throws Exception{
+		LOGGER.info("OpeningBalanceDaoImpl[getAllOpeningBalanceByStartDate] inside.");
+		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
+		OpeningBalanceMapper openingBalInfoMapper= session.getMapper(OpeningBalanceMapper.class);
+		List<OpeningBalanceInfo> openingBalanceInfos = openingBalInfoMapper.getAllOpeningBalanceByStartDate(startDate);
+		session.close();
+		LOGGER.info("OpeningBalanceDaoImpl[getAllOpeningBalanceByStartDate] end.");
+		return openingBalanceInfos;
+	}
+	
+	public List<OpeningBalanceInfo> getAllOpeningBalanceByStartEndDate(Date startDate, Date endDate) throws Exception{
+		LOGGER.info("OpeningBalanceDaoImpl[getAllOpeningBalanceByStartEndDate] inside.");
+		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
+		OpeningBalanceMapper openingBalInfoMapper= session.getMapper(OpeningBalanceMapper.class);
+		List<OpeningBalanceInfo> openingBalanceInfos = openingBalInfoMapper.getAllOpeningBalanceByStartEndDate(startDate,endDate);
+		session.close();
+		LOGGER.info("OpeningBalanceDaoImpl[getAllOpeningBalanceByStartEndDate] end.");
+		return openingBalanceInfos;
+	}
+	
+	public List<OpeningBalanceInfo> getAllOpeningBalanceByStartDatePartyName(Date startDate, String partyInfoID) throws Exception{
+		LOGGER.info("OpeningBalanceDaoImpl[getAllOpeningBalanceByStartDatePartyName] inside.");
+		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
+		OpeningBalanceMapper openingBalInfoMapper= session.getMapper(OpeningBalanceMapper.class);
+		List<OpeningBalanceInfo> openingBalanceInfos = openingBalInfoMapper.getAllOpeningBalanceByStartDatePartyName(startDate,partyInfoID);
+		session.close();
+		LOGGER.info("OpeningBalanceDaoImpl[getAllOpeningBalanceByStartDatePartyName] end.");
+		return openingBalanceInfos;
+	}
+	
+	public List<OpeningBalanceInfo> getAllOpeningBalanceByStartEndDatePartyName(Date startDate, Date endDate, String partyInfoID) throws Exception{
+		LOGGER.info("OpeningBalanceDaoImpl[getAllOpeningBalanceByPartyName] inside.");
+		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
+		OpeningBalanceMapper openingBalInfoMapper= session.getMapper(OpeningBalanceMapper.class);
+		List<OpeningBalanceInfo> openingBalanceInfos = openingBalInfoMapper.getAllOpeningBalanceByPartyName(partyInfoID);
+		session.close();
+		LOGGER.info("OpeningBalanceDaoImpl[getAllOpeningBalanceByPartyName] end.");
+		return openingBalanceInfos;
+	}
+	/*----------End----------------*/
 }
