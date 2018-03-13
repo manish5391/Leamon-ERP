@@ -790,11 +790,11 @@ public class InvoiceUiEventHandler implements KeyListener, ActionListener, Mouse
 	
 	private boolean invoiceProductQtyHandler(JTextField textField){
 		String qty = textField.getText();
-		// 3.3.2 Ghanshyam code to accept quantity in decimal for stock unit in DOZ
+		// 3.3.2 Ghanshyam code to accept quantity in decimal for stock unit other than pcs
 		String unit = invoiceUI.getTextFieldProductUnit().getText();
 		if (qty.contains(".") && !Strings.isNullOrEmpty(unit)
-				&& !unit.equalsIgnoreCase(LeamonERPConstants.STOCK_UNIT)) {
-			JOptionPane.showMessageDialog(invoiceUI, "Please enter valid value for quantity decimal accept only for stock unit doz", "Leamon-ERP",
+				&& unit.equalsIgnoreCase(LeamonERPConstants.STOCK_UNIT)) {
+			JOptionPane.showMessageDialog(invoiceUI, "Please enter valid value for quantity decimal not accepted for stock unit Pcs", "Leamon-ERP",
 					JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
