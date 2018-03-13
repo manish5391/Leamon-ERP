@@ -8,6 +8,8 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.border.BevelBorder;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumnModel;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -16,8 +18,10 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
 import org.jdesktop.swingx.JXDatePicker;
@@ -44,6 +48,7 @@ import org.jdesktop.swingx.JXTable;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -80,6 +85,7 @@ import leamon.erp.util.ERPEnum;
 import leamon.erp.util.InvoicePaymentStatusEnum;
 import leamon.erp.util.PaymentEnum;
 import lombok.Getter;
+import javax.swing.JSeparator;
 
 @Getter
 public class PaymentUiManager extends JInternalFrame {
@@ -99,15 +105,24 @@ public class PaymentUiManager extends JInternalFrame {
 	private JButton buttonRefresh;
 
 	private JLabel labelTotalPayment;
+	private JLabel labelTotalBInvoice;
+	private JLabel labelTotalWOpenigBalance;
+	private JLabel labelTotalWPaymentInvoice;
+	private JLabel labelTotalWInvoice;
+	private JLabel labelBInvoicePayment;
+	private JLabel labelTotalBOpeningBal;
+	private JLabel labelBBalance;
+	private JLabel labelWBalance;
 	private JComboBox comboBox;
 
 	private JTabbedPane tabbedPane;
-	
+
 	private AccountInfo accountInfo;
 	private LeamonAutoAccountInfoTextFieldSuggestor<List<AccountInfo>, AccountInfo> leamonAutoAccountIDTextFieldSuggestor;
 
 	private static final Logger LOGGER = Logger.getLogger(PaymentUiManager.class);
 	private static final String CLASS_NAME="PaymentUiManager";
+	private final JSeparator separator = new JSeparator();
 
 	public PaymentUiManager() {
 		getContentPane().setBackground(new Color(255, 255, 255));
@@ -179,7 +194,7 @@ public class PaymentUiManager extends JInternalFrame {
 		JPanel panel_1 = new JPanel();
 		panel_1.setLayout(null);
 		panel_1.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
-		panel_1.setBounds(0, 474, 906, 34);
+		panel_1.setBounds(0, 474, 914, 34);
 		getContentPane().add(panel_1);
 
 		buttonExcel = new JXButton();
@@ -217,7 +232,7 @@ public class PaymentUiManager extends JInternalFrame {
 		buttonRefresh.addActionListener(e -> buttonRefreshClick(e));
 
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		tabbedPane.setBounds(0, 44, 906, 431);
+		tabbedPane.setBounds(0, 44, 914, 431);
 		getContentPane().add(tabbedPane);
 
 		JXPanel panelPayment = new JXPanel();
@@ -260,13 +275,136 @@ public class PaymentUiManager extends JInternalFrame {
 		JXPanel panelPaymentInvoice = new JXPanel();
 		panelPaymentInvoice.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		tabbedPane.addTab("Payment-Invoice(+/-)", null, panelPaymentInvoice, null);
-		panelPaymentInvoice.setLayout(new BorderLayout(0, 0));
+		panelPaymentInvoice.setLayout(null);
 
 		JScrollPane scrollPane_1 = new JScrollPane();
-		panelPaymentInvoice.add(scrollPane_1, BorderLayout.CENTER);
-		
+		scrollPane_1.setBounds(2, 2, 810, 402);
+		panelPaymentInvoice.add(scrollPane_1);
+
 		tablePaymentInvoice = new JXTable();
 		scrollPane_1.setViewportView(tablePaymentInvoice);
+
+		JLabel lblTotal_1 = new JLabel("B.Invoice");
+		lblTotal_1.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblTotal_1.setForeground((Color) null);
+		lblTotal_1.setFont(new Font("DialogInput", Font.BOLD, 12));
+		lblTotal_1.setBounds(839, 29, 65, 18);
+		panelPaymentInvoice.add(lblTotal_1);
+
+		JLabel lblWinvoice = new JLabel("W.Invoice");
+		lblWinvoice.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblWinvoice.setForeground((Color) null);
+		lblWinvoice.setFont(new Font("DialogInput", Font.BOLD, 12));
+		lblWinvoice.setBounds(835, 162, 70, 18);
+		panelPaymentInvoice.add(lblWinvoice);
+
+		JLabel lblPayment = new JLabel("B.Payment");
+		lblPayment.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblPayment.setForeground((Color) null);
+		lblPayment.setFont(new Font("DialogInput", Font.BOLD, 12));
+		lblPayment.setBounds(839, 98, 66, 18);
+		panelPaymentInvoice.add(lblPayment);
+
+		labelTotalWPaymentInvoice = new JLabel("0.00");
+		labelTotalWPaymentInvoice.setHorizontalAlignment(SwingConstants.RIGHT);
+		labelTotalWPaymentInvoice.setForeground((Color) null);
+		labelTotalWPaymentInvoice.setFont(new Font("DialogInput", Font.BOLD, 12));
+		labelTotalWPaymentInvoice.setBackground(new Color(240, 248, 255));
+		labelTotalWPaymentInvoice.setBounds(813, 258, 93, 17);
+		panelPaymentInvoice.add(labelTotalWPaymentInvoice);
+
+		labelTotalWOpenigBalance = new JLabel("0.00");
+		labelTotalWOpenigBalance.setHorizontalAlignment(SwingConstants.RIGHT);
+		labelTotalWOpenigBalance.setForeground((Color) null);
+		labelTotalWOpenigBalance.setFont(new Font("DialogInput", Font.BOLD, 12));
+		labelTotalWOpenigBalance.setBackground(new Color(240, 248, 255));
+		labelTotalWOpenigBalance.setBounds(813, 219, 93, 17);
+		panelPaymentInvoice.add(labelTotalWOpenigBalance);
+
+		labelTotalBInvoice = new JLabel("0.00");
+		labelTotalBInvoice.setHorizontalAlignment(SwingConstants.RIGHT);
+		labelTotalBInvoice.setForeground((Color) null);
+		labelTotalBInvoice.setFont(new Font("DialogInput", Font.BOLD, 12));
+		labelTotalBInvoice.setBackground(new Color(240, 248, 255));
+		labelTotalBInvoice.setBounds(813, 48, 93, 17);
+		panelPaymentInvoice.add(labelTotalBInvoice);
+		
+		JLabel lblBobal = new JLabel("B.O.Bal");
+		lblBobal.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblBobal.setForeground((Color) null);
+		lblBobal.setFont(new Font("DialogInput", Font.BOLD, 12));
+		lblBobal.setBounds(839, 63, 66, 18);
+		panelPaymentInvoice.add(lblBobal);
+		
+		labelTotalBOpeningBal = new JLabel("0.00");
+		labelTotalBOpeningBal.setHorizontalAlignment(SwingConstants.RIGHT);
+		labelTotalBOpeningBal.setForeground((Color) null);
+		labelTotalBOpeningBal.setFont(new Font("DialogInput", Font.BOLD, 12));
+		labelTotalBOpeningBal.setBackground(new Color(240, 248, 255));
+		labelTotalBOpeningBal.setBounds(813, 81, 93, 17);
+		panelPaymentInvoice.add(labelTotalBOpeningBal);
+		
+		labelBInvoicePayment = new JLabel("0.00");
+		labelBInvoicePayment.setHorizontalAlignment(SwingConstants.RIGHT);
+		labelBInvoicePayment.setForeground((Color) null);
+		labelBInvoicePayment.setFont(new Font("DialogInput", Font.BOLD, 12));
+		labelBInvoicePayment.setBackground(new Color(240, 248, 255));
+		labelBInvoicePayment.setBounds(813, 118, 93, 17);
+		panelPaymentInvoice.add(labelBInvoicePayment);
+		
+		JLabel lblWobal = new JLabel("W.O.Bal");
+		lblWobal.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblWobal.setForeground((Color) null);
+		lblWobal.setFont(new Font("DialogInput", Font.BOLD, 12));
+		lblWobal.setBounds(839, 198, 66, 18);
+		panelPaymentInvoice.add(lblWobal);
+		
+		JLabel lblWpayment = new JLabel("W.Payment");
+		lblWpayment.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblWpayment.setForeground((Color) null);
+		lblWpayment.setFont(new Font("DialogInput", Font.BOLD, 12));
+		lblWpayment.setBounds(839, 238, 66, 18);
+		panelPaymentInvoice.add(lblWpayment);
+		
+		labelTotalWInvoice = new JLabel("0.00");
+		labelTotalWInvoice.setHorizontalAlignment(SwingConstants.RIGHT);
+		labelTotalWInvoice.setForeground((Color) null);
+		labelTotalWInvoice.setFont(new Font("DialogInput", Font.BOLD, 12));
+		labelTotalWInvoice.setBackground(new Color(240, 248, 255));
+		labelTotalWInvoice.setBounds(813, 181, 93, 17);
+		panelPaymentInvoice.add(labelTotalWInvoice);
+		
+		JLabel lblBbalance = new JLabel("B.Balance");
+		lblBbalance.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblBbalance.setForeground((Color) null);
+		lblBbalance.setFont(new Font("DialogInput", Font.BOLD, 12));
+		lblBbalance.setBounds(839, 301, 65, 18);
+		panelPaymentInvoice.add(lblBbalance);
+		
+		JLabel lblWinvoice_1 = new JLabel("W.Balance");
+		lblWinvoice_1.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblWinvoice_1.setForeground((Color) null);
+		lblWinvoice_1.setFont(new Font("DialogInput", Font.BOLD, 12));
+		lblWinvoice_1.setBounds(839, 340, 65, 18);
+		panelPaymentInvoice.add(lblWinvoice_1);
+		
+		labelBBalance = new JLabel("0.00");
+		labelBBalance.setHorizontalAlignment(SwingConstants.RIGHT);
+		labelBBalance.setForeground((Color) null);
+		labelBBalance.setFont(new Font("DialogInput", Font.BOLD, 12));
+		labelBBalance.setBackground(new Color(240, 248, 255));
+		labelBBalance.setBounds(813, 317, 93, 17);
+		panelPaymentInvoice.add(labelBBalance);
+		
+		labelWBalance = new JLabel("0.00");
+		labelWBalance.setHorizontalAlignment(SwingConstants.RIGHT);
+		labelWBalance.setForeground((Color) null);
+		labelWBalance.setFont(new Font("DialogInput", Font.BOLD, 12));
+		labelWBalance.setBackground(new Color(240, 248, 255));
+		labelWBalance.setBounds(813, 358, 93, 17);
+		panelPaymentInvoice.add(labelWBalance);
+		separator.setBounds(822, 292, 82, 2);
+		panelPaymentInvoice.add(separator);
 
 		JXPanel panelPaymentInvoiceMapping = new JXPanel();
 		panelPaymentInvoiceMapping.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
@@ -297,6 +435,8 @@ public class PaymentUiManager extends JInternalFrame {
 				new TablePaymentReceivedHistoryModel(paymentHistoryModel);
 		tablePayment.setModel(tablePaymentReceivedHistoryModel);
 		tablePayment.packAll();
+		setAmountAlignment(tablePayment);
+
 		double sum =  paymentReceivedInfos.stream().map(e-> e.getReceivedPayment()).mapToDouble(Double::parseDouble).sum();
 		BigDecimal bd = new BigDecimal(String.valueOf(sum));
 		labelTotalPayment.setText(bd.toPlainString());
@@ -431,9 +571,10 @@ public class PaymentUiManager extends JInternalFrame {
 	private void buttonCloseClick(ActionEvent e){
 		this.dispose();
 	}
-	
+
 	private void buttonRefreshClick(ActionEvent e){
 		clear();
+		setModel(new ArrayList<PaymentReceivedInfo>());
 	}
 	private void btnSearchClick(ActionEvent e){
 		String startDate= datePickerStartDate.getEditor().getText();
@@ -452,7 +593,7 @@ public class PaymentUiManager extends JInternalFrame {
 			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT_INVOICE){
 				searchPaymentInvoiceByPartyName();
 			}
-			
+
 			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT_INVOICE_MAPPING){
 				//TODO
 			}
@@ -464,11 +605,11 @@ public class PaymentUiManager extends JInternalFrame {
 			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT){
 				searchByStartDate(startDateValue);
 			}
-			
+
 			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT_INVOICE){
 				searchPaymentInvoiceByStartDate(startDateValue);
 			}
-			
+
 			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT_INVOICE_MAPPING){
 				//TODO
 			}
@@ -479,12 +620,12 @@ public class PaymentUiManager extends JInternalFrame {
 			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT){
 				searchByType(type);
 			}
-			
+
 			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT_INVOICE){
 				JOptionPane.showMessageDialog(this, "Not Applicable", "Leamon-ERP Warning",JOptionPane.WARNING_MESSAGE);
 				return ;
 			}
-			
+
 			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT_INVOICE_MAPPING){
 				//TODO
 			}
@@ -497,11 +638,11 @@ public class PaymentUiManager extends JInternalFrame {
 			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT){
 				searchByStartEndDate(startDateValue,endDateValue);
 			}
-			
+
 			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT_INVOICE){
 				searchPaymentInvoiceByStartEndDate(startDateValue,endDateValue);
 			}
-			
+
 			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT_INVOICE_MAPPING){
 				//TODO
 			}
@@ -514,11 +655,11 @@ public class PaymentUiManager extends JInternalFrame {
 			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT){
 				searchByStartEndDatePartyName(startDateValue,endDateValue);
 			}
-			
+
 			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT_INVOICE){
 				searchPaymentInvoiceByStartEndDatePartyName(startDateValue,endDateValue);
 			}
-			
+
 			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT_INVOICE_MAPPING){
 				//TODO
 			}
@@ -531,12 +672,12 @@ public class PaymentUiManager extends JInternalFrame {
 			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT){
 				searchByStartEndDateType(startDateValue,endDateValue,type);
 			}
-			
+
 			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT_INVOICE){
 				JOptionPane.showMessageDialog(this, "Not Applicable", "Leamon-ERP Warning",JOptionPane.WARNING_MESSAGE);
 				return ;
 			}
-			
+
 			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT_INVOICE_MAPPING){
 				//TODO
 			}
@@ -549,12 +690,12 @@ public class PaymentUiManager extends JInternalFrame {
 			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT){
 				searchByStartEndDatePartyNameType(startDateValue,endDateValue,type);
 			}
-			
+
 			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT_INVOICE){
 				JOptionPane.showMessageDialog(this, "Not Applicable", "Leamon-ERP Warning",JOptionPane.WARNING_MESSAGE);
 				return ;
 			}
-			
+
 			if(tabbedPane.getSelectedIndex() == LeamonERPConstants.TABBED_PAYMENT_INVOICE_MAPPING){
 				//TODO
 			}
@@ -647,7 +788,7 @@ public class PaymentUiManager extends JInternalFrame {
 	}
 
 	private void searchByStartEndDatePartyNameType(Date startDate, Date endDate, String type){
-		
+
 		if(PaymentEnum.B.name().equals(type)){
 			type = ERPEnum.TYPE_PAYMENT_WITH_BILL.name();
 		}
@@ -669,24 +810,24 @@ public class PaymentUiManager extends JInternalFrame {
 			LOGGER.error(exp);
 		}
 	}
-	
+
 	private void searchPaymentInvoiceByPartyName(){
 		try{
 			List<PaymentReceivedInfo> paymentReceivedInfos = PaymentReceivedDaoImpl.getInstance().getItemListByPartyName(accountInfo.getId().toString());
 			List<OpeningBalanceInfo> openingBalanceInfos = OpeningBalanceDaoImpl.getInstance().getAllOpeningBalanceByPartyName(accountInfo.getId().toString());
 			List<InvoiceInfo> invoiceInfos = InvoiceDaoImpl.getInstance().getAllInvoiceByPartyName(accountInfo.getId().toString());
-			
+
 			java.util.LinkedList<Object> list = new java.util.LinkedList<Object>();
-			
+
 			list.addAll(paymentReceivedInfos);
 			list.addAll(openingBalanceInfos);
 			list.addAll(invoiceInfos);
-			
+
 			/*try{
 			Collections.sort(list, new Comparator<Object>() {
 				@Override
 				public int compare(Object o1, Object o2) {
-					
+
 					Timestamp t1 = null;
 					Timestamp t2 = null;
 					if(o1 instanceof PaymentReceivedInfo){
@@ -696,7 +837,7 @@ public class PaymentUiManager extends JInternalFrame {
 					}else if(o1 instanceof InvoiceInfo){
 						t1 = ((InvoiceInfo)o1).getLastUpdated();
 					}
-					
+
 					if(o2 instanceof PaymentReceivedInfo){
 						t2 = ((PaymentReceivedInfo)o2).getLastUpdated();
 					}else if(o2 instanceof OpeningBalanceInfo){
@@ -706,7 +847,7 @@ public class PaymentUiManager extends JInternalFrame {
 					}
 					return t1.compareTo(t2);
 				}
-				
+
 			});
 			}catch(Exception exp){
 				LOGGER.error("Failed to sort by date : "+exp);
@@ -717,25 +858,25 @@ public class PaymentUiManager extends JInternalFrame {
 			LOGGER.error(exp);
 		}
 	}
-	
+
 	private void searchPaymentInvoiceByStartDate(Date startDate){
 
 		try{
 			List<PaymentReceivedInfo> paymentReceivedInfos = PaymentReceivedDaoImpl.getInstance().getItemListByStartDate(startDate);
 			List<OpeningBalanceInfo> openingBalanceInfos = OpeningBalanceDaoImpl.getInstance().getAllOpeningBalanceByStartDate(startDate);
 			List<InvoiceInfo> invoiceInfos = InvoiceDaoImpl.getInstance().getAllInvoiceByStartDate(startDate);
-			
+
 			java.util.LinkedList<Object> list = new java.util.LinkedList<Object>();
-			
+
 			list.addAll(paymentReceivedInfos);
 			list.addAll(openingBalanceInfos);
 			list.addAll(invoiceInfos);
-			
+
 			/*try{
 			Collections.sort(list, new Comparator<Object>() {
 				@Override
 				public int compare(Object o1, Object o2) {
-					
+
 					Timestamp t1 = null;
 					Timestamp t2 = null;
 					if(o1 instanceof PaymentReceivedInfo){
@@ -745,7 +886,7 @@ public class PaymentUiManager extends JInternalFrame {
 					}else if(o1 instanceof InvoiceInfo){
 						t1 = ((InvoiceInfo)o1).getLastUpdated();
 					}
-					
+
 					if(o2 instanceof PaymentReceivedInfo){
 						t2 = ((PaymentReceivedInfo)o2).getLastUpdated();
 					}else if(o2 instanceof OpeningBalanceInfo){
@@ -755,7 +896,7 @@ public class PaymentUiManager extends JInternalFrame {
 					}
 					return t1.compareTo(t2);
 				}
-				
+
 			});
 			}catch(Exception exp){
 				LOGGER.error("Failed to sort by date : "+exp);
@@ -765,27 +906,27 @@ public class PaymentUiManager extends JInternalFrame {
 		}catch(Exception exp){
 			LOGGER.error(exp);
 		}
-	
+
 	}
-	
+
 	private void searchPaymentInvoiceByStartEndDate(Date startDate, Date endDate){
 
 		try{
 			List<PaymentReceivedInfo> paymentReceivedInfos = PaymentReceivedDaoImpl.getInstance().getItemListByStartEndDate(startDate, endDate);
 			List<OpeningBalanceInfo> openingBalanceInfos = OpeningBalanceDaoImpl.getInstance().getAllOpeningBalanceByStartEndDate(startDate, endDate);
 			List<InvoiceInfo> invoiceInfos = InvoiceDaoImpl.getInstance().getAllInvoiceByStartEndDate(startDate, endDate);
-			
+
 			java.util.LinkedList<Object> list = new java.util.LinkedList<Object>();
-			
+
 			list.addAll(paymentReceivedInfos);
 			list.addAll(openingBalanceInfos);
 			list.addAll(invoiceInfos);
-			
+
 			/*try{
 			Collections.sort(list, new Comparator<Object>() {
 				@Override
 				public int compare(Object o1, Object o2) {
-					
+
 					Timestamp t1 = null;
 					Timestamp t2 = null;
 					if(o1 instanceof PaymentReceivedInfo){
@@ -795,7 +936,7 @@ public class PaymentUiManager extends JInternalFrame {
 					}else if(o1 instanceof InvoiceInfo){
 						t1 = ((InvoiceInfo)o1).getLastUpdated();
 					}
-					
+
 					if(o2 instanceof PaymentReceivedInfo){
 						t2 = ((PaymentReceivedInfo)o2).getLastUpdated();
 					}else if(o2 instanceof OpeningBalanceInfo){
@@ -805,7 +946,7 @@ public class PaymentUiManager extends JInternalFrame {
 					}
 					return t1.compareTo(t2);
 				}
-				
+
 			});
 			}catch(Exception exp){
 				LOGGER.error("Failed to sort by date : "+exp);
@@ -815,28 +956,28 @@ public class PaymentUiManager extends JInternalFrame {
 		}catch(Exception exp){
 			LOGGER.error(exp);
 		}
-	
+
 	}
-	
+
 	private void searchPaymentInvoiceByStartEndDatePartyName(Date startDate, Date endDate){
 		try{
 			List<PaymentReceivedInfo> paymentReceivedInfos = PaymentReceivedDaoImpl.getInstance().searchByStartEndDatePartyName(startDate, endDate, accountInfo.getId().toString());
 			List<OpeningBalanceInfo> openingBalanceInfos = OpeningBalanceDaoImpl.getInstance().getAllOpeningBalanceByStartEndDatePartyName(startDate, endDate, accountInfo.getId().toString());
 			List<InvoiceInfo> invoiceInfos = InvoiceDaoImpl.getInstance().getAllInvoiceByStartEndDatePartyName(startDate, endDate, accountInfo.getId().toString());
-			
+
 			java.util.LinkedList<Object> list = new java.util.LinkedList<Object>();
-			
+
 			list.addAll(paymentReceivedInfos);
 			list.addAll(openingBalanceInfos);
 			list.addAll(invoiceInfos);
-			
+
 			sortByDate(list);
 			setPaymentInvoiceModel(list);
 		}catch(Exception exp){
 			LOGGER.error(exp);
 		}
 	}
-	
+
 	private void setPaymentInvoiceModel(List<Object> list){
 		List<Integer> snos = IntStream.range(1, 1+list.size()).boxed().collect(Collectors.toList());
 		GenericModelWithSnp<List<Object>, Object> paymentOpeningBalanceInvoiceHistoryModel = 
@@ -844,17 +985,28 @@ public class PaymentUiManager extends JInternalFrame {
 		TablePaymentInvoiceOpeningBalanceModel  tableModel = new TablePaymentInvoiceOpeningBalanceModel(paymentOpeningBalanceInvoiceHistoryModel);
 		tablePaymentInvoice.setModel(tableModel);
 		tablePaymentInvoice.packAll();
+		setAmountAlignment(tablePaymentInvoice);
+		setPaymentInvoiceTotal(list);
+		setInvoiceTotal(list);
+		setOpeningBalanceTotal(list);
+		setBalance();
 	}
-	
-	private void clear(){
+
+	public void clear(){
 		accountInfo = null;
 		textFieldPartyName.setText(LeamonERPConstants.EMPTY_STR);
-		setModel(new ArrayList<PaymentReceivedInfo>());
 		datePickerEndDate.getEditor().setText(LeamonERPConstants.EMPTY_STR);
 		datePickerStartDate.getEditor().setText(LeamonERPConstants.EMPTY_STR);
+		datePickerStartDate.setDate((Date)null);
+		datePickerEndDate.setDate((Date)null);
 		comboBox.setSelectedIndex(0);
+		try{
+			getPaymentInfo();
+		}catch(Exception exp){
+			LOGGER.error(exp);
+		}
 	}
-	
+
 	private Action getCloseAction() {
 
 		Action closeAction = new AbstractAction("Close") {
@@ -878,13 +1030,13 @@ public class PaymentUiManager extends JInternalFrame {
 		clearAction.putValue(Action.MNEMONIC_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.ALT_DOWN_MASK));
 		return clearAction;
 	}
-	
+
 	private void sortByDate(java.util.LinkedList<Object> list){
 		try{
 			Collections.sort(list, new Comparator<Object>() {
 				@Override
 				public int compare(Object o1, Object o2) {
-					
+
 					Timestamp t1 = null;
 					Timestamp t2 = null;
 					if(o1 instanceof PaymentReceivedInfo){
@@ -894,7 +1046,7 @@ public class PaymentUiManager extends JInternalFrame {
 					}else if(o1 instanceof InvoiceInfo){
 						t1 = ((InvoiceInfo)o1).getLastUpdated();
 					}
-					
+
 					if(o2 instanceof PaymentReceivedInfo){
 						t2 = ((PaymentReceivedInfo)o2).getLastUpdated();
 					}else if(o2 instanceof OpeningBalanceInfo){
@@ -904,10 +1056,123 @@ public class PaymentUiManager extends JInternalFrame {
 					}
 					return t1.compareTo(t2);
 				}
-				
+
 			});
-			}catch(Exception exp){
-				LOGGER.error("Failed to sort by date : "+exp);
-			}
+		}catch(Exception exp){
+			LOGGER.error("Failed to sort by date : "+exp);
+		}
+	}
+
+	private void setAmountAlignment(JXTable table) {
+		//table.setAutoResizeMode(JXTable.AUTO_RESIZE_OFF);
+		TableColumnModel columnModel = table.getColumnModel();
+		DefaultTableCellRenderer dtcrBamt = new DefaultTableCellRenderer();
+		dtcrBamt.setHorizontalAlignment(SwingConstants.RIGHT);
+		if(table == tablePayment){
+			columnModel.getColumn(2).setCellRenderer(dtcrBamt);
+		}
+
+		DefaultTableCellRenderer dtcrWamt = new DefaultTableCellRenderer();
+		dtcrWamt.setHorizontalAlignment(SwingConstants.RIGHT);
+		if(table == tablePaymentInvoice){
+			columnModel.getColumn(2).setCellRenderer(dtcrWamt);
+			columnModel.getColumn(4).setCellRenderer(dtcrWamt);
+			columnModel.getColumn(5).setCellRenderer(dtcrWamt);
+		}
+	}
+
+	private void setPaymentInvoiceTotal(List<Object> list){
+		setBPaymentInvoiceTotal(list);
+		setWPaymentInvoiceTotal(list);
+	}
+	private void setInvoiceTotal(List<Object> list){
+		setBInvoiceTotal(list);
+		setWInvoiceTotal(list);
+	}
+	private void setOpeningBalanceTotal(List<Object> list){
+		setBOpeningBalanceTotal(list);
+		setWOpeningBalanceTotal(list);
+	}
+	
+	private void setBPaymentInvoiceTotal(List<Object> list){
+		double sum = list.stream().filter(item -> item instanceof PaymentReceivedInfo &&  ERPEnum.TYPE_PAYMENT_WITH_BILL.name().equals(((PaymentReceivedInfo)item).getType()))
+				.map(item -> (PaymentReceivedInfo)item)
+				.map(item -> Strings.isNullOrEmpty(item.getReceivedPayment())?"0":item.getReceivedPayment())
+				.mapToDouble(Double::parseDouble).sum();
+		labelBInvoicePayment.setText(getRoundff(sum));
+	}
+	private void setWPaymentInvoiceTotal(List<Object> list){
+		double sum = list.stream().filter(item -> item instanceof PaymentReceivedInfo &&  ERPEnum.TYPE_PAYMENT_WITHOUT_BILL.name().equals(((PaymentReceivedInfo)item).getType()))
+				.map(item -> (PaymentReceivedInfo)item)
+				.map(item -> Strings.isNullOrEmpty(item.getReceivedPayment())?"0":item.getReceivedPayment())
+				.mapToDouble(Double::parseDouble).sum();
+		labelTotalWPaymentInvoice.setText(getRoundff(sum));
+	}
+	private void setBInvoiceTotal(List<Object> list){
+		double sum = list.stream().filter(item -> item instanceof InvoiceInfo)
+		.map(item -> (InvoiceInfo)item)
+		.map(item -> Strings.isNullOrEmpty(item.getBillAmount())?"0":item.getBillAmount())
+		.mapToDouble(Double::parseDouble).sum();
+		labelTotalBInvoice.setText(getRoundff(sum));
+	}
+	private void setWInvoiceTotal(List<Object> list){
+		double sum = list.stream().filter(item -> item instanceof InvoiceInfo)
+				.map(item -> (InvoiceInfo)item)
+				.map(item -> Strings.isNullOrEmpty(item.getWithoutBillAmount())?"0":item.getWithoutBillAmount())
+				.mapToDouble(Double::parseDouble).sum();
+		labelTotalWInvoice.setText(getRoundff(sum));
+	}
+	private void setBOpeningBalanceTotal(List<Object> list){
+		double sum = list.stream().filter(item -> item instanceof OpeningBalanceInfo &&  ERPEnum.TYPE_PAYMENT_WITH_BILL.name().equals(((OpeningBalanceInfo)item).getType()))
+				.map(item -> (OpeningBalanceInfo)item)
+				.map(item -> Strings.isNullOrEmpty(item.getOpeningbalanceamount())?"0":item.getOpeningbalanceamount())
+				.mapToDouble(Double::parseDouble).sum();
+		labelTotalBOpeningBal.setText(getRoundff(sum));
+	}
+	private void setWOpeningBalanceTotal(List<Object> list){
+		double sum = list.stream().filter(item -> item instanceof OpeningBalanceInfo &&  ERPEnum.TYPE_PAYMENT_WITHOUT_BILL.name().equals(((OpeningBalanceInfo)item).getType()))
+				.map(item -> (OpeningBalanceInfo)item)
+				.map(item -> Strings.isNullOrEmpty(item.getOpeningbalanceamount())?"0":item.getOpeningbalanceamount())
+				.mapToDouble(Double::parseDouble).sum();
+		labelTotalWOpenigBalance.setText(getRoundff(sum));
+	}
+	
+	private void setBalance(){
+		double sumBInvoicePayment = 0;
+		double sumWInvoicePayment = 0;
+		double sumTotalBInvoice = 0;
+		double sumTotalWInvoice = 0;
+		double sumTotalBOpeningBal = 0;
+		double sumTotalWOpenigBalance = 0;
+		
+		try{ sumBInvoicePayment = Double.parseDouble(labelBInvoicePayment.getText()); }catch(Exception e){LOGGER.error(e);}
+		try{ sumWInvoicePayment = Double.parseDouble(labelTotalWPaymentInvoice.getText()); }catch(Exception e){LOGGER.error(e);}
+		try{ sumTotalBInvoice = Double.parseDouble(labelTotalBInvoice.getText()); }catch(Exception e){LOGGER.error(e);}
+		try{ sumTotalWInvoice = Double.parseDouble(labelTotalWInvoice.getText()); }catch(Exception e){LOGGER.error(e);}
+		try{ sumTotalBOpeningBal = Double.parseDouble(labelTotalBOpeningBal.getText()); }catch(Exception e){LOGGER.error(e);}
+		try{ sumTotalWOpenigBalance = Double.parseDouble(labelTotalWOpenigBalance.getText()); }catch(Exception e){LOGGER.error(e);}
+		
+		double bSum = sumBInvoicePayment - (sumTotalBInvoice + sumTotalBOpeningBal);
+		double wSum = sumWInvoicePayment - (sumTotalWInvoice + sumTotalWOpenigBalance);
+		
+		labelBBalance.setText(getRoundff(bSum));
+		labelWBalance.setText(getRoundff(wSum));
+	}
+	
+	private String getRoundff(double value){
+		BigDecimal bd = new BigDecimal(value);
+		bd.setScale(2, BigDecimal.ROUND_HALF_UP);
+		
+		try{
+
+			BigDecimal bdd = new BigDecimal(value);
+			bdd = bdd.setScale(2,RoundingMode.HALF_UP);
+
+			DecimalFormat df = new DecimalFormat("#.00");
+			String grandTotal = df.format(bdd.doubleValue());
+			return grandTotal;
+		}catch(Exception e){ LOGGER.error(e); }
+		
+		return String.valueOf(bd.doubleValue());
 	}
 }

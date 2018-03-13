@@ -1,6 +1,9 @@
 package leamon.erp.ui.model;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.JOptionPane;
@@ -40,7 +43,7 @@ public class TablePaymentInvoiceOpeningBalanceModel extends AbstractTableModel{
 
 	private List<Object> list;
 	private List<Integer> sno;
-	
+
 	public TablePaymentInvoiceOpeningBalanceModel(List<Object> list){
 		if(list == null){
 			list = new ArrayList<Object>();
@@ -58,7 +61,7 @@ public class TablePaymentInvoiceOpeningBalanceModel extends AbstractTableModel{
 		if(list == null){
 			return 0;
 		}
-		
+
 		return list.size();
 	}
 
@@ -73,80 +76,96 @@ public class TablePaymentInvoiceOpeningBalanceModel extends AbstractTableModel{
 		final String METHOD_NAME = "getValueAt";
 		Object temp = null;
 		switch (columnIndex) {
-			case 0: {
-				temp = sno.get(rowIndex); 
-			}break;
-			
-			case 1: {
-				if(list.get(rowIndex) instanceof OpeningBalanceInfo){
-					temp = ((OpeningBalanceInfo)list.get(rowIndex)).getAccountInfo().getName();
-				}else if(list.get(rowIndex) instanceof PaymentReceivedInfo){
-					temp = ((PaymentReceivedInfo)list.get(rowIndex)).getAccountInfo().getName();
-				}else if(list.get(rowIndex) instanceof InvoiceInfo){
-					temp = ((InvoiceInfo)list.get(rowIndex)).getAccountInfo().getName();
-				}else{
-					temp = "";
-				} 
-			}break;
-			
-			case 2: {
-				if(list.get(rowIndex) instanceof OpeningBalanceInfo){
+		case 0: {
+			temp = sno.get(rowIndex); 
+		}break;
+
+		case 1: {
+			if(list.get(rowIndex) instanceof OpeningBalanceInfo){
+				temp = ((OpeningBalanceInfo)list.get(rowIndex)).getAccountInfo().getName();
+			}else if(list.get(rowIndex) instanceof PaymentReceivedInfo){
+				temp = ((PaymentReceivedInfo)list.get(rowIndex)).getAccountInfo().getName();
+			}else if(list.get(rowIndex) instanceof InvoiceInfo){
+				temp = ((InvoiceInfo)list.get(rowIndex)).getAccountInfo().getName();
+			}else{
+				temp = "";
+			} 
+		}break;
+
+		case 2: {
+			DateFormat df = new SimpleDateFormat("EEE dd/MM/yyyy");
+			if(list.get(rowIndex) instanceof OpeningBalanceInfo){
+				try{
+					temp = df.format(new Date(((OpeningBalanceInfo)list.get(rowIndex)).getLastUpdated().getTime()));
+				}catch(Exception e){
+					LOGGER.error(e);
 					temp = ((OpeningBalanceInfo)list.get(rowIndex)).getLastUpdated().toLocalDateTime();
-				}else if(list.get(rowIndex) instanceof PaymentReceivedInfo){
+				}
+			}else if(list.get(rowIndex) instanceof PaymentReceivedInfo){
+				try{
+					temp = df.format(new Date(((PaymentReceivedInfo)list.get(rowIndex)).getLastUpdated().getTime()));
+				}catch(Exception e){
+					LOGGER.error(e);
 					temp = ((PaymentReceivedInfo)list.get(rowIndex)).getLastUpdated().toLocalDateTime();
-				}else if(list.get(rowIndex) instanceof InvoiceInfo){
+				}
+			}else if(list.get(rowIndex) instanceof InvoiceInfo){
+				try{
+					temp = df.format(new Date(((InvoiceInfo)list.get(rowIndex)).getLastUpdated().getTime()));
+				}catch(Exception e){
+					LOGGER.error(e);
 					temp = ((InvoiceInfo)list.get(rowIndex)).getLastUpdated().toLocalDateTime();
-				}else{
-					temp = "";
-				} 
-			}break;
-			
-			case 3: {
-				if(list.get(rowIndex) instanceof OpeningBalanceInfo){
-					temp = LeamonERPConstants.OPENING_BALANCE;
-				}else if(list.get(rowIndex) instanceof PaymentReceivedInfo){
-					temp = LeamonERPConstants.PAYMENT;
-				}else if(list.get(rowIndex) instanceof InvoiceInfo){
-					temp = LeamonERPConstants.INVOICE;
-				}else{
-					temp = "";
-				}	
-			} break;
-			
-			case 4: { /*B Amount*/
-				if(list.get(rowIndex) instanceof OpeningBalanceInfo){
-					if(ERPEnum.TYPE_PAYMENT_WITH_BILL.name().equals(((OpeningBalanceInfo)list.get(rowIndex)).getType())){
-						temp = ((OpeningBalanceInfo)list.get(rowIndex)).getOpeningbalanceamount();
-					}
-				}else if(list.get(rowIndex) instanceof PaymentReceivedInfo){
-					if(ERPEnum.TYPE_PAYMENT_WITH_BILL.name().equals(((PaymentReceivedInfo)list.get(rowIndex)).getType())){
-						temp = ((PaymentReceivedInfo)list.get(rowIndex)).getReceivedPayment();
-					}
-				}else if(list.get(rowIndex) instanceof InvoiceInfo){
-					temp = ((InvoiceInfo)list.get(rowIndex)).getBillAmount();
-				}else{
-					temp = "";
 				}
-			}break;
-			
-			case 5: { /*W Amount*/
-				if(list.get(rowIndex) instanceof OpeningBalanceInfo){
-					if(ERPEnum.TYPE_PAYMENT_WITHOUT_BILL.name().equals(((OpeningBalanceInfo)list.get(rowIndex)).getType())){
-						temp = ((OpeningBalanceInfo)list.get(rowIndex)).getOpeningbalanceamount();
-					}
-				}else if(list.get(rowIndex) instanceof PaymentReceivedInfo){
-					if(ERPEnum.TYPE_PAYMENT_WITHOUT_BILL.name().equals(((PaymentReceivedInfo)list.get(rowIndex)).getType())){
-						temp = ((PaymentReceivedInfo)list.get(rowIndex)).getReceivedPayment();
-					}
-				}else if(list.get(rowIndex) instanceof InvoiceInfo){
-					temp = ((InvoiceInfo)list.get(rowIndex)).getWithoutBillAmount();
-				}else{
-					temp = "";
+			}else{
+				temp = "";
+			} 
+		}break;
+
+		case 3: {
+			if(list.get(rowIndex) instanceof OpeningBalanceInfo){
+				temp = LeamonERPConstants.OPENING_BALANCE;
+			}else if(list.get(rowIndex) instanceof PaymentReceivedInfo){
+				temp = LeamonERPConstants.PAYMENT;
+			}else if(list.get(rowIndex) instanceof InvoiceInfo){
+				temp = LeamonERPConstants.INVOICE;
+			}else{
+				temp = "";
+			}	
+		} break;
+
+		case 4: { /*B Amount*/
+			if(list.get(rowIndex) instanceof OpeningBalanceInfo){
+				if(ERPEnum.TYPE_PAYMENT_WITH_BILL.name().equals(((OpeningBalanceInfo)list.get(rowIndex)).getType())){
+					temp = ((OpeningBalanceInfo)list.get(rowIndex)).getOpeningbalanceamount();
 				}
-			}break;
-			
-			case 6: { /*Grand Total*/
-				/*if(list.get(rowIndex) instanceof OpeningBalanceInfo){
+			}else if(list.get(rowIndex) instanceof PaymentReceivedInfo){
+				if(ERPEnum.TYPE_PAYMENT_WITH_BILL.name().equals(((PaymentReceivedInfo)list.get(rowIndex)).getType())){
+					temp = ((PaymentReceivedInfo)list.get(rowIndex)).getReceivedPayment();
+				}
+			}else if(list.get(rowIndex) instanceof InvoiceInfo){
+				temp = ((InvoiceInfo)list.get(rowIndex)).getBillAmount();
+			}else{
+				temp = "";
+			}
+		}break;
+
+		case 5: { /*W Amount*/
+			if(list.get(rowIndex) instanceof OpeningBalanceInfo){
+				if(ERPEnum.TYPE_PAYMENT_WITHOUT_BILL.name().equals(((OpeningBalanceInfo)list.get(rowIndex)).getType())){
+					temp = ((OpeningBalanceInfo)list.get(rowIndex)).getOpeningbalanceamount();
+				}
+			}else if(list.get(rowIndex) instanceof PaymentReceivedInfo){
+				if(ERPEnum.TYPE_PAYMENT_WITHOUT_BILL.name().equals(((PaymentReceivedInfo)list.get(rowIndex)).getType())){
+					temp = ((PaymentReceivedInfo)list.get(rowIndex)).getReceivedPayment();
+				}
+			}else if(list.get(rowIndex) instanceof InvoiceInfo){
+				temp = ((InvoiceInfo)list.get(rowIndex)).getWithoutBillAmount();
+			}else{
+				temp = "";
+			}
+		}break;
+
+		case 6: { /*Grand Total*/
+			/*if(list.get(rowIndex) instanceof OpeningBalanceInfo){
 					temp = LeamonERPConstants.OPENING_BALANCE;
 				}else if(list.get(rowIndex) instanceof PaymentReceivedInfo){
 					temp = LeamonERPConstants.PAYMENT;
@@ -155,9 +174,9 @@ public class TablePaymentInvoiceOpeningBalanceModel extends AbstractTableModel{
 				}else{
 					temp = "";
 				}*/
-				temp = "";
-			}break;
-			
+			temp = "";
+		}break;
+
 		}
 		return temp;
 	}

@@ -1507,6 +1507,7 @@ public class LeamonERP extends JFrame {
 		if(paymentUiManager.isVisible()){
 			try {
 				paymentUiManager.setSelected(true);
+				paymentUiManager.clear();
 			} catch (PropertyVetoException e1) {
 				LOGGER.error(e1.toString());
 			}
@@ -1514,6 +1515,7 @@ public class LeamonERP extends JFrame {
 		}else{
 			desktopPane.add(paymentUiManager);
 			paymentUiManager.setVisible(true);
+			paymentUiManager.clear();
 		}
 		SwingUtilities.updateComponentTreeUI(paymentUiManager);
 	}
