@@ -9,6 +9,8 @@ import javax.swing.border.BevelBorder;
 import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 import org.jdesktop.swingx.JXDatePicker;
 
@@ -87,12 +89,15 @@ public class OpeningBalanceManagerUI extends JInternalFrame {
 		label_2.setBounds(373, 11, 43, 22);
 		panel.add(label_2);
 
+		DateFormat df = new SimpleDateFormat("EEE dd/MM/yyyy");
 		datePickerStartDate = new JXDatePicker((Date) null);
 		datePickerStartDate.setBounds(75, 12, 116, 22);
+		datePickerStartDate.setFormats(df);
 		panel.add(datePickerStartDate);
 
 		datePickerEndDate = new JXDatePicker((Date) null);
 		datePickerEndDate.setBounds(253, 12, 116, 22);
+		datePickerEndDate.setFormats(df);
 		panel.add(datePickerEndDate);
 
 		textFieldPartyName = new JXTextField();
@@ -162,8 +167,31 @@ public class OpeningBalanceManagerUI extends JInternalFrame {
 
 		/* only by party name */
 		if (!Strings.isNullOrEmpty(partyName) && Strings.isNullOrEmpty(startDate) && Strings.isNullOrEmpty(endDate)
-				&& type.equalsIgnoreCase("N")) {
+				&& (type.equalsIgnoreCase("N") || (type.equalsIgnoreCase("BOTH")))) {
 			searchByPartyName(partyName);
+		}
+		/*Only by start date*/
+		if (Strings.isNullOrEmpty(partyName) && !Strings.isNullOrEmpty(startDate) && Strings.isNullOrEmpty(endDate)
+				&& (type.equalsIgnoreCase("N") || (type.equalsIgnoreCase("BOTH")))) {
+			getAllOpeningBalanceByStartDate(datePickerStartDate.getDate());
+		}
+		
+		/*between start date and end date*/
+		if (Strings.isNullOrEmpty(partyName) && !Strings.isNullOrEmpty(startDate) && !Strings.isNullOrEmpty(endDate)
+				&& (type.equalsIgnoreCase("N") || (type.equalsIgnoreCase("BOTH")))) {
+			getAllOpeningBalanceByStartEndDate(datePickerStartDate.getDate(),datePickerEndDate.getDate());
+		}
+		
+		/*Start date and party name*/
+		if (!Strings.isNullOrEmpty(partyName) && !Strings.isNullOrEmpty(startDate) && Strings.isNullOrEmpty(endDate)
+				&& (type.equalsIgnoreCase("N") || (type.equalsIgnoreCase("BOTH")))) {
+			getAllOpeningBalanceByStartDatePartyName(datePickerStartDate.getDate(),partyName);
+		}
+		
+		/*between start date and end date and party name*/
+		if (!Strings.isNullOrEmpty(partyName) && !Strings.isNullOrEmpty(startDate) && !Strings.isNullOrEmpty(endDate)
+				&& (type.equalsIgnoreCase("N") || (type.equalsIgnoreCase("BOTH")))) {
+			getAllOpeningBalanceByStartEndDatePartyName(datePickerStartDate.getDate(),datePickerEndDate.getDate(),partyName);
 		}
 	}
 
@@ -184,7 +212,11 @@ public class OpeningBalanceManagerUI extends JInternalFrame {
 				model.setPartyName(partyName);
 				model.setBillNumber(balanceInfo.getBillnumber());
 				model.setBillDate(balanceInfo.getBilldate());
-				model.setType(balanceInfo.getType());
+				if(balanceInfo.getType().equalsIgnoreCase(LeamonERPConstants.INVOICE_TYPE_WITHOUT_BILL)) {
+					model.setType("W-Without Bill");
+				}else {
+					model.setType("B-With Bill");
+				}
 				model.setOpeningBalanceAmount(balanceInfo.getOpeningbalanceamount());
 				model.setReceivedAmount(balanceInfo.getReceivedopeningbalanceamount());
 				model.setRemainingAmount(balanceInfo.getRemainingopeningbalanceamount());
@@ -216,5 +248,175 @@ public class OpeningBalanceManagerUI extends JInternalFrame {
 				textField, this);
 		leamonAutoAccountIDTextFieldSuggestor.setItems(accountInfos);
 
+	}
+	
+	private void getAllOpeningBalanceByStartDate(Date startDate) {
+		try {
+			List<AccountInfo> accountInfo = AccountDaoImpl.getInstance().getItemList();
+			List<OpeningBalanceInfo> openingBalanceInfos = OpeningBalanceDaoImpl.getInstance()
+					.getAllOpeningBalanceByStartDate(startDate);
+
+			List<OpeningBalanceManagerInfoModel> infoModel = new ArrayList<>();
+			int sNo = 1;
+			for (OpeningBalanceInfo balanceInfo : openingBalanceInfos) {
+				OpeningBalanceManagerInfoModel model = new OpeningBalanceManagerInfoModel();
+				model.setSNo(sNo);
+				int partyID=balanceInfo.getPartyinfoid();
+				for (AccountInfo acInfo : accountInfo) {
+					if (acInfo.getId() == partyID) {
+						model.setPartyName(acInfo.getName());
+						break;
+					}
+				}
+				model.setBillNumber(balanceInfo.getBillnumber());
+				model.setBillDate(balanceInfo.getBilldate());
+				if(balanceInfo.getType().equalsIgnoreCase(LeamonERPConstants.INVOICE_TYPE_WITHOUT_BILL)) {
+					model.setType("W-Without Bill");
+				}else {
+					model.setType("B-With Bill");
+				}
+				model.setOpeningBalanceAmount(balanceInfo.getOpeningbalanceamount());
+				model.setReceivedAmount(balanceInfo.getReceivedopeningbalanceamount());
+				model.setRemainingAmount(balanceInfo.getRemainingopeningbalanceamount());
+				infoModel.add(model);
+				sNo++;
+			}
+
+			OpeningBalanceManagerModel balanceModel = new OpeningBalanceManagerModel(infoModel);
+			table.setModel(balanceModel);
+			table.setRowHeight(table.getRowHeight() + 20);
+			table.setAutoCreateRowSorter(true);
+			table.setName("Opening Balance Manager");
+			table.setColumnControlVisible(true);
+			table.packAll();
+		}catch(Exception e) {
+			LOGGER.error(e);
+		}
+	}
+	
+	private void getAllOpeningBalanceByStartEndDate(Date startDate,Date endDate) {
+		try {
+			List<AccountInfo> accountInfo = AccountDaoImpl.getInstance().getItemList();
+			List<OpeningBalanceInfo> openingBalanceInfos = OpeningBalanceDaoImpl.getInstance()
+					.getAllOpeningBalanceByStartEndDate(startDate,endDate);
+
+			List<OpeningBalanceManagerInfoModel> infoModel = new ArrayList<>();
+			int sNo = 1;
+			for (OpeningBalanceInfo balanceInfo : openingBalanceInfos) {
+				OpeningBalanceManagerInfoModel model = new OpeningBalanceManagerInfoModel();
+				model.setSNo(sNo);
+				int partyID=balanceInfo.getPartyinfoid();
+				for (AccountInfo acInfo : accountInfo) {
+					if (acInfo.getId() == partyID) {
+						model.setPartyName(acInfo.getName());
+						break;
+					}
+				}
+				model.setBillNumber(balanceInfo.getBillnumber());
+				model.setBillDate(balanceInfo.getBilldate());
+				if(balanceInfo.getType().equalsIgnoreCase(LeamonERPConstants.INVOICE_TYPE_WITHOUT_BILL)) {
+					model.setType("W-Without Bill");
+				}else {
+					model.setType("B-With Bill");
+				}
+				model.setOpeningBalanceAmount(balanceInfo.getOpeningbalanceamount());
+				model.setReceivedAmount(balanceInfo.getReceivedopeningbalanceamount());
+				model.setRemainingAmount(balanceInfo.getRemainingopeningbalanceamount());
+				infoModel.add(model);
+				sNo++;
+			}
+
+			OpeningBalanceManagerModel balanceModel = new OpeningBalanceManagerModel(infoModel);
+			table.setModel(balanceModel);
+			table.setRowHeight(table.getRowHeight() + 20);
+			table.setAutoCreateRowSorter(true);
+			table.setName("Opening Balance Manager");
+			table.setColumnControlVisible(true);
+			table.packAll();
+		}catch(Exception e) {
+			LOGGER.error(e);
+		}
+	}
+	
+	private void getAllOpeningBalanceByStartDatePartyName(Date startDate,String partyName) {
+		try {
+			List<AccountInfo> accountInfo = AccountDaoImpl.getInstance().getItemList();
+			AccountInfo accountInfo1 = accountInfo.stream().filter(e1 -> e1.getName().equalsIgnoreCase(partyName))
+					.findAny().orElse(null);
+			int partyID = accountInfo1.getId();
+			List<OpeningBalanceInfo> openingBalanceInfos = OpeningBalanceDaoImpl.getInstance()
+					.getAllOpeningBalanceByStartDatePartyName(startDate,String.valueOf(partyID));
+
+			List<OpeningBalanceManagerInfoModel> infoModel = new ArrayList<>();
+			int sNo = 1;
+			for (OpeningBalanceInfo balanceInfo : openingBalanceInfos) {
+				OpeningBalanceManagerInfoModel model = new OpeningBalanceManagerInfoModel();
+				model.setSNo(sNo);
+				model.setPartyName(partyName);
+				model.setBillNumber(balanceInfo.getBillnumber());
+				model.setBillDate(balanceInfo.getBilldate());
+				if(balanceInfo.getType().equalsIgnoreCase(LeamonERPConstants.INVOICE_TYPE_WITHOUT_BILL)) {
+					model.setType("W-Without Bill");
+				}else {
+					model.setType("B-With Bill");
+				}
+				model.setOpeningBalanceAmount(balanceInfo.getOpeningbalanceamount());
+				model.setReceivedAmount(balanceInfo.getReceivedopeningbalanceamount());
+				model.setRemainingAmount(balanceInfo.getRemainingopeningbalanceamount());
+				infoModel.add(model);
+				sNo++;
+			}
+
+			OpeningBalanceManagerModel balanceModel = new OpeningBalanceManagerModel(infoModel);
+			table.setModel(balanceModel);
+			table.setRowHeight(table.getRowHeight() + 20);
+			table.setAutoCreateRowSorter(true);
+			table.setName("Opening Balance Manager");
+			table.setColumnControlVisible(true);
+			table.packAll();
+		}catch(Exception e) {
+			LOGGER.error(e);
+		}
+	}
+	
+	private void getAllOpeningBalanceByStartEndDatePartyName(Date startDate,Date endDate,String partyName) {
+		try {
+			List<AccountInfo> accountInfo = AccountDaoImpl.getInstance().getItemList();
+			AccountInfo accountInfo1 = accountInfo.stream().filter(e1 -> e1.getName().equalsIgnoreCase(partyName))
+					.findAny().orElse(null);
+			int partyID = accountInfo1.getId();
+			List<OpeningBalanceInfo> openingBalanceInfos = OpeningBalanceDaoImpl.getInstance()
+					.getAllOpeningBalanceByStartEndDatePartyName(startDate,endDate,String.valueOf(partyID));
+
+			List<OpeningBalanceManagerInfoModel> infoModel = new ArrayList<>();
+			int sNo = 1;
+			for (OpeningBalanceInfo balanceInfo : openingBalanceInfos) {
+				OpeningBalanceManagerInfoModel model = new OpeningBalanceManagerInfoModel();
+				model.setSNo(sNo);
+				model.setPartyName(partyName);
+				model.setBillNumber(balanceInfo.getBillnumber());
+				model.setBillDate(balanceInfo.getBilldate());
+				if(balanceInfo.getType().equalsIgnoreCase(LeamonERPConstants.INVOICE_TYPE_WITHOUT_BILL)) {
+					model.setType("W-Without Bill");
+				}else {
+					model.setType("B-With Bill");
+				}
+				model.setOpeningBalanceAmount(balanceInfo.getOpeningbalanceamount());
+				model.setReceivedAmount(balanceInfo.getReceivedopeningbalanceamount());
+				model.setRemainingAmount(balanceInfo.getRemainingopeningbalanceamount());
+				infoModel.add(model);
+				sNo++;
+			}
+
+			OpeningBalanceManagerModel balanceModel = new OpeningBalanceManagerModel(infoModel);
+			table.setModel(balanceModel);
+			table.setRowHeight(table.getRowHeight() + 20);
+			table.setAutoCreateRowSorter(true);
+			table.setName("Opening Balance Manager");
+			table.setColumnControlVisible(true);
+			table.packAll();
+		}catch(Exception e) {
+			LOGGER.error(e);
+		}
 	}
 }

@@ -49,11 +49,11 @@ public interface OpeningBalanceMapper {
 	
 	/*---------Criteria Sql------------*/
 	String selectByPartyName = "SELECT * FROM OPENING_BALANCE_INFO WHERE ISENABLE = TRUE AND PARTYINFOID = #{partyInfoID} ORDER BY LASTUPDATED ";
-	String selectByStartDate = "SELECT * FROM OPENING_BALANCE_INFO WHERE ISENABLE = TRUE AND TO_DATE(LASTUPDATED, 'DY DD/MM/YYYY') = #{startDate, jdbcType=DATE } "
+	String selectByStartDate = "SELECT * FROM OPENING_BALANCE_INFO WHERE ISENABLE = TRUE AND TO_DATE(LASTUPDATED, 'DY DD/MM/YYYY') >= #{startDate, jdbcType=DATE } "
 			+ " ORDER BY LASTUPDATED ";
 	String selectByStartEndDate = "SELECT * FROM OPENING_BALANCE_INFO WHERE ISENABLE = TRUE AND TO_DATE(LASTUPDATED, 'DY DD/MM/YYYY') BETWEEN #{startDate, jdbcType=DATE }"
 			+ " AND #{endDate, jdbcType=DATE }  ORDER BY LASTUPDATED";
-	String selectByStartDatePartyName = "SELECT * FROM OPENING_BALANCE_INFO WHERE ISENABLE = TRUE AND TO_DATE(LASTUPDATED, 'DY DD/MM/YYYY') = #{startDate, jdbcType=DATE } "
+	String selectByStartDatePartyName = "SELECT * FROM OPENING_BALANCE_INFO WHERE ISENABLE = TRUE AND TO_DATE(LASTUPDATED, 'DY DD/MM/YYYY') >= #{startDate, jdbcType=DATE } "
 			+ " AND PARTYINFOID = #{partyInfoID} ORDER BY LASTUPDATED ";
 	String selectByStartEndDatePartyName = "SELECT * FROM OPENING_BALANCE_INFO WHERE ISENABLE = TRUE AND TO_DATE(CREATEDDATE, 'DY DD/MM/YYYY') "
 			+ "BETWEEN #{startDate, jdbcType=DATE }  AND #{endDate, jdbcType=DATE } AND PARTYINFOID = #{partyInfoID} ORDER BY LASTUPDATED";

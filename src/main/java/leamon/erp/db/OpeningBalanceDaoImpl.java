@@ -137,7 +137,8 @@ public class OpeningBalanceDaoImpl implements LeamonERPDao<OpeningBalanceInfo>{
 		LOGGER.info("OpeningBalanceDaoImpl[getAllOpeningBalanceByPartyName] inside.");
 		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
 		OpeningBalanceMapper openingBalInfoMapper= session.getMapper(OpeningBalanceMapper.class);
-		List<OpeningBalanceInfo> openingBalanceInfos = openingBalInfoMapper.getAllOpeningBalanceByPartyName(partyInfoID);
+		List<OpeningBalanceInfo> openingBalanceInfos = openingBalInfoMapper
+				.getAllOpeningBalanceByStartEndDatePartyName(startDate, endDate, partyInfoID);
 		session.close();
 		LOGGER.info("OpeningBalanceDaoImpl[getAllOpeningBalanceByPartyName] end.");
 		return openingBalanceInfos;
