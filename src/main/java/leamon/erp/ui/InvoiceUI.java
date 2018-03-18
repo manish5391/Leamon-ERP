@@ -89,6 +89,12 @@ public class InvoiceUI extends JInternalFrame {
 	private static final String CLASS_NAME="InvoiceUI";
 	private static final Logger LOGGER = Logger.getLogger(InvoiceUI.class);
 
+	//3.9 ghan code for W amount issue
+	private String existingRemainingWAmount;
+	private String existingRemainingBAmount;
+	private String existingWAmount;
+	private String exisitngBAmounts;
+	//3.9 end of ghan code
 	private JXTextField textFieldTotal;
 	private JXTextField textFieldBillAmount;
 	private JXTextField textFieldPackingAmount;
@@ -1573,6 +1579,12 @@ public class InvoiceUI extends JInternalFrame {
 		if(info== null){
 			return ;
 		}
+		//3.9 ghan code for w amount issue
+		existingRemainingWAmount=info.getRemainingWithoutBillAmount();
+		existingRemainingBAmount=info.getRemainingBillAmount();	
+		exisitngBAmounts=info.getBillAmount();
+		existingWAmount=info.getWithoutBillAmount();
+		//3.9 end fo ghan code
 		//this.btnAdd.doClick();
 		//setDisableOnLoad(Boolean.TRUE);
 		String billAmount =  info.getBillAmount();
@@ -2127,7 +2139,12 @@ public class InvoiceUI extends JInternalFrame {
 		}//end for
 		/*-----------End stock items and invoice table entry-----------------*/
 		
-		
+		// 3.9 ghan code for w amount issue
+		String remainingWamount = String
+				.valueOf(Double.valueOf(existingRemainingWAmount) + (Double.valueOf(packingAmount) - Double.valueOf(existingWAmount)));
+		String remainingBamount = String
+				.valueOf(Double.valueOf(existingRemainingBAmount) + (Double.valueOf(billAmount) - Double.valueOf(exisitngBAmounts)));
+		// 3.9 end of ghan code
 		invoiceInfo = InvoiceInfo.builder().items(invoiceItemInfos)
 				.id(actionObjectInvoiceInfo.getId())
 				.invoicNum(actionObjectInvoiceInfo.getInvoicNum())
@@ -2152,6 +2169,10 @@ public class InvoiceUI extends JInternalFrame {
 				.lastUpdated(new Timestamp(System.currentTimeMillis()))
 				.isEnable(Boolean.TRUE)
 				.partyinfoID(accountInfoVal.getId())
+				.remainingBillAmount(remainingBamount)
+				.remainingWithoutBillAmount(remainingWamount)
+				.paidStatus(InvoicePaymentStatusEnum.PARTIAL_PAID.name())
+				.wpaidstatus(InvoicePaymentStatusEnum.PARTIAL_PAID.name())
 				
 				.build();
 		try{

@@ -50,7 +50,7 @@ public interface InvoiceMapper {
 						+ "#{col1Name}, #{col1Val}, #{col2Name}, #{col2Val}, #{col1Operator}, #{col2Operator},"
 						+ "#{createdDate}, #{lastUpdated}, #{isEnable})";
 	
-	final String update = "UPDATE INVOICE_BILL SET PARTYINFOID = #{partyinfoID}, INVOICENUM = #{invoicNum}, INVOICEDATE = #{invoicDate}, "
+	final String update = "UPDATE INVOICE_BILL SET PARTYINFOID = #{partyinfoID}, REMAININGBILLAMOUNT = #{remainingBillAmount}, REMAININGWITHOUTBILLAMOUNT = #{remainingWithoutBillAmount}, PAIDSTATUS = #{paidStatus}, WPAIDSTATUS = #{wpaidstatus}, INVOICENUM = #{invoicNum}, INVOICEDATE = #{invoicDate}, "
 						+ "BILL_NO = #{billNo}, ORDERBOOKBY = #{orderBookedBy},  TRANSPORT = #{transport}, PACKETNUM = #{pktNumber}, GSTAMOUNT = #{gstValue}, "
 						+ "BILLAMOUNT = #{billAmount}, WITHOUTBILLAMOUNT= #{withoutBillAmount}, GRNUMBER = #{grBiltyNumber},"
 						+ "COL1NAME = #{col1Name}, COL1VAL = #{col1Val}, COL2NAME = #{col2Name}, COL2VAL = #{col2Val}, COL1OPERATOR = #{col1Operator}, COL2OPERATOR = #{col2Operator},"
