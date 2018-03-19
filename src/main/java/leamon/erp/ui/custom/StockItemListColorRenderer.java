@@ -26,7 +26,8 @@ public class StockItemListColorRenderer extends JLabel implements TableCellRende
 			int row, int column) {
 		// TODO Auto-generated method stub
 
-		TableStockListItemModel model = (TableStockListItemModel)table.getColumnModel();
+		//TableStockListItemModel model = (TableStockListItemModel)table.getColumnModel();
+		TableStockListItemModel model = (TableStockListItemModel)table.getModel();
 		
 		if(model!=null && model.getStockItems() != null && !model.getStockItems().isEmpty()){
 

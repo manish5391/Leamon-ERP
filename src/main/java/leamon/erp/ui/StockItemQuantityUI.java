@@ -352,7 +352,8 @@ public class StockItemQuantityUI extends JInternalFrame implements KeyListener{
 	 			.filter(s -> s.getStokItemid().equals(item.getId())).findFirst().orElse(null);
 	 	if(matchedItemQuantity != null){
 	 		try{
-	 		int quantity = Integer.parseInt(matchedItemQuantity.getQuantity());
+	 		//int quantity = Integer.parseInt(matchedItemQuantity.getQuantity());
+	 			double quantity = Double.parseDouble(matchedItemQuantity.getQuantity());
 	 		((SpinnerNumberModel)spinnerQuanitity.getModel()).setValue(quantity);
 	 		}catch (Exception exp) {
 	 			LOGGER.error(exp);
@@ -460,7 +461,8 @@ public class StockItemQuantityUI extends JInternalFrame implements KeyListener{
 		}*/
 		
 		SpinnerNumberModel numberModel = (SpinnerNumberModel)spinnerQuanitity.getModel();
-		Integer quantity = numberModel.getNumber().intValue();
+		String val = numberModel.getValue().toString();
+		double quantity = numberModel.getNumber().doubleValue();
 		String description = textDescription.getText();
 		String stockItemId  = lblID.getText().trim();
 		if(Strings.isNullOrEmpty(stockItemId)){
@@ -477,7 +479,7 @@ public class StockItemQuantityUI extends JInternalFrame implements KeyListener{
 		}
 		
 		StockItemQuantity stockItemQuantity = StockItemQuantity.builder()
-				.stokItemid(stockItemIdInt)
+				.stokItemid(stockItemIdInt.intValue())
 				.quantity(String.valueOf(quantity))
 				.createdDate(new Timestamp(System.currentTimeMillis()))
 				.lastUpdatedDate(new Timestamp(System.currentTimeMillis()))
