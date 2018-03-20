@@ -487,7 +487,7 @@ public class StockItemQuantityUI extends JInternalFrame implements KeyListener{
 		}*/
 		
 		/*------------Release 3.9 changes------------*/
-		String oldQuantity = stockItemQuantity.getQuantity();
+		String oldQuantity = stockItemQuantity==null?"0":stockItemQuantity.getQuantity();
 		String plusQuantity = Strings.isNullOrEmpty(spinnerQuanitityPlus.getText())?"0":spinnerQuanitityPlus.getText();
 		String minusQuantity = Strings.isNullOrEmpty(spinnerQuanitityMinus.getText())?"0":spinnerQuanitityMinus.getText();
 		String newQuantity = Strings.isNullOrEmpty(textFieldQuanitityOldValue.getText())?"0":textFieldQuanitityOldValue.getText();

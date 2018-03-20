@@ -342,4 +342,10 @@ public interface LeamonERPConstants {
 	public static final String INVOICE_TYPE_WITHOUT_BILL="TYPE_PAYMENT_WITHOUT_BILL";
 	public static final String INVOICE_TYPE_WITH_BILL="TYPE_PAYMENT_WITH_BILL";
 	/*----End------------*/
+	
+	/*------Release 3.9---------*/
+	public static String ACTION_INSERT= "INSERT";
+	public static String ACTION_UPDATE= "UPDATE";
+	public static String ACTION_DELETE= "DELETE";
+	/*------End----------------*/
 }
