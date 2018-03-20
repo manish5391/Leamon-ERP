@@ -77,7 +77,9 @@ public class KeyListenerHandler implements KeyListener{
 
 		LOGGER.debug("KeyListenerHandler[keyReleased] Table Name ["+LeamonERPConstants.TABLE_STOCK_ITEMS+"]");
 		int selectedRow = table.getSelectedRow();
-
+		if(selectedRow == LeamonERPConstants.NO_ROW_SELECTED){
+			return;
+		}
 		/*Get accurate selected row after filtering records*/
 		if(table.getRowSorter() != null){
 			selectedRow = table.getRowSorter().convertRowIndexToModel(selectedRow);

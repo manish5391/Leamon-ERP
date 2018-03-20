@@ -87,14 +87,15 @@ public class StockItemListManager extends JInternalFrame implements ActionListen
 		tblStockList.setAutoCreateRowSorter(true);
 		tblStockList.setColumnControlVisible(true);
 		tblStockList.packAll();
-		tblStockList.setDefaultRenderer(Object.class, new StockItemListColorRenderer());//3.5 ghan code
 		// 3.4 ghanshyam code for stock alignment
 		setStockAlignment(tblStockList);
 		// 3.4 end of ghanshyam code
 		tblStockList.setComponentPopupMenu(createPopup());
 		tblStockList.setName(LeamonERPConstants.TABLE_STOCK_ITEMS);
+		tblStockList.setDefaultRenderer(Object.class, new StockItemListColorRenderer());//3.5 ghan code
 		tblStockList.addKeyListener(new KeyListenerHandler(tblStockList));
 		tblStockList.addMouseListener(new MouseClickHandler());
+		
 		
 		JScrollPane scrollPaneTable = new JScrollPane(tblStockList);
 		scrollPaneTable.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);

@@ -8,6 +8,8 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 
+import org.apache.log4j.Logger;
+
 import com.google.common.base.Strings;
 
 import leamon.erp.model.StockItem;
@@ -17,6 +19,9 @@ import lombok.val;
 
 public class StockItemListColorRenderer extends JLabel implements TableCellRenderer {
 
+	private static final String CLASS_NAME="StockItemListColorRenderer";
+	private static final Logger LOGGER = Logger.getLogger(StockItemListColorRenderer.class);
+	
 	public StockItemListColorRenderer() {
 		setOpaque(true);
 	}
@@ -25,17 +30,21 @@ public class StockItemListColorRenderer extends JLabel implements TableCellRende
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
 			int row, int column) {
 		// TODO Auto-generated method stub
-
-		//TableStockListItemModel model = (TableStockListItemModel)table.getColumnModel();
+		
+		LOGGER.debug("Row : "+row +" Column : "+column);
 		TableStockListItemModel model = (TableStockListItemModel)table.getModel();
 		
 		if(model!=null && model.getStockItems() != null && !model.getStockItems().isEmpty()){
 
-			if(value instanceof String 
+			if(value instanceof String || value instanceof Number 
 					&& !Strings.isNullOrEmpty(value.toString())
 					&& !isSelected){
 
-				System.out.println("column name="+model.getColumnName(4));
+				if(!Strings.isNullOrEmpty(model.getStockItems().get(row).getStockItemQuantity().getQuantity())
+						&&model.getStockItems().get(row).getStockItemQuantity().getQuantity().equals(value)){
+					
+					
+				}
 				if(column==4) {
 					double d=Double.parseDouble(value.toString().trim());
 					if(d<10) {

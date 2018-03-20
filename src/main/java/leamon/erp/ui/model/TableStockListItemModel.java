@@ -23,7 +23,7 @@ public class TableStockListItemModel extends AbstractTableModel{
 	
 	private static final Logger LOGGER = Logger.getLogger(TableStockListItemModel.class);
 	
-	private final String [] columnName = new String[] {
+	private final String [] columnNames = new String[] {
 			"ID", 
 			"NAME", 
 			"PRODUCT CODE", 
@@ -51,7 +51,7 @@ public class TableStockListItemModel extends AbstractTableModel{
 
 	@Override
 	public int getColumnCount() {
-		return columnName.length;
+		return columnNames.length;
 	}
 
 	@Override
@@ -72,6 +72,6 @@ public class TableStockListItemModel extends AbstractTableModel{
 	}
 	@Override
 	public String getColumnName(int col) { 
-	      return columnName[col]; 
+	      return columnNames[col]; 
 	} 
 }
