@@ -2144,6 +2144,14 @@ public class InvoiceUI extends JInternalFrame {
 				.valueOf(Double.valueOf(existingRemainingWAmount) + (Double.valueOf(packingAmount) - Double.valueOf(existingWAmount)));
 		String remainingBamount = String
 				.valueOf(Double.valueOf(existingRemainingBAmount) + (Double.valueOf(billAmount) - Double.valueOf(exisitngBAmounts)));
+		if(Double.valueOf(remainingWamount)<0 || Double.valueOf(remainingBamount)<0) {
+			int option  = JOptionPane.showConfirmDialog(this, "Amount is already settled for this bill. \nDo you still want to update this?",
+					"Leamon-ERP : Stock", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
+			if(option == JOptionPane.NO_OPTION){
+				this.dispose();
+				return;
+			}
+		}
 		// 3.9 end of ghan code
 		invoiceInfo = InvoiceInfo.builder().items(invoiceItemInfos)
 				.id(actionObjectInvoiceInfo.getId())
@@ -2171,9 +2179,6 @@ public class InvoiceUI extends JInternalFrame {
 				.partyinfoID(accountInfoVal.getId())
 				.remainingBillAmount(remainingBamount)
 				.remainingWithoutBillAmount(remainingWamount)
-				.paidStatus(InvoicePaymentStatusEnum.PARTIAL_PAID.name())
-				.wpaidstatus(InvoicePaymentStatusEnum.PARTIAL_PAID.name())
-				
 				.build();
 		try{
 			InvoiceDaoImpl.getInstance().update(invoiceInfo);
