@@ -38,9 +38,12 @@ import com.google.common.base.Strings;
 
 import leamon.erp.component.helper.LeamonAutoStockItemTextFieldSuggestor;
 import leamon.erp.db.StockDaoImpl;
+import leamon.erp.db.StockItemQuantityHistoryDaoImpl;
 import leamon.erp.db.StockQuantityDaoImpl;
 import leamon.erp.model.StockItem;
 import leamon.erp.model.StockItemQuantity;
+import leamon.erp.model.StockItemQuantityHistory;
+import leamon.erp.ui.event.FocusListenerHandler;
 import leamon.erp.util.LeamonERPConstants;
 import lombok.Getter;
 /**
@@ -62,32 +65,20 @@ public class StockItemQuantityUI extends JInternalFrame implements KeyListener{
 	private JLabel lblStockItemImage;
 	private JLabel lblID;
 	private JLabel labMsg;
-	private JSpinner spinnerQuanitity;
+	//private JSpinner spinnerQuanitity;JTextField
+	private JTextField spinnerQuanitityPlus;
 	
 	static final Logger LOGGER = Logger.getLogger(StockItemQuantityUI.class);
 	private static final String CLASS_NAME="StockItemQuantityUI";
 	
 	private LeamonAutoStockItemTextFieldSuggestor<List<StockItem>, StockItem> leamonAutoStockItemTextFieldSuggestor;
+	private JTextField textFieldQuanitityOldValue;
+	private JTextField spinnerQuanitityMinus;
 	
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					StockItemQuantityUI frame = new StockItemQuantityUI();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Create the frame.
-	 */
+	private JButton btnSave;
+	
+	private StockItemQuantity stockItemQuantity = null;
+	
 	public StockItemQuantityUI() {
 		setClosable(true);
 		setResizable(true);
@@ -137,7 +128,7 @@ public class StockItemQuantityUI extends JInternalFrame implements KeyListener{
 		JLabel label_3 = new JLabel("Sale Unit");
 		label_3.setForeground((Color) null);
 		label_3.setFont(new Font("DialogInput", Font.BOLD, 16));
-		label_3.setBounds(336, 87, 90, 22);
+		label_3.setBounds(388, 87, 90, 22);
 		panel_1.add(label_3);
 		
 		JLabel label_4 = new JLabel("Description");
@@ -151,7 +142,7 @@ public class StockItemQuantityUI extends JInternalFrame implements KeyListener{
 		textSaleUnit.setFont(new Font("DialogInput", Font.PLAIN, 16));
 		textSaleUnit.setColumns(10);
 		textSaleUnit.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
-		textSaleUnit.setBounds(336, 120, 96, 26);
+		textSaleUnit.setBounds(388, 120, 96, 26);
 		panel_1.add(textSaleUnit);
 		
 		textShape = new JTextField();
@@ -203,7 +194,7 @@ public class StockItemQuantityUI extends JInternalFrame implements KeyListener{
 		btnEdit.addActionListener(e -> btnEditClick(e));
 		panel_1.add(btnEdit);
 		
-		JButton btnSave = new JButton("Save");
+		btnSave = new JButton("Save");
 		btnSave.setBounds(269, 318, 118, 72);
 		btnSave.setIcon(new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.IMG_SAVE_BTN)));
 		btnSave.setForeground(UIManager.getColor("OptionPane.warningDialog.titlePane.foreground"));
@@ -271,7 +262,7 @@ public class StockItemQuantityUI extends JInternalFrame implements KeyListener{
 		txtName.setFont(new Font("DialogInput", Font.PLAIN, 16));
 		txtName.setColumns(10);
 		txtName.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
-		txtName.setBounds(194, 21, 233, 23);
+		txtName.setBounds(74, 21, 450, 23);
 		//txtName.addKeyListener(this);
 		panel_1.add(txtName);
 		autoStockItemDescSuggestor(txtName);
@@ -281,7 +272,7 @@ public class StockItemQuantityUI extends JInternalFrame implements KeyListener{
 		txtSize.setFont(new Font("DialogInput", Font.PLAIN, 16));
 		txtSize.setColumns(10);
 		txtSize.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
-		txtSize.setBounds(191, 50, 235, 26);
+		txtSize.setBounds(133, 50, 293, 26);
 		panel_1.add(txtSize);
 		
 		textFinish = new JTextField();
@@ -309,10 +300,38 @@ public class StockItemQuantityUI extends JInternalFrame implements KeyListener{
 		label_10.setBounds(277, 88, 16, 21);
 		panel_1.add(label_10);
 		
-		spinnerQuanitity = new JSpinner();
-		spinnerQuanitity.setModel(new SpinnerNumberModel(new Integer(0), new Integer(0), null, new Integer(1)));
-		spinnerQuanitity.setBounds(194, 123, 99, 28);
-		panel_1.add(spinnerQuanitity);
+		spinnerQuanitityPlus = new JTextField();
+		//spinnerQuanitity.setModel(new SpinnerNumberModel(new Integer(0), new Integer(0), null, new Integer(1)));
+		spinnerQuanitityPlus.setBounds(194, 123, 54, 28);
+		//spinnerQuanitity.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
+		spinnerQuanitityPlus.addKeyListener(this);
+		panel_1.add(spinnerQuanitityPlus);
+		
+		textFieldQuanitityOldValue = new JTextField();
+		textFieldQuanitityOldValue.setBackground(new Color(255, 255, 255));
+		textFieldQuanitityOldValue.setBounds(16, 121, 90, 28);
+		textFieldQuanitityOldValue.setFont(new Font("DialogInput", Font.PLAIN, 16));
+		textFieldQuanitityOldValue.setColumns(10);
+		textFieldQuanitityOldValue.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
+		textFieldQuanitityOldValue.setEditable(Boolean.FALSE);
+		panel_1.add(textFieldQuanitityOldValue);
+		
+		JLabel label = new JLabel("+");
+		label.setForeground((Color) null);
+		label.setFont(new Font("DialogInput", Font.BOLD, 16));
+		label.setBounds(184, 123, 11, 22);
+		panel_1.add(label);
+		
+		JLabel label_1 = new JLabel("-");
+		label_1.setForeground((Color) null);
+		label_1.setFont(new Font("DialogInput", Font.BOLD, 16));
+		label_1.setBounds(275, 123, 11, 22);
+		panel_1.add(label_1);
+		
+		spinnerQuanitityMinus = new JTextField();
+		//spinnerQuanitityMinus.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
+		spinnerQuanitityMinus.setBounds(285, 123, 54, 28);
+		panel_1.add(spinnerQuanitityMinus);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setToolTipText("stock item image");
@@ -324,11 +343,15 @@ public class StockItemQuantityUI extends JInternalFrame implements KeyListener{
 		lblStockItemImage.setBackground(Color.WHITE);
 		scrollPane.setViewportView(lblStockItemImage);
 
+		registerFocusEvent();
+		registerEnterKeyEvent();
 	}
 	
 	public void setStockItem(StockItem item){
+		clear();
 		LOGGER.info("StockItemQuantityUI[setStockItem] inside.");
 		LOGGER.debug("StockItemQuantityUI[setStockItem] ."+item);
+		
 		txtName.setText(item.getName());
 		textDescription.setText(item.getDescription());
 		textFinish.setText(item.getFinish());
@@ -352,17 +375,16 @@ public class StockItemQuantityUI extends JInternalFrame implements KeyListener{
 	 			.filter(s -> s.getStokItemid().equals(item.getId())).findFirst().orElse(null);
 	 	if(matchedItemQuantity != null){
 	 		try{
-	 		//int quantity = Integer.parseInt(matchedItemQuantity.getQuantity());
 	 			double quantity = Double.parseDouble(matchedItemQuantity.getQuantity());
-	 		((SpinnerNumberModel)spinnerQuanitity.getModel()).setValue(quantity);
+	 			textFieldQuanitityOldValue.setText(String.valueOf(quantity));
+	 			stockItemQuantity = matchedItemQuantity;
 	 		}catch (Exception exp) {
 	 			LOGGER.error(exp);
 			}
 	 	}else{
-	 		((SpinnerNumberModel)spinnerQuanitity.getModel()).setValue(0);
+	 		LOGGER.warn("stock quantity is not found");
 	 	}
 	 	
-		//btnSave.setEnabled(false);
 		if(item.getImagePath() != null && !item.getImagePath().isEmpty()){
 			File f = new File(item.getImagePath());
 			if(f.isFile()){
@@ -445,8 +467,10 @@ public class StockItemQuantityUI extends JInternalFrame implements KeyListener{
 		txtName.requestFocus();
 		lblStockItemImage.setText(LeamonERPConstants.EMPTY_STR);
 		lblStockItemImage.setIcon(new ImageIcon(this.getClass().getClassLoader().getResource(LeamonERPConstants.NO_IMAGE)));
-		//txtName.requestFocus();
-		((SpinnerNumberModel)spinnerQuanitity.getModel()).setValue("0");
+		spinnerQuanitityPlus.setText("0");
+		spinnerQuanitityMinus.setText("0");
+		textFieldQuanitityOldValue.setText("0");
+		stockItemQuantity = null;
 		LOGGER.info("StockItemQuantityUI[clear] btnClear end");
 	}
 	private boolean validateToSave(){
@@ -456,13 +480,26 @@ public class StockItemQuantityUI extends JInternalFrame implements KeyListener{
 	private void saveStockItemQuantity(){
 		LOGGER.info("StockItemQuantityUI[saveStockItemQuantity] inside.");
 		
+//		spinnerPlusClaculation();
+//		spinnerMinusClaculation();
 		/*if(!validateToSave()){
 			return;
 		}*/
 		
-		SpinnerNumberModel numberModel = (SpinnerNumberModel)spinnerQuanitity.getModel();
-		String val = numberModel.getValue().toString();
-		double quantity = numberModel.getNumber().doubleValue();
+		/*------------Release 3.9 changes------------*/
+		String oldQuantity = stockItemQuantity.getQuantity();
+		String plusQuantity = Strings.isNullOrEmpty(spinnerQuanitityPlus.getText())?"0":spinnerQuanitityPlus.getText();
+		String minusQuantity = Strings.isNullOrEmpty(spinnerQuanitityMinus.getText())?"0":spinnerQuanitityMinus.getText();
+		String newQuantity = Strings.isNullOrEmpty(textFieldQuanitityOldValue.getText())?"0":textFieldQuanitityOldValue.getText();
+		/*------------End---------------------------*/
+		
+		String val = textFieldQuanitityOldValue.getText();
+		double quantity = 0;
+		try{
+			quantity = Double.parseDouble(val);
+		}catch(Exception exp){
+			LOGGER.error(exp);
+		}
 		String description = textDescription.getText();
 		String stockItemId  = lblID.getText().trim();
 		if(Strings.isNullOrEmpty(stockItemId)){
@@ -499,7 +536,26 @@ public class StockItemQuantityUI extends JInternalFrame implements KeyListener{
 	 	if(matchedItemQuantity==null){
 	 		/*save logic*/
 	 		try{
+	 			/*Release 3.9 changes */
 				StockQuantityDaoImpl.getInstance().save(stockItemQuantity);
+				StockItemQuantityHistory stockItemQuantityHistory = StockItemQuantityHistory.builder()
+						.action(LeamonERPConstants.ACTION_INSERT)
+						.stokItemid(stockItemQuantity.getId())
+						.oldQuantity(oldQuantity)
+						.minusQuantity(minusQuantity)
+						.plusQuantity(plusQuantity)
+						.newQuantity(newQuantity)
+						.description("")
+						.createdDate(new Timestamp(System.currentTimeMillis()))
+						.lastUpdatedDate(new Timestamp(System.currentTimeMillis()))
+						.isEnable(Boolean.TRUE)
+						.build();
+				try{
+				StockItemQuantityHistoryDaoImpl.getInstance().save(stockItemQuantityHistory);
+				}catch(Exception exp){
+					LOGGER.error(exp);
+				}
+				/*End 3.9 changes*/
 				JOptionPane.showMessageDialog(this, "Saved Successfully.", "Leamon-ERP : Message", JOptionPane.PLAIN_MESSAGE);
 			}catch(Exception exp){
 				JOptionPane.showMessageDialog(this, exp, "Leamon-ERP : ERROR", JOptionPane.ERROR_MESSAGE);
@@ -511,6 +567,28 @@ public class StockItemQuantityUI extends JInternalFrame implements KeyListener{
 	 		try{
 	 			stockItemQuantity.setId(matchedItemQuantity.getId());
 				StockQuantityDaoImpl.getInstance().update(stockItemQuantity);
+				
+				/*---Release 3.9-----*/
+				StockItemQuantityHistory stockItemQuantityHistory = StockItemQuantityHistory.builder()
+						.action(LeamonERPConstants.ACTION_UPDATE)
+						.stokItemid(stockItemQuantity.getId())
+						.oldQuantity(oldQuantity)
+						.minusQuantity(minusQuantity)
+						.plusQuantity(plusQuantity)
+						.newQuantity(newQuantity)
+						.description("")
+						.createdDate(new Timestamp(System.currentTimeMillis()))
+						.lastUpdatedDate(new Timestamp(System.currentTimeMillis()))
+						.isEnable(Boolean.TRUE)
+						.build();
+				try{
+				StockItemQuantityHistoryDaoImpl.getInstance().save(stockItemQuantityHistory);
+				}catch(Exception exp){
+					LOGGER.error(exp);
+				}
+				
+				/*---End 3.9-----*/
+				
 				JOptionPane.showMessageDialog(this, "updated Successfully.", "Leamon-ERP : Message", JOptionPane.PLAIN_MESSAGE);
 			}catch(Exception exp){
 				JOptionPane.showMessageDialog(this, exp, "Leamon-ERP : ERROR", JOptionPane.ERROR_MESSAGE);
@@ -572,6 +650,76 @@ public class StockItemQuantityUI extends JInternalFrame implements KeyListener{
 		setStockItemInfo(stockItemPresent);
 	}
 
+	private void registerFocusEvent(){
+		textSaleUnit.addFocusListener(new FocusListenerHandler());
+		textShape.addFocusListener(new FocusListenerHandler());
+		textDescription.addFocusListener(new FocusListenerHandler());
+		txtProductCode.addFocusListener(new FocusListenerHandler());
+		txtName.addFocusListener(new FocusListenerHandler());
+		txtSize.addFocusListener(new FocusListenerHandler());
+		textFinish.addFocusListener(new FocusListenerHandler());
+		spinnerQuanitityPlus.addFocusListener(new FocusListenerHandler());
+	}
+	
+	private void registerEnterKeyEvent(){
+		txtSize.addKeyListener(this);
+		spinnerQuanitityPlus.addKeyListener(this);
+		spinnerQuanitityMinus.addKeyListener(this);
+		textSaleUnit.addKeyListener(this);
+		txtProductCode.addKeyListener(this);
+		textFinish.addKeyListener(this);
+		textShape.addKeyListener(this);
+		textDescription.addKeyListener(this);
+	}
+	
+	private void spinnerPlusClaculation(){
+		double newAdd = 0;
+		if(!Strings.isNullOrEmpty(spinnerQuanitityPlus.getText())){
+			try{
+				newAdd = Double.parseDouble(spinnerQuanitityPlus.getText());
+			}catch(Exception exp){
+				spinnerQuanitityPlus.setText(String.valueOf("0"));
+			}
+		}
+		double oldValue = 0;
+		if(!Strings.isNullOrEmpty(textFieldQuanitityOldValue.getText())){
+			try{
+				oldValue = Double.parseDouble(textFieldQuanitityOldValue.getText());
+			}catch(Exception exp){
+				LOGGER.error(exp);
+				textFieldQuanitityOldValue.setText(String.valueOf("0"));
+			}
+		}
+		double sumValue = oldValue+newAdd;
+		textFieldQuanitityOldValue.setText(String.valueOf(sumValue));
+	}
+	
+	private void spinnerMinusClaculation(){
+		double newAdd = 0;
+		if(!Strings.isNullOrEmpty(spinnerQuanitityMinus.getText())){
+			try{
+				newAdd = Double.parseDouble(spinnerQuanitityMinus.getText());
+			}catch(Exception exp){
+				spinnerQuanitityMinus.setText(String.valueOf("0"));
+			}
+		}
+		double oldValue = 0;
+		if(!Strings.isNullOrEmpty(textFieldQuanitityOldValue.getText())){
+			try{
+				oldValue = Double.parseDouble(textFieldQuanitityOldValue.getText());
+			}catch(Exception exp){
+				LOGGER.error(exp);
+				textFieldQuanitityOldValue.setText(String.valueOf("0"));
+			}
+		}
+		if(newAdd > oldValue){
+			JOptionPane.showMessageDialog(this, "Invalid Value" , "Leamon-ERP - ERROR", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		double sumValue = oldValue  - newAdd;
+		textFieldQuanitityOldValue.setText(String.valueOf(sumValue));
+	}
+	
 	@Override
 	public void keyTyped(KeyEvent e) {
 		
@@ -579,14 +727,33 @@ public class StockItemQuantityUI extends JInternalFrame implements KeyListener{
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		final int KEY_CODE = e.getKeyCode();
-		if(KEY_CODE == KeyEvent.VK_ENTER){
-			
-		}
-	}
+	
+	}//end key pressed
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		
+		final int KEY_CODE = e.getKeyCode();
+		if(KEY_CODE == KeyEvent.VK_ENTER && !e.isConsumed()){
+			if (e.getSource() == txtSize){
+				spinnerQuanitityPlus.requestFocus();
+			}else if (e.getSource() == spinnerQuanitityPlus){
+				spinnerPlusClaculation();
+				spinnerQuanitityMinus.requestFocus();
+			}else if (e.getSource() == spinnerQuanitityMinus){
+				spinnerMinusClaculation();
+				textSaleUnit.requestFocus();
+			}else if (e.getSource() == textSaleUnit){
+				txtProductCode.requestFocus();
+			}else if (e.getSource() == txtProductCode){
+				textFinish.requestFocus();
+			}else if (e.getSource() == textFinish){
+				textShape.requestFocus();
+			}else if (e.getSource() == textShape){
+				textDescription.requestFocus();
+			}else if (e.getSource() == textDescription){
+				btnSave.requestFocus();
+			}
+			e.consume();
+		}
 	}
 }
