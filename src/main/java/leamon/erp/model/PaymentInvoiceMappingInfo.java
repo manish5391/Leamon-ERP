@@ -30,6 +30,7 @@ public class PaymentInvoiceMappingInfo implements Serializable, Comparable<Payme
 	
 	private Integer paymentReceivedInfo;
 	private Integer invoiceInfoID;
+	private String amount;
 	
 	private Timestamp createdDate;
 	private Timestamp lastUpdated;
