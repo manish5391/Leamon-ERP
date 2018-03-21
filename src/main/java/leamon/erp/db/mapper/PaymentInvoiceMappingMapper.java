@@ -16,6 +16,7 @@ import org.apache.ibatis.annotations.Update;
 import leamon.erp.model.AccountInfo;
 import leamon.erp.model.InvoiceInfo;
 import leamon.erp.model.InvoiceItemInfo;
+import leamon.erp.model.OpeningBalanceInfo;
 import leamon.erp.model.PaymentInvoiceMappingInfo;
 
 @CacheNamespace(implementation = org.mybatis.caches.ehcache.EhcacheCache.class)
@@ -75,17 +76,24 @@ public interface PaymentInvoiceMappingMapper {
 	      
 	      @Result(property = "invoiceInfoID", column = "INVOICEID"),
 	      
+	      @Result(property = "invoiceInfos", javaType=List.class, column = "INVOICEID"
+	      , many=@Many(select="getAllWithChildAndAccount")),
+	      
 	      @Result(property = "openingBalanceID", column = "OPENINGBALANCEID"),
+	      @Result(property = "openigBalanceInfos", javaType=List.class, column = "OPENINGBALANCEID"
+	      , many=@Many(select="getAllOpeningBal")),
+	      
+	      @Result(property = "amount", column = "AMOUNT"),
 	      
 	      @Result(property = "createdDate", column = "CREATEDDATE"),
 	      @Result(property = "lastUpdated", column = "LASTUPDATED"),
 	      @Result(property = "isEnable", column = "ISENABLE")
 	})
-	public List<PaymentInvoiceMappingInfo> getAllByPaymentId();
+	public List<PaymentInvoiceMappingInfo> getAllByPaymentId(Integer paymentReceivedId);
 	
 	
 	/*added to get account info as well*/
-	@Select("SELECT * FROM INVOICE_BILL WHERE ISENABLE = TRUE AND id = #{invoiceInfoID}")
+	@Select("SELECT * FROM INVOICE_BILL WHERE ISENABLE = TRUE AND id = #{INVOICEID}")
 	   @Results(value = {
 	      @Result(property = "id", column = "ID"),
 	      @Result(property = "partyinfoID", column = "PARTYINFOID"),
@@ -170,4 +178,28 @@ public interface PaymentInvoiceMappingMapper {
 	      @Result(property = "isEnable", column = "ISENABLE")
 	})
 	public AccountInfo getAccountInfo();
+	
+	/*----Opening Balance----*/
+	@Select("SELECT * FROM OPENING_BALANCE_INFO WHERE ISENABLE = TRUE AND ID = #{OPENINGBALANCEID}")
+	   @Results(value = {
+	      @Result(property = "id", column = "ID"),
+	      @Result(property = "partyinfoid", column = "PARTYINFOID"),
+	      @Result(property = "billnumber", column = "BILLNUMBER"),
+	      @Result(property = "billdate", column = "BILLDATE"),
+	      @Result(property = "openingbalanceamount", column = "OPENINGBALANCEAMOUNT"),
+	      @Result(property = "receivedopeningbalanceamount", column = "RECEIVEDOPENINGBALANCEAMOUNT"),
+	      @Result(property = "remainingopeningbalanceamount", column = "REMAININGOPENINGBALANCEAMOUNT"),
+	      @Result(property = "remark", column = "REMARK"),
+	      @Result(property = "type", column = "TYPE"),
+	      @Result(property = "status", column = "STATUS"),
+	      
+	      @Result(property = "createdDate", column = "CREATEDDATE"),
+	      @Result(property = "lastUpdated", column = "LASTUPDATED"),
+	      @Result(property = "isEnable", column = "ISENABLE"),
+	      
+	      @Result(property = "accountInfo", javaType=AccountInfo.class, column = "PARTYINFOID"
+	      , one =@One(select="getAccountInfo"))
+	      
+	})
+	public List<OpeningBalanceInfo> getAllOpeningBal() throws Exception;
 }

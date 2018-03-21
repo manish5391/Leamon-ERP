@@ -70,10 +70,12 @@ import leamon.erp.component.helper.LeamonAutoAccountInfoTextFieldSuggestor;
 import leamon.erp.db.AccountDaoImpl;
 import leamon.erp.db.InvoiceDaoImpl;
 import leamon.erp.db.OpeningBalanceDaoImpl;
+import leamon.erp.db.PaymentInvoiceMappingDaoImpl;
 import leamon.erp.db.PaymentReceivedDaoImpl;
 import leamon.erp.model.AccountInfo;
 import leamon.erp.model.InvoiceInfo;
 import leamon.erp.model.OpeningBalanceInfo;
+import leamon.erp.model.PaymentInvoiceMappingInfo;
 import leamon.erp.model.PaymentReceivedInfo;
 import leamon.erp.ui.custom.PaymentReceivedSummaryTableCellRenderer;
 import leamon.erp.ui.model.GenericModelWithSnp;
@@ -540,7 +542,9 @@ public class PaymentUiManager extends JInternalFrame {
 					if(ERPEnum.STATUS_PAYMENT_ADJUSTMENT_NOTHING.name().equals(si.getStatus())){
 						PaymentReceivedDaoImpl.getInstance().disable(si);
 					}else{
-						JOptionPane.showMessageDialog(this, "Failed ! it is adjusted.","Leamon-ERP-Error",JOptionPane.ERROR_MESSAGE);	
+						JOptionPane.showMessageDialog(this, "Failed ! it is adjusted.","Leamon-ERP-Error",JOptionPane.ERROR_MESSAGE);
+						List<PaymentInvoiceMappingInfo> paymentInvoiceMappingInfos = PaymentInvoiceMappingDaoImpl.getInstance().getItemListByPaymentId(si.getId());
+						LOGGER.debug("value are : "+paymentInvoiceMappingInfos);
 					}
 				}catch(Exception e){
 					LOGGER.error(e);
@@ -553,7 +557,9 @@ public class PaymentUiManager extends JInternalFrame {
 					if(ERPEnum.STATUS_PAYMENT_ADJUSTMENT_NOTHING.name().equals(si.getStatus())){
 						PaymentReceivedDaoImpl.getInstance().disable(si);
 					}else{
-						JOptionPane.showMessageDialog(this, "Failed ! it is adjusted.","Leamon-ERP-Error",JOptionPane.ERROR_MESSAGE);	
+						JOptionPane.showMessageDialog(this, "Failed ! it is adjusted.","Leamon-ERP-Error",JOptionPane.ERROR_MESSAGE);
+						List<PaymentInvoiceMappingInfo> paymentInvoiceMappingInfos = PaymentInvoiceMappingDaoImpl.getInstance().getItemListByPaymentId(si.getId());
+						LOGGER.debug("value are : "+paymentInvoiceMappingInfos);
 					}
 				}catch(Exception e){
 					LOGGER.error(e);
@@ -822,36 +828,7 @@ public class PaymentUiManager extends JInternalFrame {
 			list.addAll(paymentReceivedInfos);
 			list.addAll(openingBalanceInfos);
 			list.addAll(invoiceInfos);
-
-			/*try{
-			Collections.sort(list, new Comparator<Object>() {
-				@Override
-				public int compare(Object o1, Object o2) {
-
-					Timestamp t1 = null;
-					Timestamp t2 = null;
-					if(o1 instanceof PaymentReceivedInfo){
-						t1 = ((PaymentReceivedInfo)o1).getLastUpdated();
-					}else if(o1 instanceof OpeningBalanceInfo){
-						t1 = ((OpeningBalanceInfo)o1).getLastUpdated();
-					}else if(o1 instanceof InvoiceInfo){
-						t1 = ((InvoiceInfo)o1).getLastUpdated();
-					}
-
-					if(o2 instanceof PaymentReceivedInfo){
-						t2 = ((PaymentReceivedInfo)o2).getLastUpdated();
-					}else if(o2 instanceof OpeningBalanceInfo){
-						t2 = ((OpeningBalanceInfo)o2).getLastUpdated();
-					}else if(o2 instanceof InvoiceInfo){
-						t2 = ((InvoiceInfo)o2).getLastUpdated();
-					}
-					return t1.compareTo(t2);
-				}
-
-			});
-			}catch(Exception exp){
-				LOGGER.error("Failed to sort by date : "+exp);
-			}*/
+			
 			sortByDate(list);
 			setPaymentInvoiceModel(list);
 		}catch(Exception exp){
@@ -872,35 +849,6 @@ public class PaymentUiManager extends JInternalFrame {
 			list.addAll(openingBalanceInfos);
 			list.addAll(invoiceInfos);
 
-			/*try{
-			Collections.sort(list, new Comparator<Object>() {
-				@Override
-				public int compare(Object o1, Object o2) {
-
-					Timestamp t1 = null;
-					Timestamp t2 = null;
-					if(o1 instanceof PaymentReceivedInfo){
-						t1 = ((PaymentReceivedInfo)o1).getLastUpdated();
-					}else if(o1 instanceof OpeningBalanceInfo){
-						t1 = ((OpeningBalanceInfo)o1).getLastUpdated();
-					}else if(o1 instanceof InvoiceInfo){
-						t1 = ((InvoiceInfo)o1).getLastUpdated();
-					}
-
-					if(o2 instanceof PaymentReceivedInfo){
-						t2 = ((PaymentReceivedInfo)o2).getLastUpdated();
-					}else if(o2 instanceof OpeningBalanceInfo){
-						t2 = ((OpeningBalanceInfo)o2).getLastUpdated();
-					}else if(o2 instanceof InvoiceInfo){
-						t2 = ((InvoiceInfo)o2).getLastUpdated();
-					}
-					return t1.compareTo(t2);
-				}
-
-			});
-			}catch(Exception exp){
-				LOGGER.error("Failed to sort by date : "+exp);
-			}*/
 			sortByDate(list);
 			setPaymentInvoiceModel(list);
 		}catch(Exception exp){
@@ -922,35 +870,6 @@ public class PaymentUiManager extends JInternalFrame {
 			list.addAll(openingBalanceInfos);
 			list.addAll(invoiceInfos);
 
-			/*try{
-			Collections.sort(list, new Comparator<Object>() {
-				@Override
-				public int compare(Object o1, Object o2) {
-
-					Timestamp t1 = null;
-					Timestamp t2 = null;
-					if(o1 instanceof PaymentReceivedInfo){
-						t1 = ((PaymentReceivedInfo)o1).getLastUpdated();
-					}else if(o1 instanceof OpeningBalanceInfo){
-						t1 = ((OpeningBalanceInfo)o1).getLastUpdated();
-					}else if(o1 instanceof InvoiceInfo){
-						t1 = ((InvoiceInfo)o1).getLastUpdated();
-					}
-
-					if(o2 instanceof PaymentReceivedInfo){
-						t2 = ((PaymentReceivedInfo)o2).getLastUpdated();
-					}else if(o2 instanceof OpeningBalanceInfo){
-						t2 = ((OpeningBalanceInfo)o2).getLastUpdated();
-					}else if(o2 instanceof InvoiceInfo){
-						t2 = ((InvoiceInfo)o2).getLastUpdated();
-					}
-					return t1.compareTo(t2);
-				}
-
-			});
-			}catch(Exception exp){
-				LOGGER.error("Failed to sort by date : "+exp);
-			}*/
 			sortByDate(list);
 			setPaymentInvoiceModel(list);
 		}catch(Exception exp){

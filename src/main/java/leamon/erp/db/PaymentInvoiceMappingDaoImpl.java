@@ -92,5 +92,13 @@ public class PaymentInvoiceMappingDaoImpl implements LeamonERPDao<PaymentInvoice
 	}
 	
 	
-	
+	public List<PaymentInvoiceMappingInfo> getItemListByPaymentId(Integer paymentReceivedId) throws Exception{
+		LOGGER.info("PaymentInvoiceMappingDaoImpl[getItemList] inside.");
+		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
+		PaymentInvoiceMappingMapper paymentInvoiceInfoMapper= session.getMapper(PaymentInvoiceMappingMapper.class);
+		List<PaymentInvoiceMappingInfo> paymentInvoiceMappingInfos = paymentInvoiceInfoMapper.getAllByPaymentId(paymentReceivedId);
+		session.close();
+		LOGGER.info("PaymentInvoiceMappingDaoImpl[getItemList] end.");
+		return paymentInvoiceMappingInfos;
+	}
 }
