@@ -84,6 +84,10 @@ public class LeamonERP extends JFrame {
 	public static OpeningBalanceManagerUI openingBalanceManagerUI;
 	/*End*/
 	
+	/*3.9 Release*/
+	public static PaymentAdjustmentDeleteUI paymentAdjustmentDeleteUI;
+	/*End*/
+	
 	public static  List<String> cityCache;
 	public static  List<String> countryCache;
 	public static  List<String> stateCache;
@@ -786,6 +790,7 @@ public class LeamonERP extends JFrame {
 		stockReportUI = new StockReportUI();
 		paymentUiManager = new PaymentUiManager();
 		openingBalanceManagerUI = new  OpeningBalanceManagerUI();
+		paymentAdjustmentDeleteUI = new PaymentAdjustmentDeleteUI();
 		}
 
 	public void initComponents(){

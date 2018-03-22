@@ -17,6 +17,7 @@ import javax.swing.JOptionPane;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.beans.PropertyVetoException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
@@ -545,6 +546,7 @@ public class PaymentUiManager extends JInternalFrame {
 						JOptionPane.showMessageDialog(this, "Failed ! it is adjusted.","Leamon-ERP-Error",JOptionPane.ERROR_MESSAGE);
 						List<PaymentInvoiceMappingInfo> paymentInvoiceMappingInfos = PaymentInvoiceMappingDaoImpl.getInstance().getItemListByPaymentId(si.getId());
 						LOGGER.debug("value are : "+paymentInvoiceMappingInfos);
+						openPaymentAdjustmentDeleteUI(si,paymentInvoiceMappingInfos);
 					}
 				}catch(Exception e){
 					LOGGER.error(e);
@@ -560,6 +562,7 @@ public class PaymentUiManager extends JInternalFrame {
 						JOptionPane.showMessageDialog(this, "Failed ! it is adjusted.","Leamon-ERP-Error",JOptionPane.ERROR_MESSAGE);
 						List<PaymentInvoiceMappingInfo> paymentInvoiceMappingInfos = PaymentInvoiceMappingDaoImpl.getInstance().getItemListByPaymentId(si.getId());
 						LOGGER.debug("value are : "+paymentInvoiceMappingInfos);
+						openPaymentAdjustmentDeleteUI(si,paymentInvoiceMappingInfos);
 					}
 				}catch(Exception e){
 					LOGGER.error(e);
@@ -1093,5 +1096,24 @@ public class PaymentUiManager extends JInternalFrame {
 		}catch(Exception e){ LOGGER.error(e); }
 		
 		return String.valueOf(bd.doubleValue());
+	}
+	
+	private void openPaymentAdjustmentDeleteUI(PaymentReceivedInfo paymentReceivedInfo ,List<PaymentInvoiceMappingInfo> paymentInvoiceMappingInfos){
+		if(LeamonERP.paymentAdjustmentDeleteUI.isVisible()){
+			try {
+				LeamonERP.paymentAdjustmentDeleteUI.clear();
+				LeamonERP.paymentAdjustmentDeleteUI.setPaymentInfo(paymentReceivedInfo, paymentInvoiceMappingInfos);
+				LeamonERP.paymentAdjustmentDeleteUI.setSelected(true);
+			} catch (PropertyVetoException e1) {
+				LOGGER.error(e1.toString());
+			}
+			LeamonERP.paymentAdjustmentDeleteUI.moveToFront();
+		}else{
+			LeamonERP.desktopPane.add(LeamonERP.paymentAdjustmentDeleteUI);
+			LeamonERP.paymentAdjustmentDeleteUI.clear();
+			LeamonERP.paymentAdjustmentDeleteUI.setPaymentInfo(paymentReceivedInfo, paymentInvoiceMappingInfos);
+			LeamonERP.paymentAdjustmentDeleteUI.setVisible(true);
+		}
+		SwingUtilities.updateComponentTreeUI(LeamonERP.paymentAdjustmentDeleteUI);
 	}
 }

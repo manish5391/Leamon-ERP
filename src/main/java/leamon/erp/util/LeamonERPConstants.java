@@ -206,6 +206,11 @@ public interface LeamonERPConstants {
 	String TABLE_HEADER_PARTY_NAME="Party Name";
 	String TABLE_HEADER_B_AMOUNT="B Amt.";
 	String TABLE_HEADER_W_AMOUNT="W Amt.";
+	String TABLE_HEADER_B_REMAINING_AMOUNT="B Rem. Amt.";
+	String TABLE_HEADER_W_REMAINING_AMOUNT="W Rem. Amt.";
+	String TABLE_HEADER_B_ADJUSTED_AMOUNT="B Less Amt.";
+	String TABLE_HEADER_W_ADJUSTED_AMOUNT="W Less Amt.";
+	
 	String TABLE_HEADER_B_STATUS="B Status";
 	String TABLE_HEADER_W_STATUS="W Status";
 	String TABLE_HEADER_G_TOTAL="G.Total";
