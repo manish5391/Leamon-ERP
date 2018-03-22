@@ -115,6 +115,7 @@ public class PaymentUiManager extends JInternalFrame {
 	private JLabel labelTotalBOpeningBal;
 	private JLabel labelBBalance;
 	private JLabel labelWBalance;
+	private JLabel labelGrandBalance;//3.9 ghan code
 	private JComboBox comboBox;
 
 	private JTabbedPane tabbedPane;
@@ -407,6 +408,25 @@ public class PaymentUiManager extends JInternalFrame {
 		panelPaymentInvoice.add(labelWBalance);
 		separator.setBounds(822, 292, 82, 2);
 		panelPaymentInvoice.add(separator);
+		
+		// 3.9 ghan code
+		JLabel lblGrandBalance = new JLabel("Grand Balance");
+		lblGrandBalance.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblGrandBalance.setForeground((Color) null);
+		lblGrandBalance.setFont(new Font("DialogInput", Font.BOLD, 12));
+		lblGrandBalance.setBounds(839, 360, 65, 18);
+		panelPaymentInvoice.add(lblGrandBalance);
+
+		labelGrandBalance = new JLabel("0.00");
+		labelGrandBalance.setHorizontalAlignment(SwingConstants.RIGHT);
+		labelGrandBalance.setForeground((Color) null);
+		labelGrandBalance.setFont(new Font("DialogInput", Font.BOLD, 12));
+		labelGrandBalance.setBackground(new Color(240, 248, 255));
+		labelGrandBalance.setBounds(813, 380, 93, 17);
+		panelPaymentInvoice.add(labelGrandBalance);
+		separator.setBounds(822, 355, 82, 2);
+		panelPaymentInvoice.add(separator);
+		// 3.9 end of ghan code
 
 		JXPanel panelPaymentInvoiceMapping = new JXPanel();
 		panelPaymentInvoiceMapping.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
@@ -1078,6 +1098,11 @@ public class PaymentUiManager extends JInternalFrame {
 		
 		labelBBalance.setText(getRoundff(bSum));
 		labelWBalance.setText(getRoundff(wSum));
+		
+		//3.9 ghan code
+		double grandTotal= (sumTotalBInvoice + sumTotalBOpeningBal+sumTotalWInvoice + sumTotalWOpenigBalance) -(sumBInvoicePayment+sumWInvoicePayment);
+		labelGrandBalance.setText(getRoundff(grandTotal));
+		//3.9 end of ghan code
 	}
 	
 	private String getRoundff(double value){
