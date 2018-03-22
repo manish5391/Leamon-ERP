@@ -35,6 +35,7 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 	private final String [] columnName = new String[] {
 			LeamonERPConstants.TABLE_HEADER_SNO,
 			LeamonERPConstants.TABLE_HEADER_TYPE,
+			LeamonERPConstants.TABLE_HEADER_ID,
 			LeamonERPConstants.TABLE_HEADER_B_AMOUNT,
 			LeamonERPConstants.TABLE_HEADER_W_AMOUNT,
 			LeamonERPConstants.TABLE_HEADER_B_REMAINING_AMOUNT,
@@ -45,6 +46,7 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 
 	private List<PaymentInvoiceMappingInfo> paymentInvoiceMappingInfos;
 	private List<Integer> sno;
+	private String type;
 
 	public TableAdjustedPaymentDeleteModel(List<PaymentInvoiceMappingInfo> paymentInvoiceMappingInfos){
 		if(paymentInvoiceMappingInfos == null){
@@ -56,6 +58,11 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 	public TableAdjustedPaymentDeleteModel(GenericModelWithSnp<List<PaymentInvoiceMappingInfo>, PaymentInvoiceMappingInfo> genericModelWithSnp){
 		this.paymentInvoiceMappingInfos  = genericModelWithSnp.getOb();
 		this.sno = genericModelWithSnp.getSno();
+	}
+
+	public TableAdjustedPaymentDeleteModel(GenericModelWithSnp<List<PaymentInvoiceMappingInfo>, PaymentInvoiceMappingInfo> genericModelWithSnp, String type){
+		this(genericModelWithSnp);
+		this.type = type;
 	}
 
 
@@ -83,19 +90,97 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 			temp = sno.get(rowIndex); 
 		}break;
 
-		case 1: {}break;
+		case 1: {
+			if(paymentInvoiceMappingInfos.get(rowIndex).getOpeningBalanceID() != null ){
+				temp = LeamonERPConstants.OPENING_BALANCE;
+			}else if (paymentInvoiceMappingInfos.get(rowIndex).getInvoiceInfoID() != null ){
+				temp = LeamonERPConstants.INVOICE;
+			}else{
+				temp = "N/A";
+			}
+		}break;
+		case 2: {
+			if(paymentInvoiceMappingInfos.get(rowIndex).getOpeningBalanceID() != null ){
+				temp = paymentInvoiceMappingInfos.get(rowIndex).getOpeningBalanceID();
+			}else if (paymentInvoiceMappingInfos.get(rowIndex).getInvoiceInfoID() != null ){
+				temp = paymentInvoiceMappingInfos.get(rowIndex).getInvoiceInfo().getInvoicNum();
+			}else{
+				temp = "N/A";
+			}
+		}break;
 
-		case 2: {}break;
+		case 3: {
+			if(paymentInvoiceMappingInfos.get(rowIndex).getOpeningBalanceID() != null ){
+				OpeningBalanceInfo openingBalanceInfo = paymentInvoiceMappingInfos.get(rowIndex).getOpenigBalanceInfo();
+				if(openingBalanceInfo.getType().equalsIgnoreCase(LeamonERPConstants.INVOICE_TYPE_WITH_BILL)){
+					temp = openingBalanceInfo.getReceivedopeningbalanceamount(); 
+				}
+			}else if (paymentInvoiceMappingInfos.get(rowIndex).getInvoiceInfoID() != null ){
+				InvoiceInfo invoiceInfo = paymentInvoiceMappingInfos.get(rowIndex).getInvoiceInfo();
+				temp = invoiceInfo.getBillAmount();
+			}
+		}break;
 
-		case 3: {} break;
+		case 4: {
+			if(paymentInvoiceMappingInfos.get(rowIndex).getOpeningBalanceID() != null ){
+				OpeningBalanceInfo openingBalanceInfo = paymentInvoiceMappingInfos.get(rowIndex).getOpenigBalanceInfo();
+				if(openingBalanceInfo.getType().equalsIgnoreCase(LeamonERPConstants.INVOICE_TYPE_WITHOUT_BILL)){
+					temp = openingBalanceInfo.getReceivedopeningbalanceamount(); 
+				}
+			}else if (paymentInvoiceMappingInfos.get(rowIndex).getInvoiceInfoID() != null ){
+				InvoiceInfo invoiceInfo = paymentInvoiceMappingInfos.get(rowIndex).getInvoiceInfo();
+				temp = invoiceInfo.getWithoutBillAmount();
+			}
+		} break;
 
-		case 4: {}break;
+		case 5: {
+			if(paymentInvoiceMappingInfos.get(rowIndex).getOpeningBalanceID() != null ){
+				OpeningBalanceInfo openingBalanceInfo = paymentInvoiceMappingInfos.get(rowIndex).getOpenigBalanceInfo();
+				if(openingBalanceInfo.getType().equalsIgnoreCase(LeamonERPConstants.INVOICE_TYPE_WITH_BILL)){
+					temp = openingBalanceInfo.getRemainingopeningbalanceamount(); 
+				}
+			}else if (paymentInvoiceMappingInfos.get(rowIndex).getInvoiceInfoID() != null ){
+				InvoiceInfo invoiceInfo = paymentInvoiceMappingInfos.get(rowIndex).getInvoiceInfo();
+				temp = invoiceInfo.getRemainingBillAmount();
+			}
+		}break;
 
-		case 5: {}break;
+		case 6: {
+			if(paymentInvoiceMappingInfos.get(rowIndex).getOpeningBalanceID() != null ){
+				OpeningBalanceInfo openingBalanceInfo = paymentInvoiceMappingInfos.get(rowIndex).getOpenigBalanceInfo();
+				if(openingBalanceInfo.getType().equalsIgnoreCase(LeamonERPConstants.INVOICE_TYPE_WITHOUT_BILL)){
+					temp = openingBalanceInfo.getRemainingopeningbalanceamount(); 
+				}
+			}else if (paymentInvoiceMappingInfos.get(rowIndex).getInvoiceInfoID() != null ){
+				InvoiceInfo invoiceInfo = paymentInvoiceMappingInfos.get(rowIndex).getInvoiceInfo();
+				temp = invoiceInfo.getRemainingWithoutBillAmount();
+			}
+		}break;
 
-		case 6: {}break;
-
+		case 7: {
+			if(paymentInvoiceMappingInfos.get(rowIndex).getOpeningBalanceID() != null ){
+				OpeningBalanceInfo openingBalanceInfo = paymentInvoiceMappingInfos.get(rowIndex).getOpenigBalanceInfo();
+				if(openingBalanceInfo.getType().equalsIgnoreCase(LeamonERPConstants.INVOICE_TYPE_WITHOUT_BILL)){
+					temp = paymentInvoiceMappingInfos.get(rowIndex).getAmount();
+				}
+			}else if (paymentInvoiceMappingInfos.get(rowIndex).getInvoiceInfoID() != null ){
+				InvoiceInfo invoiceInfo = paymentInvoiceMappingInfos.get(rowIndex).getInvoiceInfo();
+				temp = invoiceInfo.getRemainingWithoutBillAmount();
+			}
+		}break;
+		case 8: {
+			if(ERPEnum.TYPE_PAYMENT_WITH_BILL.name().equals(type)){
+				temp = paymentInvoiceMappingInfos.get(rowIndex).getAmount();
+			}
+		}break;
+		case 9: {
+			if(ERPEnum.TYPE_PAYMENT_WITHOUT_BILL.name().equals(type)){
+				temp = paymentInvoiceMappingInfos.get(rowIndex).getAmount();
+			}
+		}break;
+		
 		}
+
 		return temp;
 	}
 
@@ -114,6 +199,9 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 		case 4: return String.class;
 		case 5: return String.class;
 		case 6: return String.class;
+		case 7: return String.class;
+		case 8: return String.class;
+		case 9: return String.class;
 		default : 
 			return Object.class;
 		}

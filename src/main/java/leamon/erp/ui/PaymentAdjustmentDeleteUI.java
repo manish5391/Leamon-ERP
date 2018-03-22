@@ -3,20 +3,25 @@ package leamon.erp.ui;
 import java.awt.EventQueue;
 
 import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXTextField;
 
+import leamon.erp.model.InvoiceInfo;
 import leamon.erp.model.PaymentInvoiceMappingInfo;
 import leamon.erp.model.PaymentReceivedInfo;
+import leamon.erp.ui.event.MouseClickHandler;
 import leamon.erp.ui.model.GenericModelWithSnp;
 import leamon.erp.ui.model.TableAdjustedPaymentDeleteModel;
 import leamon.erp.ui.model.TablePaymentInvoiceOpeningBalanceModel;
+import leamon.erp.ui.model.TableAdjustedPaymentDeleteModel;
 import leamon.erp.util.ERPEnum;
 import leamon.erp.util.LeamonERPConstants;
 import leamon.erp.util.PaymentEnum;
 
 import java.awt.Font;
+import java.beans.PropertyVetoException;
 import java.text.DateFormat;
 
 import org.jdesktop.swingx.JXLabel;
@@ -33,6 +38,8 @@ import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
 import javax.swing.JCheckBox;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
+
 import org.jdesktop.swingx.JXTable;
 
 public class PaymentAdjustmentDeleteUI extends JInternalFrame {
@@ -164,6 +171,9 @@ public class PaymentAdjustmentDeleteUI extends JInternalFrame {
 		getContentPane().add(scrollPane);
 		
 		tableAdjustments = new JXTable();
+		tableAdjustments.setColumnControlVisible(true);
+		tableAdjustments.setName(LeamonERPConstants.TABLE_PAYMNET_INVOICE_MAPPING_DELETE);
+		tableAdjustments.addMouseListener(new MouseClickHandler());
 		scrollPane.setViewportView(tableAdjustments);
 		
 		
@@ -212,13 +222,59 @@ public class PaymentAdjustmentDeleteUI extends JInternalFrame {
 		List<Integer> snos = IntStream.range(1, 1+paymentInvoiceMappingInfosList.size()).boxed().collect(Collectors.toList());
 		GenericModelWithSnp<List<PaymentInvoiceMappingInfo>, PaymentInvoiceMappingInfo> paymentInvoiceMappingListModel = 
 				new GenericModelWithSnp<List<PaymentInvoiceMappingInfo>, PaymentInvoiceMappingInfo>(paymentInvoiceMappingInfosList, snos);
-		TableAdjustedPaymentDeleteModel  tableModel = new TableAdjustedPaymentDeleteModel(paymentInvoiceMappingListModel);
+		TableAdjustedPaymentDeleteModel  tableModel = new TableAdjustedPaymentDeleteModel(paymentInvoiceMappingListModel,paymentReceivedInfo.getType());
 		tableAdjustments.setModel(tableModel);
+		/*show hide column*/
+		tableAdjustments.getColumnExt(LeamonERPConstants.TABLE_HEADER_W_AMOUNT).setVisible(false);
 	}
 	
 	public void clear(){
 		textFieldPartyName.setText(LeamonERPConstants.EMPTY_STR);
 		textFieldPayment.setText(LeamonERPConstants.EMPTY_STR);
 		textFieldRemark.setText(LeamonERPConstants.EMPTY_STR);
+	}
+	
+	public void openInvoice(){
+		LOGGER.info(CLASS_NAME+"[openInvoice] inside");
+		int selectedRow = tableAdjustments.getSelectedRow();
+		
+		if(selectedRow == LeamonERPConstants.NO_ROW_SELECTED){
+			JOptionPane.showMessageDialog(this, "Please select atleast one item", "Warning", JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+		
+		/*Get accurate selected row after filtering records*/
+		if(tableAdjustments.getRowSorter() != null){
+			selectedRow = tableAdjustments.getRowSorter().convertRowIndexToModel(selectedRow);
+		}
+		
+		TableAdjustedPaymentDeleteModel model  = (TableAdjustedPaymentDeleteModel)tableAdjustments.getModel();
+		List<PaymentInvoiceMappingInfo> paymentInvoiceMappingInfos = model.getPaymentInvoiceMappingInfos();
+		
+		//List<InvoiceInfo> invoiceInfos = model.getInvoiceInfos();
+		if(paymentInvoiceMappingInfos.get(selectedRow).getInvoiceInfoID()==null){
+			JOptionPane.showMessageDialog(this, "It's not invoice","Leamon-ERP Error Message", JOptionPane.ERROR_MESSAGE);
+			return ;
+		}
+		//InvoiceInfo invoiceInfo = invoiceInfos.get(selectedRow);
+		InvoiceInfo invoiceInfo = paymentInvoiceMappingInfos.get(selectedRow).getInvoiceInfo();
+		if(invoiceInfo.isOpeningBalance()){
+			JOptionPane.showMessageDialog(this, "It's not invoice","Leamon-ERP Error Message", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		if(!LeamonERP.invoiceUI.isVisible()){
+			LeamonERP.desktopPane.add(LeamonERP.invoiceUI);
+		}
+		LeamonERP.invoiceUI.requestFocus();
+		try {
+			LeamonERP.invoiceUI.setSelected(true);
+		} catch (PropertyVetoException e1) {
+			LOGGER.error(CLASS_NAME+"[openInvoice] "+e1);
+		}
+		LeamonERP.invoiceUI.setInvoiceInfo(invoiceInfo);
+		LeamonERP.invoiceUI.setVisible(true);
+		LeamonERP.invoiceUI.moveToFront();
+		SwingUtilities.updateComponentTreeUI(this);
+		LOGGER.info(CLASS_NAME+"[openInvoice] End.");
 	}
 }

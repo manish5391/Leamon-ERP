@@ -41,8 +41,8 @@ public class PaymentInvoiceMappingInfo implements Serializable, Comparable<Payme
 	private Integer openingBalanceID;
 	
 	/*----Release 3.9-----*/
-	private List<InvoiceInfo> invoiceInfos;
-	private List<OpeningBalanceInfo> openigBalanceInfos;
+	private InvoiceInfo invoiceInfo;
+	private OpeningBalanceInfo openigBalanceInfo;
 	/*----End------------*/
 	
 	@Override

@@ -352,5 +352,7 @@ public interface LeamonERPConstants {
 	public static String ACTION_INSERT= "INSERT";
 	public static String ACTION_UPDATE= "UPDATE";
 	public static String ACTION_DELETE= "DELETE";
+	public static String TABLE_HEADER_ID = "ID";
+	public static String TABLE_PAYMNET_INVOICE_MAPPING_DELETE = "PAYMNET_INVOICE_MAPPING_DELETE";
 	/*------End----------------*/
 }

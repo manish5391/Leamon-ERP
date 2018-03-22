@@ -76,12 +76,12 @@ public interface PaymentInvoiceMappingMapper {
 	      
 	      @Result(property = "invoiceInfoID", column = "INVOICEID"),
 	      
-	      @Result(property = "invoiceInfos", javaType=List.class, column = "INVOICEID"
-	      , many=@Many(select="getAllWithChildAndAccount")),
+	      @Result(property = "invoiceInfo", javaType=InvoiceInfo.class, column = "INVOICEID"
+	      ,one =@One(select="getAllWithChildAndAccount")),
 	      
 	      @Result(property = "openingBalanceID", column = "OPENINGBALANCEID"),
-	      @Result(property = "openigBalanceInfos", javaType=List.class, column = "OPENINGBALANCEID"
-	      , many=@Many(select="getAllOpeningBal")),
+	      @Result(property = "openigBalanceInfo", javaType=OpeningBalanceInfo.class, column = "OPENINGBALANCEID"
+	      , one =@One(select="getAllOpeningBal")),
 	      
 	      @Result(property = "amount", column = "AMOUNT"),
 	      
@@ -132,7 +132,7 @@ public interface PaymentInvoiceMappingMapper {
 	      @Result(property = "accountInfo", javaType=AccountInfo.class, column = "PARTYINFOID"
 	      , one =@One(select="getAccountInfo"))
 	})
-	public List<InvoiceInfo> getAllWithChildAndAccount();
+	public InvoiceInfo getAllWithChildAndAccount();
 	
 	@Select("SELECT * FROM INVOICE_ITEM WHERE ISENABLE = TRUE AND invoiceID = #{ID}")
 	   @Results(value = {
@@ -201,5 +201,5 @@ public interface PaymentInvoiceMappingMapper {
 	      , one =@One(select="getAccountInfo"))
 	      
 	})
-	public List<OpeningBalanceInfo> getAllOpeningBal() throws Exception;
+	public OpeningBalanceInfo getAllOpeningBal() throws Exception;
 }

@@ -6,7 +6,6 @@ import java.awt.EventQueue;
 import javax.swing.JInternalFrame;
 
 import org.apache.log4j.Logger;
-import org.apache.xpath.operations.Bool;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;

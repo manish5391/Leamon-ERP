@@ -38,6 +38,8 @@ public class MouseClickHandler implements MouseListener{
 					LeamonERP.paymentReceivedUI.openInvoice("View");
 				}else if(LeamonERPConstants.TABLE_STATE_CITY.equals(table.getName())){ /*Release 3.6*/
 					LeamonERP.stateCityManagerUI.getBtnView().doClick();
+				}else if (LeamonERPConstants.TABLE_PAYMNET_INVOICE_MAPPING_DELETE.equals(table.getName())){ /*Release 3.9*/
+					LeamonERP.paymentAdjustmentDeleteUI.openInvoice();
 				}
 			}
 		}else{

@@ -3,6 +3,7 @@ package leamon.erp.model;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import leamon.erp.util.ERPEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -38,7 +39,7 @@ public class PaymentReceivedInfo implements Serializable, Comparable<PaymentRece
 	private String  remainingAmount;  // receivedPayment - adjustedPayment  
 	private String  status; /*CLEAR, PARTIAL-ADJUSTED*/
 	private String 	remark;
-	private String 	type;
+	private String 	type; /*ERPEnum.TYPE_PAYMENT_WITHOUT_BILL.name()*/
 	private String 	receivedDate;
 	
 	/*get related accountInfo*/
