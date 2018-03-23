@@ -19,6 +19,7 @@ import leamon.erp.ui.model.TableAdjustedPaymentDeleteModel;
 import leamon.erp.util.ERPEnum;
 import leamon.erp.util.LeamonERPConstants;
 import leamon.erp.util.PaymentEnum;
+import lombok.Getter;
 
 import java.awt.Font;
 import java.beans.PropertyVetoException;
@@ -42,6 +43,7 @@ import javax.swing.SwingUtilities;
 
 import org.jdesktop.swingx.JXTable;
 
+@Getter
 public class PaymentAdjustmentDeleteUI extends JInternalFrame {
 	
 	private static final Logger LOGGER = Logger.getLogger(PaymentAdjustmentDeleteUI.class);
@@ -222,10 +224,20 @@ public class PaymentAdjustmentDeleteUI extends JInternalFrame {
 		List<Integer> snos = IntStream.range(1, 1+paymentInvoiceMappingInfosList.size()).boxed().collect(Collectors.toList());
 		GenericModelWithSnp<List<PaymentInvoiceMappingInfo>, PaymentInvoiceMappingInfo> paymentInvoiceMappingListModel = 
 				new GenericModelWithSnp<List<PaymentInvoiceMappingInfo>, PaymentInvoiceMappingInfo>(paymentInvoiceMappingInfosList, snos);
-		TableAdjustedPaymentDeleteModel  tableModel = new TableAdjustedPaymentDeleteModel(paymentInvoiceMappingListModel,paymentReceivedInfo.getType());
+		TableAdjustedPaymentDeleteModel  tableModel = new TableAdjustedPaymentDeleteModel(paymentInvoiceMappingListModel,paymentReceivedInfo.getType(),this);
 		tableAdjustments.setModel(tableModel);
 		/*show hide column*/
-		tableAdjustments.getColumnExt(LeamonERPConstants.TABLE_HEADER_W_AMOUNT).setVisible(false);
+		if(ERPEnum.TYPE_PAYMENT_WITH_BILL.name().equals(paymentReceivedInfo.getType())){
+			tableAdjustments.getColumnExt(LeamonERPConstants.TABLE_HEADER_W_AMOUNT).setVisible(false);
+			tableAdjustments.getColumnExt(LeamonERPConstants.TABLE_HEADER_W_REMAINING_AMOUNT).setVisible(false);
+			tableAdjustments.getColumnExt(LeamonERPConstants.TABLE_HEADER_W_ADJUSTED_AMOUNT).setVisible(false);
+		}
+		if(ERPEnum.TYPE_PAYMENT_WITHOUT_BILL.name().equals(paymentReceivedInfo.getType())){
+			tableAdjustments.getColumnExt(LeamonERPConstants.TABLE_HEADER_B_AMOUNT).setVisible(false);
+			tableAdjustments.getColumnExt(LeamonERPConstants.TABLE_HEADER_B_REMAINING_AMOUNT).setVisible(false);
+			tableAdjustments.getColumnExt(LeamonERPConstants.TABLE_HEADER_B_ADJUSTED_AMOUNT).setVisible(false);
+		}
+		
 	}
 	
 	public void clear(){
