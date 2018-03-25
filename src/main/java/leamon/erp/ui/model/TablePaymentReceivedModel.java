@@ -467,7 +467,7 @@ public class TablePaymentReceivedModel extends AbstractTableModel{
 	public void unCheckWithoutBillAmtAdjustment(InvoiceInfo info, int rowIndex, int columnIndex, Boolean isChecked, double amount){
 		double receivedAmount =  receivedWithOutBillAmount.get(rowIndex);
 		double billAmt = 0;
-
+		isWAmount.set(rowIndex, Boolean.FALSE.booleanValue());
 		try{
 			billAmt = Double.parseDouble(info.getRemainingWithoutBillAmount());
 		}catch(Exception e){
@@ -499,7 +499,7 @@ public class TablePaymentReceivedModel extends AbstractTableModel{
 	public void unCheckWithoutBillAmtAdjustmentOpeningBal(InvoiceInfo invoiceInfo, int rowIndex, int columnIndex, Boolean isChecked, double amount){
 		
 		OpeningBalanceInfo info = invoiceInfo.getOpenigBalanceInfo();
-		
+		isWAmount.set(rowIndex, Boolean.FALSE.booleanValue());
 		double receivedAmount =  receivedWithOutBillAmount.get(rowIndex);
 		double billAmt = 0;
 
@@ -673,7 +673,7 @@ public class TablePaymentReceivedModel extends AbstractTableModel{
 	private void unCheckBCalculation(InvoiceInfo info, int rowIndex, int columnIndex, Boolean isChecked){
 		double receivedAmount =  receivedBillAmount.get(rowIndex);
 		double billAmt = 0;
-
+		isBAmount.set(rowIndex, Boolean.FALSE.booleanValue());
 		try{
 			billAmt = Double.parseDouble(info.getRemainingBillAmount());
 		}catch(Exception e){
@@ -706,6 +706,7 @@ public class TablePaymentReceivedModel extends AbstractTableModel{
 		double receivedAmount =  receivedBillAmount.get(rowIndex);
 		double billAmt = 0;
 		
+		isBAmount.set(rowIndex, Boolean.FALSE.booleanValue());
 		OpeningBalanceInfo info = invoiceInfo.getOpenigBalanceInfo();
 		try{
 			billAmt = Double.parseDouble(info.getRemainingopeningbalanceamount());

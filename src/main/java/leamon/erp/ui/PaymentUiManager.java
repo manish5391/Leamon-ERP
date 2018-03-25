@@ -566,6 +566,7 @@ public class PaymentUiManager extends JInternalFrame {
 						List<PaymentInvoiceMappingInfo> paymentInvoiceMappingInfos = PaymentInvoiceMappingDaoImpl.getInstance().getItemListByPaymentId(si.getId());
 						LOGGER.debug("value are : "+paymentInvoiceMappingInfos);
 						openPaymentAdjustmentDeleteUI(si,paymentInvoiceMappingInfos);
+						return ;
 					}
 				}catch(Exception e){
 					LOGGER.error(e);
@@ -582,6 +583,7 @@ public class PaymentUiManager extends JInternalFrame {
 						List<PaymentInvoiceMappingInfo> paymentInvoiceMappingInfos = PaymentInvoiceMappingDaoImpl.getInstance().getItemListByPaymentId(si.getId());
 						LOGGER.debug("value are : "+paymentInvoiceMappingInfos);
 						openPaymentAdjustmentDeleteUI(si,paymentInvoiceMappingInfos);
+						return ;
 					}
 				}catch(Exception e){
 					LOGGER.error(e);

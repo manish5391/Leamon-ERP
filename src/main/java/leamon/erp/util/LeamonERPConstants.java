@@ -204,18 +204,18 @@ public interface LeamonERPConstants {
 	String TABLE_HEADER_BILL_NO="Bill No.";
 	String TABLE_HEADER_INVOICE_DATE="Invoice Date";
 	String TABLE_HEADER_PARTY_NAME="Party Name";
-	String TABLE_HEADER_B_AMOUNT="B Amt.";
-	String TABLE_HEADER_W_AMOUNT="W Amt.";
-	String TABLE_HEADER_B_REMAINING_AMOUNT="B Rem. Amt.";
-	String TABLE_HEADER_W_REMAINING_AMOUNT="W Rem. Amt.";
-	String TABLE_HEADER_B_ADJUSTED_AMOUNT="B Less Amt.";
-	String TABLE_HEADER_W_ADJUSTED_AMOUNT="W Less Amt.";
+	String TABLE_HEADER_B_AMOUNT="B.Amt.";
+	String TABLE_HEADER_W_AMOUNT="W.Amt.";
+	String TABLE_HEADER_B_REMAINING_AMOUNT="B.Rem.Amt.";
+	String TABLE_HEADER_W_REMAINING_AMOUNT="W.Rem.Amt.";
+	String TABLE_HEADER_ADJUSTED_AMOUNT="+Amt.";
+	String TABLE_HEADER_W_ADJUSTED_AMOUNT="W.+Amt.";
 	
 	String TABLE_HEADER_B_STATUS="B Status";
 	String TABLE_HEADER_W_STATUS="W Status";
 	String TABLE_HEADER_G_TOTAL="G.Total";
-	String TABLE_HEADER_B_RECEIVED_AMOUNT="B Rec. Amt.";
-	String TABLE_HEADER_W_RECEIVED_AMOUNT="W Rec. Amt";
+	String TABLE_HEADER_B_RECEIVED_AMOUNT="B.Rec.Amt.";
+	String TABLE_HEADER_W_RECEIVED_AMOUNT="W.Rec.Amt";
 	String TABLE_HEADER_B_REMARK="B Remark";
 	String TABLE_HEADER_W_REMARK="W Remark";
 	String TABLE_HEADER_DESC="Desc";
@@ -357,5 +357,7 @@ public interface LeamonERPConstants {
 	String TABLE_HEADER_ADJUST_REMOVAL="Adjust Rem.";
 	public static String TABLE_HEADER_PAID_W_STATUS = "W.Paid Status";
 	public static String TABLE_HEADER_PAID_B_STATUS = "B.Paid Status";
+	public static String TABLE_HEADER_PAYMENT_ID = "P.ID";
+	public static String TABLE_HEADER_PAYMENT_ADJUSTED = "Adjusted?";
 	/*------End----------------*/
 }

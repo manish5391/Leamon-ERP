@@ -19,7 +19,7 @@ import leamon.erp.model.InvoiceItemInfo;
 import leamon.erp.model.OpeningBalanceInfo;
 import leamon.erp.model.PaymentInvoiceMappingInfo;
 
-@CacheNamespace(implementation = org.mybatis.caches.ehcache.EhcacheCache.class)
+//@CacheNamespace(implementation = org.mybatis.caches.ehcache.EhcacheCache.class)
 public interface PaymentInvoiceMappingMapper {
 	
 	final String getAll = "SELECT * FROM PAYMENT_INVOICE_MAPPING WHERE ISENABLE = TRUE"; 

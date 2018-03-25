@@ -3,6 +3,7 @@ package leamon.erp.model;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import leamon.erp.util.InvoicePaymentStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -40,7 +41,7 @@ public class OpeningBalanceInfo implements Serializable, Comparable<OpeningBalan
 	private String	remainingopeningbalanceamount;
 	private String	remark;						
 	private String	type;	/*W- without bill, B- with bill  (ERPEnum.TYPE_PAYMENT_WITHOUT_BILL.name())*/				
-	private String  status; /*CLEAR, PARTIAL-ADJUSTED*/
+	private String  status; /*CLEAR, PARTIAL-ADJUSTED*/ //InvoicePaymentStatusEnum.ALL_CLEAR.name()
 	
 	/*get related accountInfo*/
 	private AccountInfo accountInfo;

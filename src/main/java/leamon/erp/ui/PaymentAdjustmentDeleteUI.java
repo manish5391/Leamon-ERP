@@ -37,6 +37,7 @@ import java.util.stream.IntStream;
 
 import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
+import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
@@ -58,6 +59,8 @@ public class PaymentAdjustmentDeleteUI extends JInternalFrame {
 	private JXTextField textFieldRemainingAmt;
 	private JXTextField textFieldRemark;
 	private JXTable tableAdjustments;
+	private JXLabel labelHiddenID;
+	private  ButtonGroup bg;
 	
 	public PaymentAdjustmentDeleteUI() {
 		
@@ -74,21 +77,21 @@ public class PaymentAdjustmentDeleteUI extends JInternalFrame {
 		textFieldPartyName.setName("txtPartyName");
 		textFieldPartyName.setFont(new Font("DialogInput", Font.PLAIN, 16));
 		textFieldPartyName.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
-		textFieldPartyName.setBounds(103, 13, 582, 23);
+		textFieldPartyName.setBounds(103, 22, 582, 23);
 		getContentPane().add(textFieldPartyName);
 		
 		JXLabel label = new JXLabel();
 		label.setText("Party Name");
 		label.setForeground(Color.BLACK);
 		label.setFont(new Font("Trebuchet MS", Font.BOLD, 13));
-		label.setBounds(10, 11, 71, 18);
+		label.setBounds(10, 24, 71, 18);
 		getContentPane().add(label);
 		
 		JXLabel label_1 = new JXLabel();
 		label_1.setText("Payment");
 		label_1.setForeground(Color.BLACK);
 		label_1.setFont(new Font("Trebuchet MS", Font.BOLD, 13));
-		label_1.setBounds(10, 37, 71, 18);
+		label_1.setBounds(10, 48, 71, 18);
 		getContentPane().add(label_1);
 		
 		textFieldPayment = new JXTextField();
@@ -97,17 +100,17 @@ public class PaymentAdjustmentDeleteUI extends JInternalFrame {
 		textFieldPayment.setFont(new Font("DialogInput", Font.PLAIN, 16));
 		textFieldPayment.setEnabled(true);
 		textFieldPayment.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
-		textFieldPayment.setBounds(103, 38, 184, 23);
+		textFieldPayment.setBounds(103, 44, 184, 23);
 		getContentPane().add(textFieldPayment);
 		
 		datePicker = new JXTextField();
-		datePicker.setBounds(695, 15, 145, 22);
+		datePicker.setBounds(695, 22, 145, 22);
 		getContentPane().add(datePicker);
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		panel.setBackground(new Color(102, 205, 170));
-		panel.setBounds(103, 62, 190, 38);
+		panel.setBounds(103, 70, 190, 38);
 		getContentPane().add(panel);
 		
 		chckbxAdjustBillAmount = new JCheckBox("B. Adjust");
@@ -125,21 +128,21 @@ public class PaymentAdjustmentDeleteUI extends JInternalFrame {
 		textFieldAdjAmt.setEnabled(true);
 		textFieldAdjAmt.setEditable(false);
 		textFieldAdjAmt.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
-		textFieldAdjAmt.setBounds(303, 75, 156, 23);
+		textFieldAdjAmt.setBounds(303, 83, 156, 23);
 		getContentPane().add(textFieldAdjAmt);
 		
 		JXLabel label_2 = new JXLabel();
 		label_2.setText("Adjusted");
 		label_2.setForeground(Color.BLACK);
 		label_2.setFont(new Font("Trebuchet MS", Font.BOLD, 13));
-		label_2.setBounds(303, 58, 59, 18);
+		label_2.setBounds(303, 63, 59, 18);
 		getContentPane().add(label_2);
 		
 		JXLabel label_3 = new JXLabel();
 		label_3.setText("Remaining");
 		label_3.setForeground(Color.BLACK);
 		label_3.setFont(new Font("Trebuchet MS", Font.BOLD, 13));
-		label_3.setBounds(507, 58, 71, 18);
+		label_3.setBounds(507, 63, 71, 18);
 		getContentPane().add(label_3);
 		
 		textFieldRemainingAmt = new JXTextField();
@@ -149,7 +152,7 @@ public class PaymentAdjustmentDeleteUI extends JInternalFrame {
 		textFieldRemainingAmt.setEnabled(true);
 		textFieldRemainingAmt.setEditable(false);
 		textFieldRemainingAmt.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
-		textFieldRemainingAmt.setBounds(500, 75, 156, 23);
+		textFieldRemainingAmt.setBounds(500, 83, 156, 23);
 		getContentPane().add(textFieldRemainingAmt);
 		
 		textFieldRemark = new JXTextField();
@@ -158,18 +161,18 @@ public class PaymentAdjustmentDeleteUI extends JInternalFrame {
 		textFieldRemark.setFont(new Font("DialogInput", Font.PLAIN, 16));
 		textFieldRemark.setEnabled(true);
 		textFieldRemark.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
-		textFieldRemark.setBounds(103, 103, 737, 23);
+		textFieldRemark.setBounds(103, 113, 737, 23);
 		getContentPane().add(textFieldRemark);
 		
 		JXLabel label_4 = new JXLabel();
 		label_4.setText("Remark");
 		label_4.setForeground(Color.BLACK);
 		label_4.setFont(new Font("Trebuchet MS", Font.BOLD, 13));
-		label_4.setBounds(10, 100, 46, 18);
+		label_4.setBounds(10, 113, 46, 18);
 		getContentPane().add(label_4);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 137, 842, 316);
+		scrollPane.setBounds(10, 142, 842, 316);
 		getContentPane().add(scrollPane);
 		
 		tableAdjustments = new JXTable();
@@ -178,6 +181,15 @@ public class PaymentAdjustmentDeleteUI extends JInternalFrame {
 		tableAdjustments.addMouseListener(new MouseClickHandler());
 		scrollPane.setViewportView(tableAdjustments);
 		
+		bg=new ButtonGroup();
+		bg.add(chckbxAdjustBillAmount);
+		bg.add(chckbxWamountAdjust);
+		
+		labelHiddenID = new JXLabel();
+		labelHiddenID.setForeground(Color.BLACK);
+		labelHiddenID.setFont(new Font("Trebuchet MS", Font.BOLD, 13));
+		labelHiddenID.setBounds(10, 0, 122, 18);
+		getContentPane().add(labelHiddenID);
 		
 		isEnableOnLoad(Boolean.FALSE); 
 	}
@@ -192,6 +204,8 @@ public class PaymentAdjustmentDeleteUI extends JInternalFrame {
 		datePicker.setEditable(isEditable);
 	}
 	public void setPaymentInfo(PaymentReceivedInfo paymentReceivedInfo ,List<PaymentInvoiceMappingInfo> paymentInvoiceMappingInfos){
+		clear();
+		labelHiddenID.setText("Id: "+paymentReceivedInfo.getId().intValue());
 		textFieldPartyName.setText(paymentReceivedInfo.getAccountInfo().getName());
 		textFieldPayment.setText(paymentReceivedInfo.getReceivedPayment());
 		textFieldRemark.setText(paymentReceivedInfo.getRemark());
@@ -230,12 +244,12 @@ public class PaymentAdjustmentDeleteUI extends JInternalFrame {
 		if(ERPEnum.TYPE_PAYMENT_WITH_BILL.name().equals(paymentReceivedInfo.getType())){
 			tableAdjustments.getColumnExt(LeamonERPConstants.TABLE_HEADER_W_AMOUNT).setVisible(false);
 			tableAdjustments.getColumnExt(LeamonERPConstants.TABLE_HEADER_W_REMAINING_AMOUNT).setVisible(false);
-			tableAdjustments.getColumnExt(LeamonERPConstants.TABLE_HEADER_W_ADJUSTED_AMOUNT).setVisible(false);
+			tableAdjustments.getColumnExt(LeamonERPConstants.TABLE_HEADER_PAID_W_STATUS).setVisible(false);
 		}
 		if(ERPEnum.TYPE_PAYMENT_WITHOUT_BILL.name().equals(paymentReceivedInfo.getType())){
 			tableAdjustments.getColumnExt(LeamonERPConstants.TABLE_HEADER_B_AMOUNT).setVisible(false);
 			tableAdjustments.getColumnExt(LeamonERPConstants.TABLE_HEADER_B_REMAINING_AMOUNT).setVisible(false);
-			tableAdjustments.getColumnExt(LeamonERPConstants.TABLE_HEADER_B_ADJUSTED_AMOUNT).setVisible(false);
+			tableAdjustments.getColumnExt(LeamonERPConstants.TABLE_HEADER_PAID_B_STATUS).setVisible(false);
 		}
 		
 	}
@@ -244,6 +258,12 @@ public class PaymentAdjustmentDeleteUI extends JInternalFrame {
 		textFieldPartyName.setText(LeamonERPConstants.EMPTY_STR);
 		textFieldPayment.setText(LeamonERPConstants.EMPTY_STR);
 		textFieldRemark.setText(LeamonERPConstants.EMPTY_STR);
+		textFieldAdjAmt.setText(LeamonERPConstants.EMPTY_STR);
+		textFieldRemainingAmt.setText(LeamonERPConstants.EMPTY_STR);
+		List<PaymentInvoiceMappingInfo> paymentInvoiceMappingInfos = new ArrayList<PaymentInvoiceMappingInfo>();
+		TableAdjustedPaymentDeleteModel  tableModel = new TableAdjustedPaymentDeleteModel(paymentInvoiceMappingInfos);
+		tableAdjustments.setModel(tableModel);
+		bg.clearSelection();
 	}
 	
 	public void openInvoice(){

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
 
+import leamon.erp.util.InvoicePaymentStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -54,7 +55,7 @@ public class InvoiceInfo implements Serializable, Comparable<InvoiceInfo>{
 	private String remainingWithoutBillAmount; //how much is left to paid in packing amount
 	private String paidBillAmount; //how much is paid
 	private String paidWithoutBillAmount; //how much is paid in packing amount
-	private String paidStatus; //CLEAR, REMAINING, NOTHING PAID
+	private String paidStatus; //CLEAR, REMAINING, NOTHING PAID  InvoicePaymentStatusEnum.ALL_CLEAR.name()   
 	private String wpaidstatus; //clear, remaining, Nothing Paid
 	
 	/*Release 3.3 -- DEC 19,2017 mapped with partyinfoid*/

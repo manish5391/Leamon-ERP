@@ -29,11 +29,13 @@ public class TablePaymentReceivedHistoryModel extends AbstractTableModel{
 
 	private final String [] columnName = new String[] {
 			LeamonERPConstants.TABLE_HEADER_SNO,
+			LeamonERPConstants.TABLE_HEADER_PAYMENT_ID,
 			LeamonERPConstants.TABLE_HEADER_PARTY_NAME,
 			LeamonERPConstants.TABLE_HEADER_AMOUNT,
 			LeamonERPConstants.TABLE_HEADER_TYPE,
 			LeamonERPConstants.TABLE_HEADER_DATE,
-			LeamonERPConstants.TABLE_HEADER_DESC
+			LeamonERPConstants.TABLE_HEADER_DESC,
+			LeamonERPConstants.TABLE_HEADER_PAYMENT_ADJUSTED
 	};
 
 	private List<PaymentReceivedInfo> paymentReceivedInfos;
@@ -72,9 +74,10 @@ public class TablePaymentReceivedHistoryModel extends AbstractTableModel{
 		Object temp = null;
 		switch (columnIndex) {
 			case 0: temp = /*paymentReceivedInfos.get(rowIndex).getId()*/ sno.get(rowIndex); break;
-			case 1: temp = paymentReceivedInfos.get(rowIndex).getAccountInfo().getName(); break;
-			case 2: temp = paymentReceivedInfos.get(rowIndex).getReceivedPayment(); break;
-			case 3: {
+			case 1: temp = paymentReceivedInfos.get(rowIndex).getId().intValue(); break;
+			case 2: temp = paymentReceivedInfos.get(rowIndex).getAccountInfo().getName(); break;
+			case 3: temp = paymentReceivedInfos.get(rowIndex).getReceivedPayment(); break;
+			case 4: {
 				if(ERPEnum.TYPE_PAYMENT_WITH_BILL.name().equals(paymentReceivedInfos.get(rowIndex).getType()) ){
 					temp = PaymentEnum.B;
 				}else if(ERPEnum.TYPE_PAYMENT_WITHOUT_BILL.name().equals(paymentReceivedInfos.get(rowIndex).getType()) ){
@@ -83,8 +86,15 @@ public class TablePaymentReceivedHistoryModel extends AbstractTableModel{
 					temp = "N/A";
 				}
 			} break;
-			case 4: temp = paymentReceivedInfos.get(rowIndex).getReceivedDate();break;
-			case 5: temp = paymentReceivedInfos.get(rowIndex).getRemark(); break;
+			case 5: temp = paymentReceivedInfos.get(rowIndex).getReceivedDate();break;
+			case 6: temp = paymentReceivedInfos.get(rowIndex).getRemark(); break;
+			case 7: {
+				if(ERPEnum.STATUS_PAYMENT_ADJUSTMENT_NOTHING.name().equals(paymentReceivedInfos.get(rowIndex).getStatus())){
+					temp = Boolean.FALSE.booleanValue();
+				}else{
+					temp = Boolean.TRUE.booleanValue();
+				}
+			}break;
 		}
 		
 		return temp;
@@ -104,6 +114,8 @@ public class TablePaymentReceivedHistoryModel extends AbstractTableModel{
 		case 3: return String.class;
 		case 4: return String.class;
 		case 5: return String.class;
+		case 6: return String.class;
+		case 7: return Boolean.class;
 		default : 
 			return Object.class;
 		}
