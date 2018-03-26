@@ -357,7 +357,11 @@ public interface LeamonERPConstants {
 	String TABLE_HEADER_ADJUST_REMOVAL="Adjust Rem.";
 	public static String TABLE_HEADER_PAID_W_STATUS = "W.Paid Status";
 	public static String TABLE_HEADER_PAID_B_STATUS = "B.Paid Status";
+
 	public static String TABLE_HEADER_PAYMENT_ID = "P.ID";
 	public static String TABLE_HEADER_PAYMENT_ADJUSTED = "Adjusted?";
+
+	public static String TABLE_PAYMENT_UI_MANAGER_INVOICE = "TablePaymentUiManagerInvoice";
+
 	/*------End----------------*/
 }

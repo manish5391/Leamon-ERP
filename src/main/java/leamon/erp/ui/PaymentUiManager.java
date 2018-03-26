@@ -78,6 +78,7 @@ import leamon.erp.model.OpeningBalanceInfo;
 import leamon.erp.model.PaymentInvoiceMappingInfo;
 import leamon.erp.model.PaymentReceivedInfo;
 import leamon.erp.ui.custom.PaymentReceivedSummaryTableCellRenderer;
+import leamon.erp.ui.event.MouseClickHandler;
 import leamon.erp.ui.model.GenericModelWithSnp;
 import leamon.erp.ui.model.TableAccountInfoListModel;
 import leamon.erp.ui.model.TablePaymentInvoiceOpeningBalanceModel;
@@ -285,6 +286,8 @@ public class PaymentUiManager extends JInternalFrame {
 		panelPaymentInvoice.add(scrollPane_1);
 
 		tablePaymentInvoice = new JXTable();
+		tablePaymentInvoice.setName(LeamonERPConstants.TABLE_PAYMENT_UI_MANAGER_INVOICE);
+		tablePaymentInvoice.addMouseListener(new MouseClickHandler());
 		scrollPane_1.setViewportView(tablePaymentInvoice);
 
 		JLabel lblTotal_1 = new JLabel("B.Invoice");
@@ -1142,4 +1145,46 @@ public class PaymentUiManager extends JInternalFrame {
 		}
 		SwingUtilities.updateComponentTreeUI(LeamonERP.paymentAdjustmentDeleteUI);
 	}
+	
+	//3.9 ghan code
+	public void openInvoice(String actionCommand){
+		LOGGER.info("PaymentUiManager[openInvoice] inside");
+		int selectedRow = tablePaymentInvoice.getSelectedRow();
+		if(selectedRow == LeamonERPConstants.NO_ROW_SELECTED){
+			JOptionPane.showMessageDialog(this, "Please select atleast one item", "Warning", JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+		/*Get accurate selected row after filtering records*/
+		if(tablePaymentInvoice.getRowSorter() != null){
+			selectedRow = tablePaymentInvoice.getRowSorter().convertRowIndexToModel(selectedRow);
+		}
+		TablePaymentInvoiceOpeningBalanceModel model  = (TablePaymentInvoiceOpeningBalanceModel)tablePaymentInvoice.getModel();
+		
+		List<Object> list=model.getList();
+		if(!(list.get(selectedRow) instanceof InvoiceInfo)) {
+			
+			JOptionPane.showMessageDialog(this, "It's not invoice","Leamon-ERP Error Message", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		//TablePaymentInvoiceOpeningBalanceModel mod=new TablePaymentInvoiceOpeningBalanceModel(list);
+		InvoiceInfo invoiceInfo = (InvoiceInfo)list.get(selectedRow);
+		if(!LeamonERP.invoiceUI.isVisible()){
+			LeamonERP.desktopPane.add(LeamonERP.invoiceUI);
+		}
+		LeamonERP.invoiceUI.requestFocus();
+		try {
+			LeamonERP.invoiceUI.setSelected(true);
+		} catch (PropertyVetoException e1) {
+			LOGGER.error("PaymentUIManager[openInvoice] "+e1);
+		}
+		LeamonERP.invoiceUI.setInvoiceInfo(invoiceInfo);
+		/*if(actionCommand.equals(LeamonERPConstants.BUTTON_ACTION_EDIT_STOCK_ITEM)){
+			LeamonERP.stockItemManager.getBtnSave().setEnabled(false);
+		}*/
+		LeamonERP.invoiceUI.setVisible(true);
+		LeamonERP.invoiceUI.moveToFront();
+		SwingUtilities.updateComponentTreeUI(this);
+		LOGGER.info("PaymentUIManager[openInvoice] end");
+	}
+	//3.9 end of ghan code
 }
