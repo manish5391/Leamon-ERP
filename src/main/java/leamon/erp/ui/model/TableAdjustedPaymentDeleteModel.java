@@ -42,7 +42,9 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 			LeamonERPConstants.TABLE_HEADER_B_AMOUNT,
 			LeamonERPConstants.TABLE_HEADER_W_AMOUNT,
 			LeamonERPConstants.TABLE_HEADER_B_REMAINING_AMOUNT,
+			LeamonERPConstants.TABLE_HEADER_B_RECEIVED_AMOUNT,
 			LeamonERPConstants.TABLE_HEADER_W_REMAINING_AMOUNT,
+			LeamonERPConstants.TABLE_HEADER_W_RECEIVED_AMOUNT,
 			LeamonERPConstants.TABLE_HEADER_ADJUST_REMOVAL,
 			LeamonERPConstants.TABLE_HEADER_ADJUSTED_AMOUNT,
 			//LeamonERPConstants.TABLE_HEADER_W_ADJUSTED_AMOUNT,
@@ -57,6 +59,7 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 	private PaymentAdjustmentDeleteUI paymentAdjustmentDeleteUI;
 	private List<Double> receivedBillAmount = new ArrayList<Double>();
 	private List<Double> OldRemainingAmount = new ArrayList<Double>();
+	private List<Double> OldReceivingAmount = new ArrayList<Double>();
 	private List<String> OldBstatus= new ArrayList<String>();
 	private List<String> OldWstatus= new ArrayList<String>();
 
@@ -85,6 +88,7 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 			receivedBillAmount.add(Double.parseDouble(String.valueOf("0.0")));
 			if(genericModelWithSnp.getOb().get(i).getInvoiceInfoID() != null){
 				OldRemainingAmount.add(Double.parseDouble(String.valueOf(genericModelWithSnp.getOb().get(i).getInvoiceInfo().getRemainingBillAmount())));
+				OldReceivingAmount.add(Double.parseDouble(String.valueOf(genericModelWithSnp.getOb().get(i).getInvoiceInfo().getPaidBillAmount())));
 				if(ERPEnum.TYPE_PAYMENT_WITH_BILL.name().equals(type)){
 					OldBstatus.add(i,genericModelWithSnp.getOb().get(i).getInvoiceInfo().getPaidStatus());
 				}
@@ -93,6 +97,7 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 				}
 			}else if (genericModelWithSnp.getOb().get(i).getOpeningBalanceID() !=null ){
 				OldRemainingAmount.add(Double.parseDouble(String.valueOf(genericModelWithSnp.getOb().get(i).getOpenigBalanceInfo().getRemainingopeningbalanceamount())));
+				OldReceivingAmount.add(Double.parseDouble(String.valueOf(genericModelWithSnp.getOb().get(i).getOpenigBalanceInfo().getReceivedopeningbalanceamount())));
 				if(ERPEnum.TYPE_PAYMENT_WITH_BILL.name().equals(type)){
 					OldBstatus.add(i,genericModelWithSnp.getOb().get(i).getOpenigBalanceInfo().getStatus());
 				}
@@ -180,11 +185,23 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 				}
 			}else if (paymentInvoiceMappingInfos.get(rowIndex).getInvoiceInfoID() != null ){
 				InvoiceInfo invoiceInfo = paymentInvoiceMappingInfos.get(rowIndex).getInvoiceInfo();
+				
 				temp = invoiceInfo.getRemainingBillAmount();
 			}
 		}break;
-
+		
 		case 6: {
+			if(paymentInvoiceMappingInfos.get(rowIndex).getOpeningBalanceID() != null ){
+				OpeningBalanceInfo openingBalanceInfo = paymentInvoiceMappingInfos.get(rowIndex).getOpenigBalanceInfo();
+				if(openingBalanceInfo.getType().equalsIgnoreCase(LeamonERPConstants.INVOICE_TYPE_WITH_BILL)){
+					temp = openingBalanceInfo.getReceivedopeningbalanceamount(); 
+				}
+			}else if (paymentInvoiceMappingInfos.get(rowIndex).getInvoiceInfoID() != null ){
+				InvoiceInfo invoiceInfo = paymentInvoiceMappingInfos.get(rowIndex).getInvoiceInfo();
+				temp = invoiceInfo.getPaidBillAmount();
+			}
+		}break;
+		case 7: {
 			if(paymentInvoiceMappingInfos.get(rowIndex).getOpeningBalanceID() != null ){
 				OpeningBalanceInfo openingBalanceInfo = paymentInvoiceMappingInfos.get(rowIndex).getOpenigBalanceInfo();
 				if(openingBalanceInfo.getType().equalsIgnoreCase(LeamonERPConstants.INVOICE_TYPE_WITHOUT_BILL)){
@@ -195,33 +212,28 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 				temp = invoiceInfo.getRemainingWithoutBillAmount();
 			}
 		}break;
-
-		case 7:{
-			temp = isAdjustRemove.get(rowIndex).booleanValue();
-		}break;
-		case 8: {
-			/*if(paymentInvoiceMappingInfos.get(rowIndex).getOpeningBalanceID() != null ){
+		
+		case 8:{
+			if(paymentInvoiceMappingInfos.get(rowIndex).getOpeningBalanceID() != null ){
 				OpeningBalanceInfo openingBalanceInfo = paymentInvoiceMappingInfos.get(rowIndex).getOpenigBalanceInfo();
 				if(openingBalanceInfo.getType().equalsIgnoreCase(LeamonERPConstants.INVOICE_TYPE_WITHOUT_BILL)){
-					temp = paymentInvoiceMappingInfos.get(rowIndex).getAmount();
+					temp = openingBalanceInfo.getReceivedopeningbalanceamount(); 
 				}
 			}else if (paymentInvoiceMappingInfos.get(rowIndex).getInvoiceInfoID() != null ){
 				InvoiceInfo invoiceInfo = paymentInvoiceMappingInfos.get(rowIndex).getInvoiceInfo();
-				temp = invoiceInfo.getRemainingWithoutBillAmount();
-			}*/
+				temp = invoiceInfo.getPaidWithoutBillAmount();
+			}
+		}break;
+		
+		case 9:{
+			temp = isAdjustRemove.get(rowIndex).booleanValue();
+		}break;
+		
+		case 10: {
 			temp = paymentInvoiceMappingInfos.get(rowIndex).getAmount();
 		}break;
-		/*case 9: {
-			if(ERPEnum.TYPE_PAYMENT_WITH_BILL.name().equals(type)){
-				temp = paymentInvoiceMappingInfos.get(rowIndex).getAmount();
-			}
-		}break;
-		case 10: {
-			if(ERPEnum.TYPE_PAYMENT_WITHOUT_BILL.name().equals(type)){
-				temp = paymentInvoiceMappingInfos.get(rowIndex).getAmount();
-			}
-		}break;*/
-		case 9: {
+		
+		case 11: {
 			if(paymentInvoiceMappingInfos.get(rowIndex).getInvoiceInfoID() != null){
 				temp = paymentInvoiceMappingInfos.get(rowIndex).getInvoiceInfo().getPaidStatus();
 			}else if (paymentInvoiceMappingInfos.get(rowIndex).getOpeningBalanceID() != null){
@@ -230,7 +242,8 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 				}
 			}
 		}break;
-		case 10: {
+		
+		case 12: {
 			if(paymentInvoiceMappingInfos.get(rowIndex).getInvoiceInfoID() != null){
 				temp = paymentInvoiceMappingInfos.get(rowIndex).getInvoiceInfo().getWpaidstatus();
 			}else if (paymentInvoiceMappingInfos.get(rowIndex).getOpeningBalanceID() != null){
@@ -260,9 +273,9 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 		case 4: return String.class;
 		case 5: return String.class;
 		case 6: return String.class;
-		case 7: return Boolean.class;
+		case 7: return String.class;
 		case 8: return String.class;
-		case 9: return String.class;
+		case 9: return Boolean.class;
 		case 10: return String.class;
 		case 11: return String.class;
 		default : 
@@ -273,7 +286,7 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 	@Override
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 		switch (columnIndex) {
-		case 7:
+		case 9:
 			isAdjustRemove.set(rowIndex, (Boolean)aValue);
 			if(ERPEnum.TYPE_PAYMENT_WITH_BILL.name().equals(type)){
 				if(null != aValue && aValue instanceof Boolean && aValue == Boolean.TRUE){
@@ -293,7 +306,7 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 	@Override
 	public boolean isCellEditable(int rowIndex, int columnIndex) {
 		// TODO Auto-generated method stub
-		if(columnIndex == 7 ){
+		if(columnIndex == 9 ){
 			return true;
 		}else
 			return super.isCellEditable(rowIndex, columnIndex);
@@ -364,19 +377,34 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 			recordedAmount = Double.parseDouble(paymentInvoiceMappingInfos.get(rowIndex).getAmount());
 		}catch(Exception e){ LOGGER.error(e); }
 		
+		double oldReceivedAmt = 0;
+		try{
+			oldReceivedAmt = Double.parseDouble(info.getPaidBillAmount());
+		}catch(Exception e){ LOGGER.error(e); }
+		OldReceivingAmount.set(rowIndex, oldReceivedAmt);
 		
 		if(Strings.isNullOrEmpty(paymentAdjustmentDeleteUI.getTextFieldAdjAmt().getText())){
 			if(recordedAmount > 0){
 				double totalBillAdjustment =  billAmt + amount;
 				receivedBillAmount.set(rowIndex, recordedAmount);
 				OldRemainingAmount.set(rowIndex, billAmt);
-
+				OldReceivingAmount.set(rowIndex, oldReceivedAmt);
+				
 				info.setRemainingBillAmount(String.valueOf(recordedAmount+billAmt));
+				info.setPaidBillAmount(String.valueOf(OldReceivingAmount.get(rowIndex) - recordedAmount));
+				
 				paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(recordedAmount));
 				paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf(amount-recordedAmount));
 				if(InvoicePaymentStatusEnum.ALL_CLEAR.name().equals(info.getPaidStatus()) ){
-
-					info.setPaidStatus(InvoicePaymentStatusEnum.PARTIAL_PAID.name());
+					double actualBillAmt = 0;
+					try{
+						actualBillAmt = Double.parseDouble(info.getBillAmount());
+					}catch(Exception e){ LOGGER.error(e); }
+					if(recordedAmount == actualBillAmt){
+						info.setPaidStatus(InvoicePaymentStatusEnum.NOTHING_PAID.name());
+					}else{
+						info.setPaidStatus(InvoicePaymentStatusEnum.PARTIAL_PAID.name());
+					}
 				}
 			}else {
 				double actualBillAmount = 0;
@@ -400,19 +428,22 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 					receivedBillAmount.set(rowIndex, actualBillAmount);
 					paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(actualBillAmount));
 					paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf(amount-actualBillAmount));
+					info.setPaidBillAmount(String.valueOf(oldReceivedAmt-actualBillAmount));
 				}else{
 					receivedBillAmount.set(rowIndex, amount);
 					paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(amount));
 					paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf("0.0"));
+					info.setPaidBillAmount(String.valueOf(oldReceivedAmt-amount));
 				}
 				OldRemainingAmount.set(rowIndex, billAmt);
-
 				if(InvoicePaymentStatusEnum.ALL_CLEAR.name().equals(info.getPaidStatus()) ){
 					double actualBillAmt = 0;
 					try{
 						actualBillAmt = Double.parseDouble(info.getBillAmount());
 					}catch(Exception e){ LOGGER.error(e); }
 					if(recordedAmount == actualBillAmt){
+						info.setPaidStatus(InvoicePaymentStatusEnum.NOTHING_PAID.name());
+					}else if(actualBillAmt < amount){
 						info.setPaidStatus(InvoicePaymentStatusEnum.NOTHING_PAID.name());
 					}else{
 						info.setPaidStatus(InvoicePaymentStatusEnum.PARTIAL_PAID.name());
@@ -450,17 +481,23 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 				if(remainingAmt > (actualBillAmount - billAmt)){
 					adjustRemovalAmt = remainingAmt - (actualBillAmount - billAmt);
 					paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf(adjustRemovalAmt));
-					receivedBillAmount.set(rowIndex, adjustRemovalAmt);
+					receivedBillAmount.set(rowIndex, actualBillAmount);
+					info.setRemainingBillAmount(String.valueOf(actualBillAmount));
+					paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(adjustedAmount+actualBillAmount));
+					info.setPaidBillAmount(String.valueOf(oldReceivedAmt-actualBillAmount));
 				}else{
 					adjustRemovalAmt = remainingAmt;
 					paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf("0.0"));
 					receivedBillAmount.set(rowIndex, adjustRemovalAmt);
+					info.setRemainingBillAmount(String.valueOf(totalBillAdjustment));
+					paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(adjustedAmount+remainingAmt));
+					info.setPaidBillAmount(String.valueOf(oldReceivedAmt-remainingAmt));
 				}
 				
 				
 				OldRemainingAmount.set(rowIndex, billAmt);
-				info.setRemainingBillAmount(String.valueOf(totalBillAdjustment));
-				paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(adjustedAmount+remainingAmt));
+				//info.setRemainingBillAmount(String.valueOf(totalBillAdjustment));
+				
 				
 				if(InvoicePaymentStatusEnum.ALL_CLEAR.name().equals(info.getPaidStatus()) ){
 					double actualBillAmt = 0;
@@ -468,6 +505,8 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 						actualBillAmt = Double.parseDouble(info.getBillAmount());
 					}catch(Exception e){ LOGGER.error(e); }
 					if(recordedAmount == actualBillAmt){
+						info.setPaidStatus(InvoicePaymentStatusEnum.NOTHING_PAID.name());
+					}else if(remainingAmt >= actualBillAmount){
 						info.setPaidStatus(InvoicePaymentStatusEnum.NOTHING_PAID.name());
 					}else{
 						info.setPaidStatus(InvoicePaymentStatusEnum.PARTIAL_PAID.name());
@@ -504,7 +543,8 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 				receivedBillAmount.set(rowIndex, recordedAmount);
 				OldRemainingAmount.set(rowIndex, billAmt);
 				paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(totalAdjust));
-				paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf(amount-totalAdjust));	
+				paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf(amount-totalAdjust));
+				info.setPaidBillAmount(String.valueOf(oldReceivedAmt-recordedAmount));
 			}
 		}
 	}
@@ -540,6 +580,8 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 			paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf(val2+receivedAmount));
 			info.setPaidStatus(OldBstatus.get(rowIndex));
 			receivedBillAmount.set(rowIndex, 0.0);
+			
+			info.setPaidBillAmount(String.valueOf(OldReceivingAmount.get(rowIndex)));
 		}
 	}
 	
@@ -561,12 +603,19 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 				receivedBillAmount.set(rowIndex, recordedAmount);
 				OldRemainingAmount.set(rowIndex, billAmt);
 
-				info.setRemainingopeningbalanceamount(String.valueOf(recordedAmount));
-				paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(amount));
-				paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf("0.0"));
+				info.setRemainingopeningbalanceamount(String.valueOf(recordedAmount+billAmt));
+				paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(recordedAmount));
+				paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf(amount-recordedAmount));
 				if(InvoicePaymentStatusEnum.ALL_CLEAR.name().equals(info.getStatus()) ){
-
-					info.setStatus(InvoicePaymentStatusEnum.PARTIAL_PAID.name());
+					double actualBillAmt = 0;
+					try{
+						actualBillAmt = Double.parseDouble(info.getOpeningbalanceamount());
+					}catch(Exception e){ LOGGER.error(e); }
+					if(recordedAmount == actualBillAmt){
+						info.setStatus(InvoicePaymentStatusEnum.NOTHING_PAID.name());
+					}else{
+						info.setStatus(InvoicePaymentStatusEnum.PARTIAL_PAID.name());
+					}
 				}
 			}else {
 				double actualBillAmount = 0;
@@ -586,7 +635,15 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 					removeAdjustAmt = amount + val2;
 				}
 				info.setRemainingopeningbalanceamount(String.valueOf(removeAdjustAmt));
-				receivedBillAmount.set(rowIndex, removeAdjustAmt);
+				if(amount > actualBillAmount){
+					receivedBillAmount.set(rowIndex, actualBillAmount);
+					paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(actualBillAmount));
+					paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf(amount-actualBillAmount));
+				}else{
+					receivedBillAmount.set(rowIndex, amount);
+					paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(amount));
+					paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf("0.0"));
+				}
 				OldRemainingAmount.set(rowIndex, billAmt);
 
 				if(InvoicePaymentStatusEnum.ALL_CLEAR.name().equals(info.getStatus()) ){
@@ -596,13 +653,13 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 					}catch(Exception e){ LOGGER.error(e); }
 					if(recordedAmount == actualBillAmt){
 						info.setStatus(InvoicePaymentStatusEnum.NOTHING_PAID.name());
+					}else if(actualBillAmt < amount){
+						info.setStatus(InvoicePaymentStatusEnum.NOTHING_PAID.name());
 					}else{
 						info.setStatus(InvoicePaymentStatusEnum.PARTIAL_PAID.name());
 					}
 				}
-
-				paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(amount));
-				paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf("0.0"));
+				
 			}
 		}else{
 			if(recordedAmount == 0){
@@ -624,11 +681,46 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 				}catch(Exception e){ LOGGER.error(e); }
 				double totalBillAdjustment =  billAmt + remainingAmt;
 				
-				receivedBillAmount.set(rowIndex, totalBillAdjustment);
+				double actualBillAmount = 0;
+				try{
+					actualBillAmount = Double.parseDouble(info.getOpeningbalanceamount());
+				}catch(Exception exp){LOGGER.error(exp);}
+				
+				
+				double adjustRemovalAmt = 0;
+				if(remainingAmt > (actualBillAmount - billAmt)){
+					adjustRemovalAmt = remainingAmt - (actualBillAmount - billAmt);
+					paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf(adjustRemovalAmt));
+					receivedBillAmount.set(rowIndex, actualBillAmount);
+					info.setRemainingopeningbalanceamount(String.valueOf(actualBillAmount));
+					paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(adjustedAmount+actualBillAmount));
+				}else{
+					adjustRemovalAmt = remainingAmt;
+					paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf("0.0"));
+					receivedBillAmount.set(rowIndex, adjustRemovalAmt);
+					info.setRemainingopeningbalanceamount(String.valueOf(totalBillAdjustment));
+					paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(adjustedAmount+remainingAmt));
+				}
+				
+				
 				OldRemainingAmount.set(rowIndex, billAmt);
-				info.setRemainingopeningbalanceamount(String.valueOf(totalBillAdjustment));
-				paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(adjustedAmount+remainingAmt));
-				paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf("0.0"));
+				//info.setRemainingBillAmount(String.valueOf(totalBillAdjustment));
+				
+				
+				if(InvoicePaymentStatusEnum.ALL_CLEAR.name().equals(info.getStatus()) ){
+					double actualBillAmt = 0;
+					try{
+						actualBillAmt = Double.parseDouble(info.getOpeningbalanceamount());
+					}catch(Exception e){ LOGGER.error(e); }
+					if(recordedAmount == actualBillAmt){
+						info.setStatus(InvoicePaymentStatusEnum.NOTHING_PAID.name());
+					}else if(remainingAmt >= actualBillAmount){
+						info.setStatus(InvoicePaymentStatusEnum.NOTHING_PAID.name());
+					}else{
+						info.setStatus(InvoicePaymentStatusEnum.PARTIAL_PAID.name());
+					}
+				}
+				
 			}else{
 
 				double val2 = 0;
@@ -656,7 +748,7 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 				}catch(Exception exp){ LOGGER.error(exp); }
 				totalAdjust = totalAdjust + recordedAmount;
 				
-				receivedBillAmount.set(rowIndex, total);
+				receivedBillAmount.set(rowIndex, recordedAmount);
 				OldRemainingAmount.set(rowIndex, billAmt);
 				paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(totalAdjust));
 				paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf(amount-totalAdjust));	
@@ -694,6 +786,7 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 			
 			paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf(val2+receivedAmount));
 			info.setStatus(OldBstatus.get(rowIndex));
+			receivedBillAmount.set(rowIndex, 0.0);
 		}
 	}//end
 	

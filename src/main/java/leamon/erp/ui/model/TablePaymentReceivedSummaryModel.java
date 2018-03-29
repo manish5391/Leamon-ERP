@@ -43,7 +43,11 @@ public class TablePaymentReceivedSummaryModel extends AbstractTableModel{
 			LeamonERPConstants.TABLE_HEADER_G_TOTAL,
 			LeamonERPConstants.TABLE_HEADER_B_STATUS,
 			LeamonERPConstants.TABLE_HEADER_W_STATUS,
-			LeamonERPConstants.TABLE_HEADER_DESC
+			LeamonERPConstants.TABLE_HEADER_DESC,
+			LeamonERPConstants.TABLE_HEADER_B_RECEIVED_AMOUNT,
+			LeamonERPConstants.TABLE_HEADER_B_REMAINING_AMOUNT,
+			LeamonERPConstants.TABLE_HEADER_W_RECEIVED_AMOUNT,
+			LeamonERPConstants.TABLE_HEADER_W_REMAINING_AMOUNT,
 	};
 
 	private List<InvoiceInfo> invoiceInfos;
@@ -118,35 +122,36 @@ public class TablePaymentReceivedSummaryModel extends AbstractTableModel{
 						.equals(ERPEnum.TYPE_PAYMENT_WITH_BILL.name())){
 					/*temp = invoiceInfos.get(rowIndex).getOpenigBalanceInfo().getOpeningbalanceamount();*/
 					/*Release 3.7*/
-					temp = invoiceInfos.get(rowIndex).getOpenigBalanceInfo().getRemainingopeningbalanceamount();
+					/*temp = invoiceInfos.get(rowIndex).getOpenigBalanceInfo().getRemainingopeningbalanceamount();*/
+					temp = invoiceInfos.get(rowIndex).getOpenigBalanceInfo().getOpeningbalanceamount();
 				}
 			}else{
-				//temp = invoiceInfos.get(rowIndex).getBillAmount(); 
-				temp = invoiceInfos.get(rowIndex).getRemainingBillAmount(); /*Release 3.7 */
+				temp = invoiceInfos.get(rowIndex).getBillAmount(); 
+				//temp = invoiceInfos.get(rowIndex).getRemainingBillAmount(); /*Release 3.7 */
 			}
 		}break; 
 		case 6: {
 			if(invoiceInfos.get(rowIndex).isOpeningBalance()){
 				if(invoiceInfos.get(rowIndex).getOpenigBalanceInfo().getType()
 						.equals(ERPEnum.TYPE_PAYMENT_WITHOUT_BILL.name())){
-					/*temp = invoiceInfos.get(rowIndex).getOpenigBalanceInfo().getOpeningbalanceamount();*/
+					temp = invoiceInfos.get(rowIndex).getOpenigBalanceInfo().getOpeningbalanceamount();
 					/*Release 3.7*/
-					temp = invoiceInfos.get(rowIndex).getOpenigBalanceInfo().getRemainingopeningbalanceamount();
+					//temp = invoiceInfos.get(rowIndex).getOpenigBalanceInfo().getRemainingopeningbalanceamount();
 				}
 			}else{
-				//temp = invoiceInfos.get(rowIndex).getWithoutBillAmount(); 
-				temp = invoiceInfos.get(rowIndex).getRemainingWithoutBillAmount(); /*Release 3.7 */
+				temp = invoiceInfos.get(rowIndex).getWithoutBillAmount(); 
+				//temp = invoiceInfos.get(rowIndex).getRemainingWithoutBillAmount(); /*Release 3.7 */
 			}
 		}break;
 		case 7:{
 			if(invoiceInfos.get(rowIndex).isOpeningBalance()){
 				temp = temp = invoiceInfos.get(rowIndex).getOpenigBalanceInfo().getOpeningbalanceamount();
 			}else{
-				/*temp = getGT(invoiceInfos.get(rowIndex).getBillAmount(), 
-				invoiceInfos.get(rowIndex).getWithoutBillAmount());*/
+				temp = getGT(invoiceInfos.get(rowIndex).getBillAmount(), 
+				invoiceInfos.get(rowIndex).getWithoutBillAmount());
 				/*Release 3.7*/
-				temp = getGT(invoiceInfos.get(rowIndex).getRemainingBillAmount(), 
-						invoiceInfos.get(rowIndex).getRemainingWithoutBillAmount());
+				/*temp = getGT(invoiceInfos.get(rowIndex).getRemainingBillAmount(), 
+						invoiceInfos.get(rowIndex).getRemainingWithoutBillAmount());*/
 			}
 		}  
 		break;
@@ -176,6 +181,50 @@ public class TablePaymentReceivedSummaryModel extends AbstractTableModel{
 					temp = "Invoice";
 				}
 			}break;
+		case 11:{
+			if(invoiceInfos.get(rowIndex).isOpeningBalance()){
+				if(invoiceInfos.get(rowIndex).getOpenigBalanceInfo().getType()
+						.equals(ERPEnum.TYPE_PAYMENT_WITH_BILL.name())){
+					temp = invoiceInfos.get(rowIndex).getOpenigBalanceInfo().getReceivedopeningbalanceamount();
+				}
+			}else{
+				temp = invoiceInfos.get(rowIndex).getPaidBillAmount();  
+			}
+		}break;
+		
+		case 12:{
+			if(invoiceInfos.get(rowIndex).isOpeningBalance()){
+				if(invoiceInfos.get(rowIndex).getOpenigBalanceInfo().getType()
+						.equals(ERPEnum.TYPE_PAYMENT_WITH_BILL.name())){
+					temp = invoiceInfos.get(rowIndex).getOpenigBalanceInfo().getRemainingopeningbalanceamount();
+				}
+			}else{
+				temp = invoiceInfos.get(rowIndex).getRemainingBillAmount();  
+			}
+		}break;
+		
+		case 13:{
+			if(invoiceInfos.get(rowIndex).isOpeningBalance()){
+				if(invoiceInfos.get(rowIndex).getOpenigBalanceInfo().getType()
+						.equals(ERPEnum.TYPE_PAYMENT_WITHOUT_BILL.name())){
+					temp = invoiceInfos.get(rowIndex).getOpenigBalanceInfo().getReceivedopeningbalanceamount();
+				}
+			}else{
+				temp = invoiceInfos.get(rowIndex).getPaidWithoutBillAmount();  
+			}
+		}break;
+		
+		case 14:{
+			if(invoiceInfos.get(rowIndex).isOpeningBalance()){
+				if(invoiceInfos.get(rowIndex).getOpenigBalanceInfo().getType()
+						.equals(ERPEnum.TYPE_PAYMENT_WITHOUT_BILL.name())){
+					temp = invoiceInfos.get(rowIndex).getOpenigBalanceInfo().getRemainingopeningbalanceamount();
+				}
+			}else{
+				temp = invoiceInfos.get(rowIndex).getRemainingWithoutBillAmount();  
+			}
+		}break;
+		
 		default : temp = new Object();
 		}
 

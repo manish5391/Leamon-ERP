@@ -245,11 +245,13 @@ public class PaymentAdjustmentDeleteUI extends JInternalFrame {
 			tableAdjustments.getColumnExt(LeamonERPConstants.TABLE_HEADER_W_AMOUNT).setVisible(false);
 			tableAdjustments.getColumnExt(LeamonERPConstants.TABLE_HEADER_W_REMAINING_AMOUNT).setVisible(false);
 			tableAdjustments.getColumnExt(LeamonERPConstants.TABLE_HEADER_PAID_W_STATUS).setVisible(false);
+			tableAdjustments.getColumnExt(LeamonERPConstants.TABLE_HEADER_W_RECEIVED_AMOUNT).setVisible(false);
 		}
 		if(ERPEnum.TYPE_PAYMENT_WITHOUT_BILL.name().equals(paymentReceivedInfo.getType())){
 			tableAdjustments.getColumnExt(LeamonERPConstants.TABLE_HEADER_B_AMOUNT).setVisible(false);
 			tableAdjustments.getColumnExt(LeamonERPConstants.TABLE_HEADER_B_REMAINING_AMOUNT).setVisible(false);
 			tableAdjustments.getColumnExt(LeamonERPConstants.TABLE_HEADER_PAID_B_STATUS).setVisible(false);
+			tableAdjustments.getColumnExt(LeamonERPConstants.TABLE_HEADER_B_RECEIVED_AMOUNT).setVisible(false);
 		}
 		
 	}

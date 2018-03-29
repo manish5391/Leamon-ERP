@@ -214,7 +214,7 @@ public interface LeamonERPConstants {
 	String TABLE_HEADER_B_STATUS="B Status";
 	String TABLE_HEADER_W_STATUS="W Status";
 	String TABLE_HEADER_G_TOTAL="G.Total";
-	String TABLE_HEADER_B_RECEIVED_AMOUNT="B.Rec.Amt.";
+	String TABLE_HEADER_B_RECEIVED_AMOUNT="B.Rece.Amt.";
 	String TABLE_HEADER_W_RECEIVED_AMOUNT="W.Rec.Amt";
 	String TABLE_HEADER_B_REMARK="B Remark";
 	String TABLE_HEADER_W_REMARK="W Remark";
