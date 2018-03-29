@@ -39,6 +39,7 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 			LeamonERPConstants.TABLE_HEADER_SNO,
 			LeamonERPConstants.TABLE_HEADER_TYPE,
 			LeamonERPConstants.TABLE_HEADER_ID,
+			LeamonERPConstants.TABLE_HEADER_DATE,
 			LeamonERPConstants.TABLE_HEADER_B_AMOUNT,
 			LeamonERPConstants.TABLE_HEADER_W_AMOUNT,
 			LeamonERPConstants.TABLE_HEADER_B_REMAINING_AMOUNT,
@@ -47,9 +48,9 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 			LeamonERPConstants.TABLE_HEADER_W_RECEIVED_AMOUNT,
 			LeamonERPConstants.TABLE_HEADER_ADJUST_REMOVAL,
 			LeamonERPConstants.TABLE_HEADER_ADJUSTED_AMOUNT,
-			//LeamonERPConstants.TABLE_HEADER_W_ADJUSTED_AMOUNT,
 			LeamonERPConstants.TABLE_HEADER_PAID_B_STATUS,
-			LeamonERPConstants.TABLE_HEADER_PAID_W_STATUS
+			LeamonERPConstants.TABLE_HEADER_PAID_W_STATUS,
+			LeamonERPConstants.TABLE_HEADER_BILL_NO
 	};
 
 	private List<PaymentInvoiceMappingInfo> paymentInvoiceMappingInfos;
@@ -152,8 +153,16 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 				temp = "N/A";
 			}
 		}break;
-
 		case 3: {
+			if(paymentInvoiceMappingInfos.get(rowIndex).getOpeningBalanceID() != null ){
+				temp = paymentInvoiceMappingInfos.get(rowIndex).getOpenigBalanceInfo().getBilldate();
+			}else if (paymentInvoiceMappingInfos.get(rowIndex).getInvoiceInfoID() != null ){
+				temp = paymentInvoiceMappingInfos.get(rowIndex).getInvoiceInfo().getInvoicDate();
+			}else{
+				temp = "N/A";
+			} 
+		}break;
+		case 4: {
 			if(paymentInvoiceMappingInfos.get(rowIndex).getOpeningBalanceID() != null ){
 				OpeningBalanceInfo openingBalanceInfo = paymentInvoiceMappingInfos.get(rowIndex).getOpenigBalanceInfo();
 				if(openingBalanceInfo.getType().equalsIgnoreCase(LeamonERPConstants.INVOICE_TYPE_WITH_BILL)){
@@ -165,7 +174,7 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 			}
 		}break;
 
-		case 4: {
+		case 5: {
 			if(paymentInvoiceMappingInfos.get(rowIndex).getOpeningBalanceID() != null ){
 				OpeningBalanceInfo openingBalanceInfo = paymentInvoiceMappingInfos.get(rowIndex).getOpenigBalanceInfo();
 				if(openingBalanceInfo.getType().equalsIgnoreCase(LeamonERPConstants.INVOICE_TYPE_WITHOUT_BILL)){
@@ -177,7 +186,7 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 			}
 		} break;
 
-		case 5: {
+		case 6: {
 			if(paymentInvoiceMappingInfos.get(rowIndex).getOpeningBalanceID() != null ){
 				OpeningBalanceInfo openingBalanceInfo = paymentInvoiceMappingInfos.get(rowIndex).getOpenigBalanceInfo();
 				if(openingBalanceInfo.getType().equalsIgnoreCase(LeamonERPConstants.INVOICE_TYPE_WITH_BILL)){
@@ -190,7 +199,7 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 			}
 		}break;
 		
-		case 6: {
+		case 7: {
 			if(paymentInvoiceMappingInfos.get(rowIndex).getOpeningBalanceID() != null ){
 				OpeningBalanceInfo openingBalanceInfo = paymentInvoiceMappingInfos.get(rowIndex).getOpenigBalanceInfo();
 				if(openingBalanceInfo.getType().equalsIgnoreCase(LeamonERPConstants.INVOICE_TYPE_WITH_BILL)){
@@ -201,7 +210,7 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 				temp = invoiceInfo.getPaidBillAmount();
 			}
 		}break;
-		case 7: {
+		case 8: {
 			if(paymentInvoiceMappingInfos.get(rowIndex).getOpeningBalanceID() != null ){
 				OpeningBalanceInfo openingBalanceInfo = paymentInvoiceMappingInfos.get(rowIndex).getOpenigBalanceInfo();
 				if(openingBalanceInfo.getType().equalsIgnoreCase(LeamonERPConstants.INVOICE_TYPE_WITHOUT_BILL)){
@@ -213,7 +222,7 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 			}
 		}break;
 		
-		case 8:{
+		case 9:{
 			if(paymentInvoiceMappingInfos.get(rowIndex).getOpeningBalanceID() != null ){
 				OpeningBalanceInfo openingBalanceInfo = paymentInvoiceMappingInfos.get(rowIndex).getOpenigBalanceInfo();
 				if(openingBalanceInfo.getType().equalsIgnoreCase(LeamonERPConstants.INVOICE_TYPE_WITHOUT_BILL)){
@@ -225,15 +234,15 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 			}
 		}break;
 		
-		case 9:{
+		case 10:{
 			temp = isAdjustRemove.get(rowIndex).booleanValue();
 		}break;
 		
-		case 10: {
+		case 11: {
 			temp = paymentInvoiceMappingInfos.get(rowIndex).getAmount();
 		}break;
 		
-		case 11: {
+		case 12: {
 			if(paymentInvoiceMappingInfos.get(rowIndex).getInvoiceInfoID() != null){
 				temp = paymentInvoiceMappingInfos.get(rowIndex).getInvoiceInfo().getPaidStatus();
 			}else if (paymentInvoiceMappingInfos.get(rowIndex).getOpeningBalanceID() != null){
@@ -243,13 +252,19 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 			}
 		}break;
 		
-		case 12: {
+		case 13: {
 			if(paymentInvoiceMappingInfos.get(rowIndex).getInvoiceInfoID() != null){
 				temp = paymentInvoiceMappingInfos.get(rowIndex).getInvoiceInfo().getWpaidstatus();
 			}else if (paymentInvoiceMappingInfos.get(rowIndex).getOpeningBalanceID() != null){
 				if(ERPEnum.TYPE_PAYMENT_WITH_BILL.name().equals(paymentInvoiceMappingInfos.get(rowIndex).getOpenigBalanceInfo().getType()) ){
 					temp = paymentInvoiceMappingInfos.get(rowIndex).getOpenigBalanceInfo().getStatus();
 				}
+			}
+		}break;
+		
+		case 14:{
+			if(paymentInvoiceMappingInfos.get(rowIndex).getOpeningBalanceID() != null ){
+				temp = paymentInvoiceMappingInfos.get(rowIndex).getOpenigBalanceInfo().getBillnumber();
 			}
 		}break;
 
@@ -275,9 +290,12 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 		case 6: return String.class;
 		case 7: return String.class;
 		case 8: return String.class;
-		case 9: return Boolean.class;
-		case 10: return String.class;
+		case 9: return String.class;
+		case 10: return Boolean.class;
 		case 11: return String.class;
+		case 12: return String.class;
+		case 13: return String.class;
+		case 14: return String.class;
 		default : 
 			return Object.class;
 		}
@@ -286,7 +304,7 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 	@Override
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 		switch (columnIndex) {
-		case 9:
+		case 10:
 			isAdjustRemove.set(rowIndex, (Boolean)aValue);
 			if(ERPEnum.TYPE_PAYMENT_WITH_BILL.name().equals(type)){
 				if(null != aValue && aValue instanceof Boolean && aValue == Boolean.TRUE){
@@ -311,7 +329,7 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 	@Override
 	public boolean isCellEditable(int rowIndex, int columnIndex) {
 		// TODO Auto-generated method stub
-		if(columnIndex == 9 ){
+		if(columnIndex == 10 ){
 			return true;
 		}else
 			return super.isCellEditable(rowIndex, columnIndex);

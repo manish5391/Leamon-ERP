@@ -285,12 +285,15 @@ public class PaymentAdjustmentDeleteUI extends JInternalFrame {
 		if(ERPEnum.TYPE_PAYMENT_WITH_BILL.name().equals(paymentReceivedInfo.getType())){
 			chckbxAdjustBillAmount.setSelected(Boolean.TRUE);
 		}
+		
+		boolean isOpeningBalExist = false;
 
 		List<PaymentInvoiceMappingInfo> paymentInvoiceMappingInfosOpeningBalList= new  ArrayList<PaymentInvoiceMappingInfo>();
 		List<PaymentInvoiceMappingInfo> paymentInvoiceMappingInfosInvoiceList= new  ArrayList<PaymentInvoiceMappingInfo>();
 		for(PaymentInvoiceMappingInfo info : paymentInvoiceMappingInfos){
 			if(info.getOpeningBalanceID() != null){
 				paymentInvoiceMappingInfosOpeningBalList.add(info);
+				isOpeningBalExist = true;
 			}
 
 			if(info.getInvoiceInfoID()!=null){
@@ -313,12 +316,22 @@ public class PaymentAdjustmentDeleteUI extends JInternalFrame {
 			tableAdjustments.getColumnExt(LeamonERPConstants.TABLE_HEADER_W_REMAINING_AMOUNT).setVisible(false);
 			tableAdjustments.getColumnExt(LeamonERPConstants.TABLE_HEADER_PAID_W_STATUS).setVisible(false);
 			tableAdjustments.getColumnExt(LeamonERPConstants.TABLE_HEADER_W_RECEIVED_AMOUNT).setVisible(false);
+			if(isOpeningBalExist){
+				tableAdjustments.getColumnExt(LeamonERPConstants.TABLE_HEADER_BILL_NO).setVisible(true);
+			}else{
+				tableAdjustments.getColumnExt(LeamonERPConstants.TABLE_HEADER_BILL_NO).setVisible(false);
+			}
 		}
 		if(ERPEnum.TYPE_PAYMENT_WITHOUT_BILL.name().equals(paymentReceivedInfo.getType())){
 			tableAdjustments.getColumnExt(LeamonERPConstants.TABLE_HEADER_B_AMOUNT).setVisible(false);
 			tableAdjustments.getColumnExt(LeamonERPConstants.TABLE_HEADER_B_REMAINING_AMOUNT).setVisible(false);
 			tableAdjustments.getColumnExt(LeamonERPConstants.TABLE_HEADER_PAID_B_STATUS).setVisible(false);
 			tableAdjustments.getColumnExt(LeamonERPConstants.TABLE_HEADER_B_RECEIVED_AMOUNT).setVisible(false);
+			if(isOpeningBalExist){
+				tableAdjustments.getColumnExt(LeamonERPConstants.TABLE_HEADER_BILL_NO).setVisible(true);
+			}else{
+				tableAdjustments.getColumnExt(LeamonERPConstants.TABLE_HEADER_BILL_NO).setVisible(false);
+			}
 		}
 		
 		paymentInvoiceMappingInfosBackup = new ArrayList<PaymentInvoiceMappingInfo>();
