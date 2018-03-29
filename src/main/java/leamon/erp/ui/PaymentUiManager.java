@@ -294,21 +294,21 @@ public class PaymentUiManager extends JInternalFrame {
 		lblTotal_1.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblTotal_1.setForeground((Color) null);
 		lblTotal_1.setFont(new Font("DialogInput", Font.BOLD, 12));
-		lblTotal_1.setBounds(839, 29, 65, 18);
+		lblTotal_1.setBounds(839, 11, 65, 18);
 		panelPaymentInvoice.add(lblTotal_1);
 
 		JLabel lblWinvoice = new JLabel("W.Invoice");
 		lblWinvoice.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblWinvoice.setForeground((Color) null);
 		lblWinvoice.setFont(new Font("DialogInput", Font.BOLD, 12));
-		lblWinvoice.setBounds(835, 162, 70, 18);
+		lblWinvoice.setBounds(835, 128, 70, 18);
 		panelPaymentInvoice.add(lblWinvoice);
 
 		JLabel lblPayment = new JLabel("B.Payment");
 		lblPayment.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblPayment.setForeground((Color) null);
 		lblPayment.setFont(new Font("DialogInput", Font.BOLD, 12));
-		lblPayment.setBounds(839, 98, 66, 18);
+		lblPayment.setBounds(839, 80, 66, 18);
 		panelPaymentInvoice.add(lblPayment);
 
 		labelTotalWPaymentInvoice = new JLabel("0.00");
@@ -316,7 +316,7 @@ public class PaymentUiManager extends JInternalFrame {
 		labelTotalWPaymentInvoice.setForeground((Color) null);
 		labelTotalWPaymentInvoice.setFont(new Font("DialogInput", Font.BOLD, 12));
 		labelTotalWPaymentInvoice.setBackground(new Color(240, 248, 255));
-		labelTotalWPaymentInvoice.setBounds(813, 258, 93, 17);
+		labelTotalWPaymentInvoice.setBounds(813, 224, 93, 17);
 		panelPaymentInvoice.add(labelTotalWPaymentInvoice);
 
 		labelTotalWOpenigBalance = new JLabel("0.00");
@@ -324,7 +324,7 @@ public class PaymentUiManager extends JInternalFrame {
 		labelTotalWOpenigBalance.setForeground((Color) null);
 		labelTotalWOpenigBalance.setFont(new Font("DialogInput", Font.BOLD, 12));
 		labelTotalWOpenigBalance.setBackground(new Color(240, 248, 255));
-		labelTotalWOpenigBalance.setBounds(813, 219, 93, 17);
+		labelTotalWOpenigBalance.setBounds(813, 185, 93, 17);
 		panelPaymentInvoice.add(labelTotalWOpenigBalance);
 
 		labelTotalBInvoice = new JLabel("0.00");
@@ -332,14 +332,14 @@ public class PaymentUiManager extends JInternalFrame {
 		labelTotalBInvoice.setForeground((Color) null);
 		labelTotalBInvoice.setFont(new Font("DialogInput", Font.BOLD, 12));
 		labelTotalBInvoice.setBackground(new Color(240, 248, 255));
-		labelTotalBInvoice.setBounds(813, 48, 93, 17);
+		labelTotalBInvoice.setBounds(813, 30, 93, 17);
 		panelPaymentInvoice.add(labelTotalBInvoice);
 		
 		JLabel lblBobal = new JLabel("B.O.Bal");
 		lblBobal.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblBobal.setForeground((Color) null);
 		lblBobal.setFont(new Font("DialogInput", Font.BOLD, 12));
-		lblBobal.setBounds(839, 63, 66, 18);
+		lblBobal.setBounds(839, 45, 66, 18);
 		panelPaymentInvoice.add(lblBobal);
 		
 		labelTotalBOpeningBal = new JLabel("0.00");
@@ -347,7 +347,7 @@ public class PaymentUiManager extends JInternalFrame {
 		labelTotalBOpeningBal.setForeground((Color) null);
 		labelTotalBOpeningBal.setFont(new Font("DialogInput", Font.BOLD, 12));
 		labelTotalBOpeningBal.setBackground(new Color(240, 248, 255));
-		labelTotalBOpeningBal.setBounds(813, 81, 93, 17);
+		labelTotalBOpeningBal.setBounds(813, 63, 93, 17);
 		panelPaymentInvoice.add(labelTotalBOpeningBal);
 		
 		labelBInvoicePayment = new JLabel("0.00");
@@ -355,21 +355,21 @@ public class PaymentUiManager extends JInternalFrame {
 		labelBInvoicePayment.setForeground((Color) null);
 		labelBInvoicePayment.setFont(new Font("DialogInput", Font.BOLD, 12));
 		labelBInvoicePayment.setBackground(new Color(240, 248, 255));
-		labelBInvoicePayment.setBounds(813, 118, 93, 17);
+		labelBInvoicePayment.setBounds(813, 100, 93, 17);
 		panelPaymentInvoice.add(labelBInvoicePayment);
 		
 		JLabel lblWobal = new JLabel("W.O.Bal");
 		lblWobal.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblWobal.setForeground((Color) null);
 		lblWobal.setFont(new Font("DialogInput", Font.BOLD, 12));
-		lblWobal.setBounds(839, 198, 66, 18);
+		lblWobal.setBounds(839, 164, 66, 18);
 		panelPaymentInvoice.add(lblWobal);
 		
 		JLabel lblWpayment = new JLabel("W.Payment");
 		lblWpayment.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblWpayment.setForeground((Color) null);
 		lblWpayment.setFont(new Font("DialogInput", Font.BOLD, 12));
-		lblWpayment.setBounds(839, 238, 66, 18);
+		lblWpayment.setBounds(839, 204, 66, 18);
 		panelPaymentInvoice.add(lblWpayment);
 		
 		labelTotalWInvoice = new JLabel("0.00");
@@ -377,21 +377,21 @@ public class PaymentUiManager extends JInternalFrame {
 		labelTotalWInvoice.setForeground((Color) null);
 		labelTotalWInvoice.setFont(new Font("DialogInput", Font.BOLD, 12));
 		labelTotalWInvoice.setBackground(new Color(240, 248, 255));
-		labelTotalWInvoice.setBounds(813, 181, 93, 17);
+		labelTotalWInvoice.setBounds(813, 147, 93, 17);
 		panelPaymentInvoice.add(labelTotalWInvoice);
 		
 		JLabel lblBbalance = new JLabel("B.Balance");
 		lblBbalance.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblBbalance.setForeground((Color) null);
 		lblBbalance.setFont(new Font("DialogInput", Font.BOLD, 12));
-		lblBbalance.setBounds(839, 301, 65, 18);
+		lblBbalance.setBounds(837, 262, 65, 18);
 		panelPaymentInvoice.add(lblBbalance);
 		
 		JLabel lblWinvoice_1 = new JLabel("W.Balance");
 		lblWinvoice_1.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblWinvoice_1.setForeground((Color) null);
 		lblWinvoice_1.setFont(new Font("DialogInput", Font.BOLD, 12));
-		lblWinvoice_1.setBounds(839, 340, 65, 18);
+		lblWinvoice_1.setBounds(837, 301, 65, 18);
 		panelPaymentInvoice.add(lblWinvoice_1);
 		
 		labelBBalance = new JLabel("0.00");
@@ -399,7 +399,7 @@ public class PaymentUiManager extends JInternalFrame {
 		labelBBalance.setForeground((Color) null);
 		labelBBalance.setFont(new Font("DialogInput", Font.BOLD, 12));
 		labelBBalance.setBackground(new Color(240, 248, 255));
-		labelBBalance.setBounds(813, 317, 93, 17);
+		labelBBalance.setBounds(811, 278, 93, 17);
 		panelPaymentInvoice.add(labelBBalance);
 		
 		labelWBalance = new JLabel("0.00");
@@ -407,17 +407,17 @@ public class PaymentUiManager extends JInternalFrame {
 		labelWBalance.setForeground((Color) null);
 		labelWBalance.setFont(new Font("DialogInput", Font.BOLD, 12));
 		labelWBalance.setBackground(new Color(240, 248, 255));
-		labelWBalance.setBounds(813, 358, 93, 17);
+		labelWBalance.setBounds(811, 327, 93, 17);
 		panelPaymentInvoice.add(labelWBalance);
 		separator.setBounds(822, 292, 82, 2);
 		panelPaymentInvoice.add(separator);
 		
 		// 3.9 ghan code
-		JLabel lblGrandBalance = new JLabel("Grand Balance");
+		JLabel lblGrandBalance = new JLabel("Grand Bal.");
 		lblGrandBalance.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblGrandBalance.setForeground((Color) null);
 		lblGrandBalance.setFont(new Font("DialogInput", Font.BOLD, 12));
-		lblGrandBalance.setBounds(839, 360, 65, 18);
+		lblGrandBalance.setBounds(822, 360, 82, 18);
 		panelPaymentInvoice.add(lblGrandBalance);
 
 		labelGrandBalance = new JLabel("0.00");
@@ -429,6 +429,10 @@ public class PaymentUiManager extends JInternalFrame {
 		panelPaymentInvoice.add(labelGrandBalance);
 		separator.setBounds(822, 355, 82, 2);
 		panelPaymentInvoice.add(separator);
+		
+		JSeparator separator_1 = new JSeparator();
+		separator_1.setBounds(822, 247, 82, 2);
+		panelPaymentInvoice.add(separator_1);
 		// 3.9 end of ghan code
 
 		JXPanel panelPaymentInvoiceMapping = new JXPanel();
