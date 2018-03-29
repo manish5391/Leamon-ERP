@@ -491,7 +491,7 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 					receivedBillAmount.set(rowIndex, adjustRemovalAmt);
 					info.setRemainingBillAmount(String.valueOf(totalBillAdjustment));
 					paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(adjustedAmount+remainingAmt));
-					info.setPaidBillAmount(String.valueOf(oldReceivedAmt-remainingAmt));
+					info.setPaidBillAmount(String.valueOf(oldReceivedAmt-adjustRemovalAmt));
 				}
 				
 				
