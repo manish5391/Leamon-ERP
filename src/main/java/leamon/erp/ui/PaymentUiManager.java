@@ -516,7 +516,7 @@ public class PaymentUiManager extends JInternalFrame {
 
 	}
 
-	private void menuItemRefreshClick(ActionEvent e){
+	public void menuItemRefreshClick(ActionEvent e){
 		try{
 			getPaymentInfo();
 		}catch(Exception exp){

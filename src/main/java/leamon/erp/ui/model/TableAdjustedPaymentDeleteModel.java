@@ -344,11 +344,15 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 		double invoiceRemainigBal = 0;
 		double openingRemainingBal = 0;
 		try{
-			invoiceRemainigBal = Double.parseDouble(invoiceInfo.getRemainingBillAmount());
+			if(invoiceInfo != null){
+				invoiceRemainigBal = Double.parseDouble(invoiceInfo.getRemainingBillAmount());
+			}
 		}catch(Exception exp){LOGGER.error(exp);}
 		
 		try{
-			openingRemainingBal = Double.parseDouble(openingBalanceInfo.getRemainingopeningbalanceamount());
+			if(openingBalanceInfo != null){
+				openingRemainingBal = Double.parseDouble(openingBalanceInfo.getRemainingopeningbalanceamount());
+			}
 		}catch(Exception exp){LOGGER.error(exp);}
 
 		if(isChecked){

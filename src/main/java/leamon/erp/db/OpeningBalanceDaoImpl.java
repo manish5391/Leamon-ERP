@@ -92,6 +92,23 @@ public class OpeningBalanceDaoImpl implements LeamonERPDao<OpeningBalanceInfo>{
 		LOGGER.info("OpeningBalanceDaoImpl[update] end.");
 	}
 	
+	/*Release 3.9*/
+	public void updateAdjustRemoval(OpeningBalanceInfo item) throws Exception {
+		LOGGER.info("updateAdjustRemoval[update] inside.");
+		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
+		OpeningBalanceMapper openingBalanceMapper= session.getMapper(OpeningBalanceMapper.class);
+		try{
+		openingBalanceMapper.updateAdjustRemoval(item);
+		session.commit();
+		}catch(Exception exp){
+			session.rollback();
+			throw exp;
+		}finally{
+			session.close();
+		}
+		LOGGER.info("updateAdjustRemoval[update] end.");
+	}
+	
 	/*-------Release 3.8---Filtere Criteria Sql----------------*/
 	public List<OpeningBalanceInfo> getAllOpeningBalanceByPartyName(String partyInfoID) throws Exception{
 		LOGGER.info("OpeningBalanceDaoImpl[getAllOpeningBalanceByPartyName] inside.");

@@ -8,7 +8,12 @@ import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXTextField;
 
+import leamon.erp.db.InvoiceDaoImpl;
+import leamon.erp.db.OpeningBalanceDaoImpl;
+import leamon.erp.db.PaymentInvoiceMappingDaoImpl;
+import leamon.erp.db.PaymentReceivedDaoImpl;
 import leamon.erp.model.InvoiceInfo;
+import leamon.erp.model.OpeningBalanceInfo;
 import leamon.erp.model.PaymentInvoiceMappingInfo;
 import leamon.erp.model.PaymentReceivedInfo;
 import leamon.erp.ui.event.MouseClickHandler;
@@ -74,6 +79,9 @@ public class PaymentAdjustmentDeleteUI extends JInternalFrame {
 	private JXButton btnSave;
 	private JXButton btnRefresh;
 	private JXButton btnClose;
+	
+	private PaymentReceivedInfo paymentReceivedInfo;
+	private List<PaymentInvoiceMappingInfo> paymentInvoiceMappingInfosBackup;
 
 	public PaymentAdjustmentDeleteUI() {
 
@@ -269,7 +277,8 @@ public class PaymentAdjustmentDeleteUI extends JInternalFrame {
 		textFieldRemark.setText(paymentReceivedInfo.getRemark());
 		String receiveDate = paymentReceivedInfo.getReceivedDate();
 		datePicker.setText(receiveDate);
-
+		
+		this.paymentReceivedInfo = paymentReceivedInfo;
 		if(ERPEnum.TYPE_PAYMENT_WITHOUT_BILL.name().equals(paymentReceivedInfo.getType())){
 			chckbxWamountAdjust.setSelected(Boolean.TRUE);
 		}
@@ -311,10 +320,13 @@ public class PaymentAdjustmentDeleteUI extends JInternalFrame {
 			tableAdjustments.getColumnExt(LeamonERPConstants.TABLE_HEADER_PAID_B_STATUS).setVisible(false);
 			tableAdjustments.getColumnExt(LeamonERPConstants.TABLE_HEADER_B_RECEIVED_AMOUNT).setVisible(false);
 		}
-
+		
+		paymentInvoiceMappingInfosBackup = new ArrayList<PaymentInvoiceMappingInfo>();
+		paymentInvoiceMappingInfosBackup.addAll(paymentInvoiceMappingInfos);
 	}
 
 	public void clear(){
+		paymentReceivedInfo = null;
 		textFieldPartyName.setText(LeamonERPConstants.EMPTY_STR);
 		textFieldPayment.setText(LeamonERPConstants.EMPTY_STR);
 		textFieldRemark.setText(LeamonERPConstants.EMPTY_STR);
@@ -409,10 +421,57 @@ public class PaymentAdjustmentDeleteUI extends JInternalFrame {
 	}
 
 	private void save(){
+		TableAdjustedPaymentDeleteModel model  = (TableAdjustedPaymentDeleteModel)tableAdjustments.getModel();
+		List<PaymentInvoiceMappingInfo> paymentInvoiceMappingInfos = model.getPaymentInvoiceMappingInfos();
+		boolean errorFlag = false;
+		for(int i=0; i<paymentInvoiceMappingInfos.size(); i++){
+			InvoiceInfo invoiceInfo = null;
+			OpeningBalanceInfo openingBalanceInfo = null;
+			invoiceInfo = paymentInvoiceMappingInfos.get(i).getInvoiceInfo();
+			openingBalanceInfo = paymentInvoiceMappingInfos.get(i).getOpenigBalanceInfo();
+			
+			if(invoiceInfo != null){
+				try{
+					if(ERPEnum.TYPE_PAYMENT_WITHOUT_BILL.name().equals(paymentReceivedInfo.getType()) ){
+						InvoiceDaoImpl.getInstance().updatePaidWBillAmount(invoiceInfo);
+						PaymentInvoiceMappingDaoImpl.getInstance().disable(paymentInvoiceMappingInfos.get(i));
+					}else if (ERPEnum.TYPE_PAYMENT_WITH_BILL.name().equals(paymentReceivedInfo.getType()) ){
+						InvoiceDaoImpl.getInstance().updatePaidBillAmount(invoiceInfo);
+						PaymentInvoiceMappingDaoImpl.getInstance().disable(paymentInvoiceMappingInfos.get(i));
+					}
+				}catch(Exception exp){
+					LOGGER.error(exp);
+					JOptionPane.showMessageDialog(this, "Failed to delete payment from invoice number : "+invoiceInfo.getInvoicNum());
+					errorFlag = true;
+				}
+			}
+			
+			if(openingBalanceInfo != null){
+				try{
+					OpeningBalanceDaoImpl.getInstance().updateAdjustRemoval(openingBalanceInfo);
+					PaymentInvoiceMappingDaoImpl.getInstance().disable(paymentInvoiceMappingInfos.get(i));
+				}catch(Exception exp){
+					LOGGER.error(exp);
+					JOptionPane.showMessageDialog(this, "Failed to delete payment from opening balance : "+openingBalanceInfo.getId());
+					errorFlag = true;
+				}
+			}
+		}//end for
 		
+		if(!errorFlag){
+			try{
+				PaymentReceivedDaoImpl.getInstance().disable(paymentReceivedInfo);
+				JOptionPane.showMessageDialog(this, "successfully deleted", "Leamon-ERP Message",JOptionPane.PLAIN_MESSAGE);
+				LeamonERP.paymentUiManager.menuItemRefreshClick(null);
+				btnCloseClick(null);
+			}catch(Exception exp){
+				LOGGER.error(exp);
+				JOptionPane.showMessageDialog(this, "Failed to delete.", "Leamon-ERP Error Message",JOptionPane.ERROR_MESSAGE);
+			}
+		}
 	}
 	private void refresh(){
-		
+		setPaymentInfo(paymentReceivedInfo, paymentInvoiceMappingInfosBackup);
 	}
 	private void btnSaveClickHandler(ActionEvent e){
 		save();

@@ -43,6 +43,9 @@ public interface OpeningBalanceMapper {
 			+ " STATUS = #{status}, "
 			+ "LASTUPDATED = #{lastUpdated}  WHERE ID = #{id}";
 	
+	final String UPDATE_ADJUST_REMOVAL = "UPDATE OPENING_BALANCE_INFO SET RECEIVEDOPENINGBALANCEAMOUNT = #{receivedopeningbalanceamount}, "
+			+ " REMAININGOPENINGBALANCEAMOUNT = #{remainingopeningbalanceamount}, STATUS = #{status}, LASTUPDATED = #{lastUpdated}  WHERE ID = #{id}"; 
+	
 	final String deleteById = "DELETE from OPENING_BALANCE_INFO WHERE ID = #{id}";
 	
 	final String disableByID = "UPDATE OPENING_BALANCE_INFO SET ISENABLE = FALSE WHERE ID = #{id}";
@@ -86,6 +89,8 @@ public interface OpeningBalanceMapper {
 	@Update(update)
 	void update(OpeningBalanceInfo openingBalanceInfo) throws Exception;
 
+	@Update(UPDATE_ADJUST_REMOVAL)
+	void updateAdjustRemoval(OpeningBalanceInfo openingBalanceInfo) throws Exception;
 	
 	@Delete(deleteById)
 	void delete(int id) throws Exception;
