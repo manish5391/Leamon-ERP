@@ -296,7 +296,12 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 				}
 
 			}else if(ERPEnum.TYPE_PAYMENT_WITHOUT_BILL.name().equals(type)){
-
+				isAdjustRemove.set(rowIndex, (Boolean)aValue);
+				if(null != aValue && aValue instanceof Boolean && aValue == Boolean.TRUE){
+					calcWithoutBillAmtAdjustment(rowIndex, columnIndex, (Boolean)aValue);
+				}else if(null != aValue && aValue instanceof Boolean && aValue == Boolean.FALSE){
+					calcWithoutBillAmtAdjustment(rowIndex, columnIndex, (Boolean)aValue);
+				}
 			}
 
 			break;
@@ -428,12 +433,27 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 					receivedBillAmount.set(rowIndex, actualBillAmount);
 					paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(actualBillAmount));
 					paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf(amount-actualBillAmount));
-					info.setPaidBillAmount(String.valueOf(oldReceivedAmt-actualBillAmount));
+					if(actualBillAmount > oldReceivedAmt){
+						JOptionPane.showMessageDialog(paymentAdjustmentDeleteUI, "Wrong adjustment removal.","Leamon-ERP Error", JOptionPane.ERROR_MESSAGE);
+						isAdjustRemove.set(rowIndex, Boolean.FALSE.booleanValue());
+						unCheckBCalculation(info, rowIndex, columnIndex, false);
+						return;
+					}else{
+						info.setPaidBillAmount(String.valueOf(oldReceivedAmt-actualBillAmount));
+					}
 				}else{
 					receivedBillAmount.set(rowIndex, amount);
 					paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(amount));
 					paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf("0.0"));
-					info.setPaidBillAmount(String.valueOf(oldReceivedAmt-amount));
+					
+					if(amount > oldReceivedAmt){
+						JOptionPane.showMessageDialog(paymentAdjustmentDeleteUI, "Wrong adjustment removal.","Leamon-ERP Error", JOptionPane.ERROR_MESSAGE);
+						isAdjustRemove.set(rowIndex, Boolean.FALSE.booleanValue());
+						unCheckBCalculation(info, rowIndex, columnIndex, false);
+						return;
+					}else{
+						info.setPaidBillAmount(String.valueOf(oldReceivedAmt-amount));
+					}
 				}
 				OldRemainingAmount.set(rowIndex, billAmt);
 				if(InvoicePaymentStatusEnum.ALL_CLEAR.name().equals(info.getPaidStatus()) ){
@@ -484,20 +504,33 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 					receivedBillAmount.set(rowIndex, actualBillAmount);
 					info.setRemainingBillAmount(String.valueOf(actualBillAmount));
 					paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(adjustedAmount+actualBillAmount));
-					info.setPaidBillAmount(String.valueOf(oldReceivedAmt-actualBillAmount));
+					if(actualBillAmount > oldReceivedAmt){
+						JOptionPane.showMessageDialog(paymentAdjustmentDeleteUI, "Wrong adjustment removal.","Leamon-ERP Error", JOptionPane.ERROR_MESSAGE);
+						isAdjustRemove.set(rowIndex, Boolean.FALSE.booleanValue());
+						unCheckBCalculation(info, rowIndex, columnIndex, false);
+						return;
+					}else{
+						info.setPaidBillAmount(String.valueOf(oldReceivedAmt-actualBillAmount));
+					}
+					
 				}else{
 					adjustRemovalAmt = remainingAmt;
 					paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf("0.0"));
 					receivedBillAmount.set(rowIndex, adjustRemovalAmt);
 					info.setRemainingBillAmount(String.valueOf(totalBillAdjustment));
 					paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(adjustedAmount+remainingAmt));
-					info.setPaidBillAmount(String.valueOf(oldReceivedAmt-adjustRemovalAmt));
+					if(adjustRemovalAmt > oldReceivedAmt){
+						JOptionPane.showMessageDialog(paymentAdjustmentDeleteUI, "Wrong adjustment removal.","Leamon-ERP Error", JOptionPane.ERROR_MESSAGE);
+						isAdjustRemove.set(rowIndex, Boolean.FALSE.booleanValue());
+						unCheckBCalculation(info, rowIndex, columnIndex, false);
+						return;
+					}else{
+						info.setPaidBillAmount(String.valueOf(oldReceivedAmt-adjustRemovalAmt));
+					}
+					
 				}
 				
-				
 				OldRemainingAmount.set(rowIndex, billAmt);
-				//info.setRemainingBillAmount(String.valueOf(totalBillAdjustment));
-				
 				
 				if(InvoicePaymentStatusEnum.ALL_CLEAR.name().equals(info.getPaidStatus()) ){
 					double actualBillAmt = 0;
@@ -544,7 +577,15 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 				OldRemainingAmount.set(rowIndex, billAmt);
 				paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(totalAdjust));
 				paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf(amount-totalAdjust));
-				info.setPaidBillAmount(String.valueOf(oldReceivedAmt-recordedAmount));
+				if(recordedAmount > oldReceivedAmt){
+					JOptionPane.showMessageDialog(paymentAdjustmentDeleteUI, "Wrong adjustment removal.","Leamon-ERP Error", JOptionPane.ERROR_MESSAGE);
+					isAdjustRemove.set(rowIndex, Boolean.FALSE.booleanValue());
+					unCheckBCalculation(info, rowIndex, columnIndex, false);
+					return;
+				}else{
+					info.setPaidBillAmount(String.valueOf(oldReceivedAmt-recordedAmount));
+				}
+				
 			}
 		}
 	}
@@ -596,14 +637,22 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 			recordedAmount = Double.parseDouble(paymentInvoiceMappingInfos.get(rowIndex).getAmount());
 		}catch(Exception e){ LOGGER.error(e); }
 		
+		double oldReceivedAmt = 0;
+		try{
+			oldReceivedAmt = Double.parseDouble(info.getReceivedopeningbalanceamount());
+		}catch(Exception e){ LOGGER.error(e); }
+		OldReceivingAmount.set(rowIndex, oldReceivedAmt);
 		
 		if(Strings.isNullOrEmpty(paymentAdjustmentDeleteUI.getTextFieldAdjAmt().getText())){
 			if(recordedAmount > 0){
 				double totalBillAdjustment =  billAmt + amount;
 				receivedBillAmount.set(rowIndex, recordedAmount);
 				OldRemainingAmount.set(rowIndex, billAmt);
-
+				OldReceivingAmount.set(rowIndex, oldReceivedAmt);
+				
 				info.setRemainingopeningbalanceamount(String.valueOf(recordedAmount+billAmt));
+				info.setReceivedopeningbalanceamount(String.valueOf(OldReceivingAmount.get(rowIndex) - recordedAmount));
+				
 				paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(recordedAmount));
 				paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf(amount-recordedAmount));
 				if(InvoicePaymentStatusEnum.ALL_CLEAR.name().equals(info.getStatus()) ){
@@ -639,13 +688,28 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 					receivedBillAmount.set(rowIndex, actualBillAmount);
 					paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(actualBillAmount));
 					paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf(amount-actualBillAmount));
+					if(actualBillAmount > oldReceivedAmt){
+						JOptionPane.showMessageDialog(paymentAdjustmentDeleteUI, "Wrong adjustment removal.","Leamon-ERP Error", JOptionPane.ERROR_MESSAGE);
+						isAdjustRemove.set(rowIndex, Boolean.FALSE.booleanValue());
+						unCheckBCalculationOpeningBal(info, rowIndex, columnIndex, false);											
+						return;
+					}else{
+						info.setReceivedopeningbalanceamount(String.valueOf(oldReceivedAmt-actualBillAmount));
+					}
 				}else{
 					receivedBillAmount.set(rowIndex, amount);
 					paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(amount));
 					paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf("0.0"));
+					if(amount > oldReceivedAmt){
+						JOptionPane.showMessageDialog(paymentAdjustmentDeleteUI, "Wrong adjustment removal.","Leamon-ERP Error", JOptionPane.ERROR_MESSAGE);
+						isAdjustRemove.set(rowIndex, Boolean.FALSE.booleanValue());
+						unCheckBCalculationOpeningBal(info, rowIndex, columnIndex, false);											
+						return;
+					}else{
+						info.setReceivedopeningbalanceamount(String.valueOf(oldReceivedAmt-amount));
+					}
 				}
 				OldRemainingAmount.set(rowIndex, billAmt);
-
 				if(InvoicePaymentStatusEnum.ALL_CLEAR.name().equals(info.getStatus()) ){
 					double actualBillAmt = 0;
 					try{
@@ -694,17 +758,34 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 					receivedBillAmount.set(rowIndex, actualBillAmount);
 					info.setRemainingopeningbalanceamount(String.valueOf(actualBillAmount));
 					paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(adjustedAmount+actualBillAmount));
+					if(actualBillAmount > oldReceivedAmt){
+						JOptionPane.showMessageDialog(paymentAdjustmentDeleteUI, "Wrong adjustment removal.","Leamon-ERP Error", JOptionPane.ERROR_MESSAGE);
+						isAdjustRemove.set(rowIndex, Boolean.FALSE.booleanValue());
+						unCheckBCalculationOpeningBal(info, rowIndex, columnIndex, false);											
+						return;
+					}else{
+						info.setReceivedopeningbalanceamount(String.valueOf(oldReceivedAmt-actualBillAmount));
+					}
+					
 				}else{
 					adjustRemovalAmt = remainingAmt;
 					paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf("0.0"));
 					receivedBillAmount.set(rowIndex, adjustRemovalAmt);
 					info.setRemainingopeningbalanceamount(String.valueOf(totalBillAdjustment));
 					paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(adjustedAmount+remainingAmt));
+					if(adjustRemovalAmt > oldReceivedAmt){
+						JOptionPane.showMessageDialog(paymentAdjustmentDeleteUI, "Wrong adjustment removal.","Leamon-ERP Error", JOptionPane.ERROR_MESSAGE);
+						isAdjustRemove.set(rowIndex, Boolean.FALSE.booleanValue());
+						unCheckBCalculationOpeningBal(info, rowIndex, columnIndex, false);											
+						return;
+					}else{
+						info.setReceivedopeningbalanceamount(String.valueOf(oldReceivedAmt-adjustRemovalAmt));
+					}
 				}
 				
 				
 				OldRemainingAmount.set(rowIndex, billAmt);
-				//info.setRemainingBillAmount(String.valueOf(totalBillAdjustment));
+				//info.setRemainingopeningbalanceamount(String.valueOf(totalBillAdjustment));
 				
 				
 				if(InvoicePaymentStatusEnum.ALL_CLEAR.name().equals(info.getStatus()) ){
@@ -751,12 +832,22 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 				receivedBillAmount.set(rowIndex, recordedAmount);
 				OldRemainingAmount.set(rowIndex, billAmt);
 				paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(totalAdjust));
-				paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf(amount-totalAdjust));	
+				paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf(amount-totalAdjust));
+				if(recordedAmount > oldReceivedAmt){
+					JOptionPane.showMessageDialog(paymentAdjustmentDeleteUI, "Wrong adjustment removal.","Leamon-ERP Error", JOptionPane.ERROR_MESSAGE);
+					isAdjustRemove.set(rowIndex, Boolean.FALSE.booleanValue());
+					unCheckBCalculationOpeningBal(info, rowIndex, columnIndex, false);											
+					return;
+				}else{
+					info.setReceivedopeningbalanceamount(String.valueOf(oldReceivedAmt-recordedAmount));
+				}
+				
 			}
 		}
 	}//end
 	
 	private void unCheckBCalculationOpeningBal(OpeningBalanceInfo info, int rowIndex, int columnIndex, Boolean isChecked){
+
 		double receivedAmount =  receivedBillAmount.get(rowIndex);
 		double billAmt = 0;
 
@@ -787,7 +878,578 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 			paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf(val2+receivedAmount));
 			info.setStatus(OldBstatus.get(rowIndex));
 			receivedBillAmount.set(rowIndex, 0.0);
+			
+			info.setReceivedopeningbalanceamount(String.valueOf(OldReceivingAmount.get(rowIndex)));
 		}
+	
 	}//end
 	
+	public void calcWithoutBillAmtAdjustment(int rowIndex, int columnIndex, Boolean isChecked){
+
+		double amount = 0;
+		try{ 
+			amount  = Double.parseDouble(paymentAdjustmentDeleteUI.getTextFieldPayment().getText());
+		}catch(Exception e){ amount = 0; LOGGER.error(e); }
+		
+		if((amount ==0 || amount<0)){
+			JOptionPane.showMessageDialog(paymentAdjustmentDeleteUI, "Payment is null hence Can't be adjusted ", "Leamon-ERP-Payment", JOptionPane.ERROR_MESSAGE);
+			isAdjustRemove.set(rowIndex, Boolean.FALSE);
+			return ;
+		}
+
+		InvoiceInfo invoiceInfo  = InvoiceInfo.builder().build();
+		OpeningBalanceInfo openingBalanceInfo = OpeningBalanceInfo.builder().build();
+		if(paymentInvoiceMappingInfos.get(rowIndex).getInvoiceInfoID() != null){
+			invoiceInfo = paymentInvoiceMappingInfos.get(rowIndex).getInvoiceInfo();
+		}
+		
+		if(paymentInvoiceMappingInfos.get(rowIndex).getOpeningBalanceID() != null){
+			openingBalanceInfo = paymentInvoiceMappingInfos.get(rowIndex).getOpenigBalanceInfo();
+		}
+		
+		double invoiceRemainigBal = 0;
+		double openingRemainingBal = 0;
+		try{
+			invoiceRemainigBal = Double.parseDouble(invoiceInfo.getRemainingWithoutBillAmount());
+		}catch(Exception exp){LOGGER.error(exp);}
+		
+		try{
+			openingRemainingBal = Double.parseDouble(openingBalanceInfo.getRemainingopeningbalanceamount());
+		}catch(Exception exp){LOGGER.error(exp);}
+
+		if(isChecked){
+			InvoiceInfo info =  paymentInvoiceMappingInfos.get(rowIndex).getInvoiceInfo();
+
+			if(paymentInvoiceMappingInfos.get(rowIndex).getOpeningBalanceID()!=null){
+				checkWithoutBillOpeningBalanceCalculation(openingBalanceInfo, rowIndex, columnIndex, isChecked, amount);
+			}else if(paymentInvoiceMappingInfos.get(rowIndex).getInvoiceInfoID()!=null){
+				checkWithoutBillCalculation(info, rowIndex, columnIndex, isChecked, amount);
+			}
+		}else if(!isChecked){
+			InvoiceInfo info =  paymentInvoiceMappingInfos.get(rowIndex).getInvoiceInfo();
+
+			if(type.equals(ERPEnum.TYPE_PAYMENT_WITHOUT_BILL.name()) && paymentInvoiceMappingInfos.get(rowIndex).getOpeningBalanceID()!=null){
+				unCheckWithoutBillOpeningBalCalculation(openingBalanceInfo, rowIndex, columnIndex, isChecked, amount);
+			}else if(type.equals(ERPEnum.TYPE_PAYMENT_WITHOUT_BILL.name()) && paymentInvoiceMappingInfos.get(rowIndex).getInvoiceInfoID()!=null){
+				unCheckWithoutBillCalculation(info, rowIndex, columnIndex, isChecked, amount);
+			}
+
+		}// end if
+	
+	}//end method
+	
+	public void checkWithoutBillCalculation(InvoiceInfo info, int rowIndex, int columnIndex, Boolean isChecked, double amount){
+
+		double billAmt = 0;
+		try{
+			billAmt = Double.parseDouble(info.getRemainingWithoutBillAmount());
+		}catch(Exception e){ LOGGER.error(e); }
+
+		double recordedAmount = 0;
+		try{
+			recordedAmount = Double.parseDouble(paymentInvoiceMappingInfos.get(rowIndex).getAmount());
+		}catch(Exception e){ LOGGER.error(e); }
+		
+		double oldReceivedAmt = 0;
+		try{
+			oldReceivedAmt = Double.parseDouble(info.getPaidWithoutBillAmount());
+		}catch(Exception e){ LOGGER.error(e); }
+		OldReceivingAmount.set(rowIndex, oldReceivedAmt);
+		
+		if(Strings.isNullOrEmpty(paymentAdjustmentDeleteUI.getTextFieldAdjAmt().getText())){
+			if(recordedAmount > 0){
+				double totalBillAdjustment =  billAmt + amount;
+				receivedBillAmount.set(rowIndex, recordedAmount);
+				OldRemainingAmount.set(rowIndex, billAmt);
+				OldReceivingAmount.set(rowIndex, oldReceivedAmt);
+				
+				info.setRemainingWithoutBillAmount(String.valueOf(recordedAmount+billAmt));
+				info.setPaidWithoutBillAmount(String.valueOf(OldReceivingAmount.get(rowIndex) - recordedAmount));
+				
+				paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(recordedAmount));
+				paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf(amount-recordedAmount));
+				if(InvoicePaymentStatusEnum.ALL_CLEAR.name().equals(info.getWpaidstatus()) ){
+					double actualBillAmt = 0;
+					try{
+						actualBillAmt = Double.parseDouble(info.getWithoutBillAmount());
+					}catch(Exception e){ LOGGER.error(e); }
+					if(recordedAmount == actualBillAmt){
+						info.setWpaidstatus(InvoicePaymentStatusEnum.NOTHING_PAID.name());
+					}else{
+						info.setWpaidstatus(InvoicePaymentStatusEnum.PARTIAL_PAID.name());
+					}
+				}
+			}else {
+				double actualBillAmount = 0;
+				try{
+					actualBillAmount = Double.parseDouble(info.getWithoutBillAmount());
+				}catch(Exception exp){LOGGER.error(exp);}
+				
+				double val2 = 0;
+				try{
+					val2 = Double.parseDouble(info.getRemainingWithoutBillAmount());
+				}catch(Exception exp){LOGGER.error(exp);}
+				
+				double removeAdjustAmt = 0;
+				if( (amount+val2) > actualBillAmount){
+					removeAdjustAmt = actualBillAmount - val2;
+				}else{
+					removeAdjustAmt = amount + val2;
+				}
+				info.setRemainingWithoutBillAmount(String.valueOf(removeAdjustAmt));
+				if(amount > actualBillAmount){
+					receivedBillAmount.set(rowIndex, actualBillAmount);
+					paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(actualBillAmount));
+					paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf(amount-actualBillAmount));
+					
+					if(actualBillAmount > oldReceivedAmt){
+						JOptionPane.showMessageDialog(paymentAdjustmentDeleteUI, "Wrong adjustment removal.","Leamon-ERP Error", JOptionPane.ERROR_MESSAGE);
+						isAdjustRemove.set(rowIndex, Boolean.FALSE.booleanValue());
+						unCheckWithoutBillCalculation(info, rowIndex, columnIndex, false, amount);											
+						return;
+					}else{
+						info.setPaidWithoutBillAmount(String.valueOf(oldReceivedAmt-actualBillAmount));
+					}
+					
+				}else{
+					receivedBillAmount.set(rowIndex, amount);
+					paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(amount));
+					paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf("0.0"));
+					if(amount > oldReceivedAmt){
+						JOptionPane.showMessageDialog(paymentAdjustmentDeleteUI, "Wrong adjustment removal.","Leamon-ERP Error", JOptionPane.ERROR_MESSAGE);
+						isAdjustRemove.set(rowIndex, Boolean.FALSE);
+						unCheckWithoutBillCalculation(info, rowIndex, columnIndex, isChecked, amount);
+						return;
+					}else{
+						info.setPaidWithoutBillAmount(String.valueOf(oldReceivedAmt-amount));
+					}
+				}
+				OldRemainingAmount.set(rowIndex, billAmt);
+				if(InvoicePaymentStatusEnum.ALL_CLEAR.name().equals(info.getWpaidstatus()) ){
+					double actualBillAmt = 0;
+					try{
+						actualBillAmt = Double.parseDouble(info.getWithoutBillAmount());
+					}catch(Exception e){ LOGGER.error(e); }
+					if(recordedAmount == actualBillAmt){
+						info.setWpaidstatus(InvoicePaymentStatusEnum.NOTHING_PAID.name());
+					}else if(actualBillAmt < amount){
+						info.setWpaidstatus(InvoicePaymentStatusEnum.NOTHING_PAID.name());
+					}else{
+						info.setWpaidstatus(InvoicePaymentStatusEnum.PARTIAL_PAID.name());
+					}
+				}
+			}
+		}else{
+			if(recordedAmount == 0){
+				String adjustedAmountVal = paymentAdjustmentDeleteUI.getTextFieldAdjAmt().getText();
+				String remainingAmtVal = paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().getText();
+				double remainingAmt = 0;
+				try{
+					remainingAmt = Double.parseDouble(remainingAmtVal);
+				}catch(Exception e){ LOGGER.error(e); }
+
+				if(Strings.isNullOrEmpty(remainingAmtVal) ||  remainingAmt == 0){
+					JOptionPane.showMessageDialog(paymentAdjustmentDeleteUI, "Left ZERO so can't be adjusted ", "Leamon-ERP-Payment", JOptionPane.ERROR_MESSAGE);
+					isAdjustRemove.set(rowIndex, Boolean.FALSE);
+					return ;
+				}
+				double adjustedAmount = 0;
+				try{
+					adjustedAmount = Double.parseDouble(adjustedAmountVal);
+				}catch(Exception e){ LOGGER.error(e); }
+				double totalBillAdjustment =  billAmt + remainingAmt;
+				
+				double actualBillAmount = 0;
+				try{
+					actualBillAmount = Double.parseDouble(info.getWithoutBillAmount());
+				}catch(Exception exp){LOGGER.error(exp);}
+				
+				
+				double adjustRemovalAmt = 0;
+				if(remainingAmt > (actualBillAmount - billAmt)){
+					adjustRemovalAmt = remainingAmt - (actualBillAmount - billAmt);
+					paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf(adjustRemovalAmt));
+					receivedBillAmount.set(rowIndex, actualBillAmount);
+					info.setRemainingWithoutBillAmount(String.valueOf(actualBillAmount));
+					paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(adjustedAmount+actualBillAmount));
+					if(actualBillAmount > oldReceivedAmt){
+						JOptionPane.showMessageDialog(paymentAdjustmentDeleteUI, "Wrong adjustment removal.","Leamon-ERP Error", JOptionPane.ERROR_MESSAGE);
+						isAdjustRemove.set(rowIndex, Boolean.FALSE.booleanValue());
+						unCheckWithoutBillCalculation(info, rowIndex, columnIndex, false, amount);											
+						return;
+					}else{
+						info.setPaidWithoutBillAmount(String.valueOf(oldReceivedAmt-actualBillAmount));
+					}
+				}else{
+					adjustRemovalAmt = remainingAmt;
+					paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf("0.0"));
+					receivedBillAmount.set(rowIndex, adjustRemovalAmt);
+					info.setRemainingWithoutBillAmount(String.valueOf(totalBillAdjustment));
+					paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(adjustedAmount+remainingAmt));
+					
+					if(adjustRemovalAmt > oldReceivedAmt){
+						JOptionPane.showMessageDialog(paymentAdjustmentDeleteUI, "Wrong adjustment removal.","Leamon-ERP Error", JOptionPane.ERROR_MESSAGE);
+						isAdjustRemove.set(rowIndex, Boolean.FALSE.booleanValue());
+						unCheckWithoutBillCalculation(info, rowIndex, columnIndex, false, amount);											
+						return;
+					}else{
+						info.setPaidWithoutBillAmount(String.valueOf(oldReceivedAmt-adjustRemovalAmt));
+					}
+					
+				}
+				
+				OldRemainingAmount.set(rowIndex, billAmt);
+
+				if(InvoicePaymentStatusEnum.ALL_CLEAR.name().equals(info.getWpaidstatus()) ){
+					double actualBillAmt = 0;
+					try{
+						actualBillAmt = Double.parseDouble(info.getWithoutBillAmount());
+					}catch(Exception e){ LOGGER.error(e); }
+					if(recordedAmount == actualBillAmt){
+						info.setWpaidstatus(InvoicePaymentStatusEnum.NOTHING_PAID.name());
+					}else if(remainingAmt >= actualBillAmount){
+						info.setWpaidstatus(InvoicePaymentStatusEnum.NOTHING_PAID.name());
+					}else{
+						info.setWpaidstatus(InvoicePaymentStatusEnum.PARTIAL_PAID.name());
+					}
+				}
+				
+			}else{
+
+				double val2 = 0;
+				try{
+					val2 = Double.parseDouble(info.getRemainingWithoutBillAmount());
+				}catch(Exception exp){LOGGER.error(exp);}
+
+				double total = recordedAmount + val2;
+				info.setRemainingWithoutBillAmount(String.valueOf(total));
+				if(InvoicePaymentStatusEnum.ALL_CLEAR.name().equals(info.getWpaidstatus()) ){
+					double actualBillAmt = 0;
+					try{
+						actualBillAmt = Double.parseDouble(info.getWithoutBillAmount());
+					}catch(Exception e){ LOGGER.error(e); }
+					if(recordedAmount == actualBillAmt){
+						info.setWpaidstatus(InvoicePaymentStatusEnum.NOTHING_PAID.name());
+					}else{
+						info.setWpaidstatus(InvoicePaymentStatusEnum.PARTIAL_PAID.name());
+					}
+				}
+
+				double totalAdjust = 0;
+				try{
+					totalAdjust = Double.parseDouble(paymentAdjustmentDeleteUI.getTextFieldAdjAmt().getText());
+				}catch(Exception exp){ LOGGER.error(exp); }
+				totalAdjust = totalAdjust + recordedAmount;
+				
+				receivedBillAmount.set(rowIndex, recordedAmount);
+				OldRemainingAmount.set(rowIndex, billAmt);
+				paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(totalAdjust));
+				paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf(amount-totalAdjust));
+				
+				if(recordedAmount > oldReceivedAmt){
+					JOptionPane.showMessageDialog(paymentAdjustmentDeleteUI, "Wrong adjustment removal.","Leamon-ERP Error", JOptionPane.ERROR_MESSAGE);
+					isAdjustRemove.set(rowIndex, Boolean.FALSE.booleanValue());
+					unCheckWithoutBillCalculation(info, rowIndex, columnIndex, false, amount);											
+					return;
+				}else{
+					info.setPaidWithoutBillAmount(String.valueOf(oldReceivedAmt-recordedAmount));
+				}
+			}
+		}
+	
+	}
+	
+	public void checkWithoutBillOpeningBalanceCalculation(OpeningBalanceInfo info, int rowIndex, int columnIndex, Boolean isChecked, double amount){
+
+		double billAmt = 0;
+		try{
+			billAmt = Double.parseDouble(info.getRemainingopeningbalanceamount());
+		}catch(Exception e){ LOGGER.error(e); }
+
+		double recordedAmount = 0;
+		try{
+			recordedAmount = Double.parseDouble(paymentInvoiceMappingInfos.get(rowIndex).getAmount());
+		}catch(Exception e){ LOGGER.error(e); }
+		
+		double oldReceivedAmt = 0;
+		try{
+			oldReceivedAmt = Double.parseDouble(info.getReceivedopeningbalanceamount());
+		}catch(Exception e){ LOGGER.error(e); }
+		OldReceivingAmount.set(rowIndex, oldReceivedAmt);
+		
+		if(Strings.isNullOrEmpty(paymentAdjustmentDeleteUI.getTextFieldAdjAmt().getText())){
+			if(recordedAmount > 0){
+				double totalBillAdjustment =  billAmt + amount;
+				receivedBillAmount.set(rowIndex, recordedAmount);
+				OldRemainingAmount.set(rowIndex, billAmt);
+				OldReceivingAmount.set(rowIndex, oldReceivedAmt);
+				
+				info.setRemainingopeningbalanceamount(String.valueOf(recordedAmount+billAmt));
+				info.setReceivedopeningbalanceamount(String.valueOf(OldReceivingAmount.get(rowIndex) - recordedAmount));
+				
+				paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(recordedAmount));
+				paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf(amount-recordedAmount));
+				if(InvoicePaymentStatusEnum.ALL_CLEAR.name().equals(info.getStatus()) ){
+					double actualBillAmt = 0;
+					try{
+						actualBillAmt = Double.parseDouble(info.getOpeningbalanceamount());
+					}catch(Exception e){ LOGGER.error(e); }
+					if(recordedAmount == actualBillAmt){
+						info.setStatus(InvoicePaymentStatusEnum.NOTHING_PAID.name());
+					}else{
+						info.setStatus(InvoicePaymentStatusEnum.PARTIAL_PAID.name());
+					}
+				}
+			}else {
+				double actualBillAmount = 0;
+				try{
+					actualBillAmount = Double.parseDouble(info.getOpeningbalanceamount());
+				}catch(Exception exp){LOGGER.error(exp);}
+				
+				double val2 = 0;
+				try{
+					val2 = Double.parseDouble(info.getRemainingopeningbalanceamount());
+				}catch(Exception exp){LOGGER.error(exp);}
+				
+				double removeAdjustAmt = 0;
+				if( (amount+val2) > actualBillAmount){
+					removeAdjustAmt = actualBillAmount - val2;
+				}else{
+					removeAdjustAmt = amount + val2;
+				}
+				info.setRemainingopeningbalanceamount(String.valueOf(removeAdjustAmt));
+				if(amount > actualBillAmount){
+					receivedBillAmount.set(rowIndex, actualBillAmount);
+					paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(actualBillAmount));
+					paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf(amount-actualBillAmount));
+					if(actualBillAmount > oldReceivedAmt){
+						JOptionPane.showMessageDialog(paymentAdjustmentDeleteUI, "Wrong adjustment removal.","Leamon-ERP Error", JOptionPane.ERROR_MESSAGE);
+						isAdjustRemove.set(rowIndex, Boolean.FALSE.booleanValue());
+						unCheckWithoutBillOpeningBalCalculation(info, rowIndex, columnIndex, false, amount);											
+						return;
+					}else{
+						info.setReceivedopeningbalanceamount(String.valueOf(oldReceivedAmt-actualBillAmount));
+					}
+					
+				}else{
+					receivedBillAmount.set(rowIndex, amount);
+					paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(amount));
+					paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf("0.0"));
+					if(amount > oldReceivedAmt){
+						JOptionPane.showMessageDialog(paymentAdjustmentDeleteUI, "Wrong adjustment removal.","Leamon-ERP Error", JOptionPane.ERROR_MESSAGE);
+						isAdjustRemove.set(rowIndex, Boolean.FALSE.booleanValue());
+						unCheckWithoutBillOpeningBalCalculation(info, rowIndex, columnIndex, false, amount);											
+						return;
+					}else{
+						info.setReceivedopeningbalanceamount(String.valueOf(oldReceivedAmt-amount));
+					}
+				}
+				OldRemainingAmount.set(rowIndex, billAmt);
+				if(InvoicePaymentStatusEnum.ALL_CLEAR.name().equals(info.getStatus()) ){
+					double actualBillAmt = 0;
+					try{
+						actualBillAmt = Double.parseDouble(info.getOpeningbalanceamount());
+					}catch(Exception e){ LOGGER.error(e); }
+					if(recordedAmount == actualBillAmt){
+						info.setStatus(InvoicePaymentStatusEnum.NOTHING_PAID.name());
+					}else if(actualBillAmt < amount){
+						info.setStatus(InvoicePaymentStatusEnum.NOTHING_PAID.name());
+					}else{
+						info.setStatus(InvoicePaymentStatusEnum.PARTIAL_PAID.name());
+					}
+				}
+				
+			}
+		}else{
+			if(recordedAmount == 0){
+				String adjustedAmountVal = paymentAdjustmentDeleteUI.getTextFieldAdjAmt().getText();
+				String remainingAmtVal = paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().getText();
+				double remainingAmt = 0;
+				try{
+					remainingAmt = Double.parseDouble(remainingAmtVal);
+				}catch(Exception e){ LOGGER.error(e); }
+
+				if(Strings.isNullOrEmpty(remainingAmtVal) ||  remainingAmt == 0){
+					JOptionPane.showMessageDialog(paymentAdjustmentDeleteUI, "Left ZERO so can't be adjusted ", "Leamon-ERP-Payment", JOptionPane.ERROR_MESSAGE);
+					isAdjustRemove.set(rowIndex, Boolean.FALSE);
+					return ;
+				}
+				double adjustedAmount = 0;
+				try{
+					adjustedAmount = Double.parseDouble(adjustedAmountVal);
+				}catch(Exception e){ LOGGER.error(e); }
+				double totalBillAdjustment =  billAmt + remainingAmt;
+				
+				double actualBillAmount = 0;
+				try{
+					actualBillAmount = Double.parseDouble(info.getOpeningbalanceamount());
+				}catch(Exception exp){LOGGER.error(exp);}
+				
+				
+				double adjustRemovalAmt = 0;
+				if(remainingAmt > (actualBillAmount - billAmt)){
+					adjustRemovalAmt = remainingAmt - (actualBillAmount - billAmt);
+					paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf(adjustRemovalAmt));
+					receivedBillAmount.set(rowIndex, actualBillAmount);
+					info.setRemainingopeningbalanceamount(String.valueOf(actualBillAmount));
+					paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(adjustedAmount+actualBillAmount));
+					if(actualBillAmount > oldReceivedAmt){
+						JOptionPane.showMessageDialog(paymentAdjustmentDeleteUI, "Wrong adjustment removal.","Leamon-ERP Error", JOptionPane.ERROR_MESSAGE);
+						isAdjustRemove.set(rowIndex, Boolean.FALSE.booleanValue());
+						unCheckWithoutBillOpeningBalCalculation(info, rowIndex, columnIndex, false, amount);																						
+						return;
+					}else{
+						info.setReceivedopeningbalanceamount(String.valueOf(oldReceivedAmt-actualBillAmount));
+					}
+					
+				}else{
+					adjustRemovalAmt = remainingAmt;
+					paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf("0.0"));
+					receivedBillAmount.set(rowIndex, adjustRemovalAmt);
+					info.setRemainingopeningbalanceamount(String.valueOf(totalBillAdjustment));
+					paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(adjustedAmount+remainingAmt));
+					if(adjustRemovalAmt > oldReceivedAmt){
+						JOptionPane.showMessageDialog(paymentAdjustmentDeleteUI, "Wrong adjustment removal.","Leamon-ERP Error", JOptionPane.ERROR_MESSAGE);
+						isAdjustRemove.set(rowIndex, Boolean.FALSE.booleanValue());
+						unCheckWithoutBillOpeningBalCalculation(info, rowIndex, columnIndex, false, amount);											
+						return;
+					}else{
+						info.setReceivedopeningbalanceamount(String.valueOf(oldReceivedAmt-adjustRemovalAmt));
+					}
+				}
+				
+				
+				OldRemainingAmount.set(rowIndex, billAmt);
+				//info.setRemainingopeningbalanceamount(String.valueOf(totalBillAdjustment));
+				
+				
+				if(InvoicePaymentStatusEnum.ALL_CLEAR.name().equals(info.getStatus()) ){
+					double actualBillAmt = 0;
+					try{
+						actualBillAmt = Double.parseDouble(info.getOpeningbalanceamount());
+					}catch(Exception e){ LOGGER.error(e); }
+					if(recordedAmount == actualBillAmt){
+						info.setStatus(InvoicePaymentStatusEnum.NOTHING_PAID.name());
+					}else if(remainingAmt >= actualBillAmount){
+						info.setStatus(InvoicePaymentStatusEnum.NOTHING_PAID.name());
+					}else{
+						info.setStatus(InvoicePaymentStatusEnum.PARTIAL_PAID.name());
+					}
+				}
+				
+			}else{
+
+				double val2 = 0;
+				try{
+					val2 = Double.parseDouble(info.getRemainingopeningbalanceamount());
+				}catch(Exception exp){LOGGER.error(exp);}
+
+				double total = recordedAmount + val2;
+				info.setRemainingopeningbalanceamount(String.valueOf(total));
+				if(InvoicePaymentStatusEnum.ALL_CLEAR.name().equals(info.getStatus()) ){
+					double actualBillAmt = 0;
+					try{
+						actualBillAmt = Double.parseDouble(info.getOpeningbalanceamount());
+					}catch(Exception e){ LOGGER.error(e); }
+					if(recordedAmount == actualBillAmt){
+						info.setStatus(InvoicePaymentStatusEnum.NOTHING_PAID.name());
+					}else{
+						info.setStatus(InvoicePaymentStatusEnum.PARTIAL_PAID.name());
+					}
+				}
+
+				double totalAdjust = 0;
+				try{
+					totalAdjust = Double.parseDouble(paymentAdjustmentDeleteUI.getTextFieldAdjAmt().getText());
+				}catch(Exception exp){ LOGGER.error(exp); }
+				totalAdjust = totalAdjust + recordedAmount;
+				
+				receivedBillAmount.set(rowIndex, recordedAmount);
+				OldRemainingAmount.set(rowIndex, billAmt);
+				paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(totalAdjust));
+				paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf(amount-totalAdjust));
+				if(recordedAmount > oldReceivedAmt){
+					JOptionPane.showMessageDialog(paymentAdjustmentDeleteUI, "Wrong adjustment removal.","Leamon-ERP Error", JOptionPane.ERROR_MESSAGE);
+					isAdjustRemove.set(rowIndex, Boolean.FALSE.booleanValue());
+					unCheckWithoutBillOpeningBalCalculation(info, rowIndex, columnIndex, false, amount);											
+					return;
+				}else{
+					info.setReceivedopeningbalanceamount(String.valueOf(oldReceivedAmt-recordedAmount));
+				}
+				
+			}
+		}
+	}
+	
+	public void unCheckWithoutBillCalculation(InvoiceInfo info, int rowIndex, int columnIndex, Boolean isChecked, double amount){
+
+		double receivedAmount =  receivedBillAmount.get(rowIndex);
+		double billAmt = 0;
+
+		try{
+			billAmt = Double.parseDouble(info.getRemainingWithoutBillAmount()); }catch(Exception e){ LOGGER.error(e); }
+
+		if(Strings.isNullOrEmpty(paymentAdjustmentDeleteUI.getTextFieldAdjAmt().getText())){
+			paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText("0.0");
+		}else{
+			double val = 0;
+			try{
+				val = Double.parseDouble(paymentAdjustmentDeleteUI.getTextFieldAdjAmt().getText());
+			}catch(Exception e){LOGGER.error(e);}
+
+			paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(val-receivedAmount));
+			info.setRemainingWithoutBillAmount(String.valueOf(OldRemainingAmount.get(rowIndex)));
+
+			double val2=0;
+			try{
+				val2 = Double.parseDouble(paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().getText());
+			}catch(Exception e){
+				LOGGER.error(e);
+			}
+			
+			paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf(val2+receivedAmount));
+			info.setWpaidstatus(OldBstatus.get(rowIndex));
+			receivedBillAmount.set(rowIndex, 0.0);
+			
+			info.setPaidWithoutBillAmount(String.valueOf(OldReceivingAmount.get(rowIndex)));
+		}
+	
+	}
+	public void unCheckWithoutBillOpeningBalCalculation(OpeningBalanceInfo info, int rowIndex, int columnIndex, Boolean isChecked, double amount){
+
+
+		double receivedAmount =  receivedBillAmount.get(rowIndex);
+		double billAmt = 0;
+
+		try{
+			billAmt = Double.parseDouble(info.getRemainingopeningbalanceamount());
+		}catch(Exception e){
+			LOGGER.error(e);
+		}
+
+		if(Strings.isNullOrEmpty(paymentAdjustmentDeleteUI.getTextFieldAdjAmt().getText())){
+			paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText("0.0");
+		}else{
+			double val = 0;
+			try{
+				val = Double.parseDouble(paymentAdjustmentDeleteUI.getTextFieldAdjAmt().getText());
+			}catch(Exception e){LOGGER.error(e);}
+
+			paymentAdjustmentDeleteUI.getTextFieldAdjAmt().setText(String.valueOf(val-receivedAmount));
+			info.setRemainingopeningbalanceamount(String.valueOf(OldRemainingAmount.get(rowIndex)));
+
+			double val2=0;
+			try{
+				val2 = Double.parseDouble(paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().getText());
+			}catch(Exception e){
+				LOGGER.error(e);
+			}
+			
+			paymentAdjustmentDeleteUI.getTextFieldRemainingAmt().setText(String.valueOf(val2+receivedAmount));
+			info.setStatus(OldBstatus.get(rowIndex));
+			receivedBillAmount.set(rowIndex, 0.0);
+			
+			info.setReceivedopeningbalanceamount(String.valueOf(OldReceivingAmount.get(rowIndex)));
+		}
+	}
 }
