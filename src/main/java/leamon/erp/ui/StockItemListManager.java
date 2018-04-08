@@ -92,7 +92,7 @@ public class StockItemListManager extends JInternalFrame implements ActionListen
 		// 3.4 end of ghanshyam code
 		tblStockList.setComponentPopupMenu(createPopup());
 		tblStockList.setName(LeamonERPConstants.TABLE_STOCK_ITEMS);
-		tblStockList.setDefaultRenderer(Object.class, new StockItemListColorRenderer());//3.5 ghan code
+		//tblStockList.setDefaultRenderer(Object.class, new StockItemListColorRenderer());//3.5 ghan code
 		tblStockList.addKeyListener(new KeyListenerHandler(tblStockList));
 		tblStockList.addMouseListener(new MouseClickHandler());
 		
@@ -377,7 +377,7 @@ public class StockItemListManager extends JInternalFrame implements ActionListen
 	 	LOGGER.debug("Reloading stockitems ["+stockItems.size()+"]");
 	 	model.setStockItems(stockItems);
 	 	tblStockList.setModel(model);
-	 	tblStockList.setDefaultRenderer(Object.class, new StockItemListColorRenderer());//3.5 ghan code
+	 	//tblStockList.setDefaultRenderer(Object.class, new StockItemListColorRenderer());//3.5 ghan code
 	 	LOGGER.info(" Successfully disabled stock items ");
 	 	((AbstractTableModel)tblStockList.getModel()).fireTableDataChanged();
 		tblStockList.repaint();
@@ -415,7 +415,7 @@ public class StockItemListManager extends JInternalFrame implements ActionListen
 		TableStockListItemModel model  = (TableStockListItemModel)tblStockList.getModel();
 		model.setStockItems(stockItems);
 	 	tblStockList.setModel(model);
-	 	tblStockList.setDefaultRenderer(Object.class, new StockItemListColorRenderer());//3.5 ghan code
+	 	//tblStockList.setDefaultRenderer(Object.class, new StockItemListColorRenderer());//3.5 ghan code
 	 	((AbstractTableModel)tblStockList.getModel()).fireTableDataChanged();
 		tblStockList.repaint();
 		//SwingUtilities.updateComponentTreeUI(this);
