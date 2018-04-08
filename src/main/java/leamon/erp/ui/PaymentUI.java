@@ -794,17 +794,18 @@ public class PaymentUI extends JInternalFrame {
 					
 					OpeningBalanceInfo openingBalanceInfo = invoiceInfo.getOpenigBalanceInfo();
 				
+					double openingBalPaidBillAmount = 0;
+					try{
+						openingBalPaidBillAmount = Double.parseDouble(openingBalanceInfo.getReceivedopeningbalanceamount());
+					}catch(Exception exp){
+						LOGGER.error(exp);
+					}
+
+					receivedBal = openingBalPaidBillAmount + receivedBal;
+					
 					if(remiaingBal == 0){ /*Remianing is zero*/
 						openingBalanceInfo.setStatus(InvoicePaymentStatusEnum.ALL_CLEAR.name());
 					}else{
-						double openingBalPaidBillAmount = 0;
-						try{
-							openingBalPaidBillAmount = Double.parseDouble(openingBalanceInfo.getReceivedopeningbalanceamount());
-						}catch(Exception exp){
-							LOGGER.error(exp);
-						}
-
-						receivedBal = openingBalPaidBillAmount + receivedBal;
 						openingBalanceInfo.setStatus(InvoicePaymentStatusEnum.PARTIAL_PAID.name());
 					}
 					openingBalanceInfo.setRemainingopeningbalanceamount(String.valueOf(remiaingBal));
@@ -834,17 +835,18 @@ public class PaymentUI extends JInternalFrame {
 						LOGGER.error(exp);
 					}
 				}else{
+					double invoicePaidBillAmount = 0;
+					try{
+						invoicePaidBillAmount = Double.parseDouble(invoiceInfo.getPaidBillAmount());
+					}catch(Exception exp){
+						LOGGER.error(exp);
+					}
+
+					receivedBal = invoicePaidBillAmount + receivedBal;
+					
 					if(remiaingBal == 0){ /*Remianing is zero*/
 						invoiceInfo.setPaidStatus(InvoicePaymentStatusEnum.ALL_CLEAR.name());
 					}else{
-						double invoicePaidBillAmount = 0;
-						try{
-							invoicePaidBillAmount = Double.parseDouble(invoiceInfo.getPaidBillAmount());
-						}catch(Exception exp){
-							LOGGER.error(exp);
-						}
-
-						receivedBal = invoicePaidBillAmount + receivedBal; 
 						invoiceInfo.setPaidStatus(InvoicePaymentStatusEnum.PARTIAL_PAID.name());
 					}
 					invoiceInfo.setRemainingBillAmount(String.valueOf(remiaingBal));
@@ -893,17 +895,18 @@ public class PaymentUI extends JInternalFrame {
 				if(invoiceInfo.isOpeningBalance() 
 						&& invoiceInfo.getOpenigBalanceInfo().getType().equals(ERPEnum.TYPE_PAYMENT_WITHOUT_BILL.name())){
 					OpeningBalanceInfo openingBalanceInfo = invoiceInfo.getOpenigBalanceInfo();
+					double OpeningBalPaidWBillAmount = 0;
+					try{
+						OpeningBalPaidWBillAmount = Double.parseDouble(openingBalanceInfo.getReceivedopeningbalanceamount());
+					}catch(Exception exp){
+						LOGGER.error(exp);
+					}
+
+					receivedBal = OpeningBalPaidWBillAmount + receivedBal;
+					
 					if(remiaingBal == 0){ /*Remianing is zero*/
 						openingBalanceInfo.setStatus(InvoicePaymentStatusEnum.ALL_CLEAR.name());
 					}else{
-						double OpeningBalPaidWBillAmount = 0;
-						try{
-							OpeningBalPaidWBillAmount = Double.parseDouble(openingBalanceInfo.getReceivedopeningbalanceamount());
-						}catch(Exception exp){
-							LOGGER.error(exp);
-						}
-
-						receivedBal = OpeningBalPaidWBillAmount + receivedBal;
 						openingBalanceInfo.setStatus(InvoicePaymentStatusEnum.PARTIAL_PAID.name());
 					}
 					openingBalanceInfo.setRemainingopeningbalanceamount(String.valueOf(remiaingBal));
@@ -935,19 +938,21 @@ public class PaymentUI extends JInternalFrame {
 					}
 				
 				}else{
+					double invoicePaidWBillAmount = 0;
+					try{
+						invoicePaidWBillAmount = Double.parseDouble(invoiceInfo.getPaidWithoutBillAmount());
+					}catch(Exception exp){
+						LOGGER.error(exp);
+					}
+
+					receivedBal = invoicePaidWBillAmount + receivedBal; 
+					
 					if(remiaingBal == 0){ /*Remianing is zero*/
 						invoiceInfo.setWpaidstatus(InvoicePaymentStatusEnum.ALL_CLEAR.name());
 					}else{
-						double invoicePaidWBillAmount = 0;
-						try{
-							invoicePaidWBillAmount = Double.parseDouble(invoiceInfo.getPaidWithoutBillAmount());
-						}catch(Exception exp){
-							LOGGER.error(exp);
-						}
-
-						receivedBal = invoicePaidWBillAmount + receivedBal; 
 						invoiceInfo.setWpaidstatus(InvoicePaymentStatusEnum.PARTIAL_PAID.name());
 					}
+					
 					invoiceInfo.setRemainingWithoutBillAmount(String.valueOf(remiaingBal));
 					invoiceInfo.setPaidWithoutBillAmount(String.valueOf(receivedBal));
 					invoiceInfo.setLastUpdated(new Timestamp(System.currentTimeMillis()));
