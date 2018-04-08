@@ -40,10 +40,12 @@ public class StockItemListColorRenderer extends JLabel implements TableCellRende
 					&& !Strings.isNullOrEmpty(value.toString())
 					&& !isSelected){
 
-				if(!Strings.isNullOrEmpty(model.getStockItems().get(row).getStockItemQuantity().getQuantity())
+				
+				if(model.getStockItems().get(row) != null &&
+						model.getStockItems().get(row).getStockItemQuantity() != null && 
+						!Strings.isNullOrEmpty(model.getStockItems().get(row).getStockItemQuantity().getQuantity())
 						&&model.getStockItems().get(row).getStockItemQuantity().getQuantity().equals(value)){
-					
-					
+					LOGGER.debug("Row : "+row +" Column : "+column + "Value "+value.toString());
 				}
 				if(column==4) {
 					double d=Double.parseDouble(value.toString().trim());
