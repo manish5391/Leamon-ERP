@@ -125,7 +125,7 @@ public class PaymentReceivedSummaryUI extends JInternalFrame {
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(new Color(204, 255, 153));
 		panel_1.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		panel_1.setBounds(0, 0, 975, 85);
+		panel_1.setBounds(0, 0, 1238, 52);
 		panel.add(panel_1);
 		panel_1.setLayout(null);
 
@@ -200,7 +200,7 @@ public class PaymentReceivedSummaryUI extends JInternalFrame {
 		bg.add(chckbxBoth);
 
 		btnSearch = new JXButton();
-		btnSearch.setBounds(431, 49, 149, 23);
+		btnSearch.setBounds(1049, 17, 179, 23);
 		btnSearch.setText("Search Payment History");
 		btnSearch.addActionListener(e -> btnSearchClick(e));
 
@@ -215,7 +215,7 @@ public class PaymentReceivedSummaryUI extends JInternalFrame {
 		panel_1.add(comboBoxCity);
 
 		comboBoxSatus = new JComboBox();
-		comboBoxSatus.setBounds(308, 49, 102, 19);
+		comboBoxSatus.setBounds(937, 17, 102, 19);
 		comboBoxSatus.setModel(new DefaultComboBoxModel(InvoicePaymentStatusEnum.values()));
 		comboBoxSatus.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
 		comboBoxSatus.setBackground(Color.WHITE);
@@ -227,7 +227,7 @@ public class PaymentReceivedSummaryUI extends JInternalFrame {
 		JPanel panel_2 = new JPanel();
 		panel_2.setBackground(new Color(153, 204, 255));
 		panel_2.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
-		panel_2.setBounds(0, 80, 975, 436);
+		panel_2.setBounds(0, 53, 1238, 436);
 		panel.add(panel_2);
 		panel_2.setLayout(new BorderLayout(0, 0));
 
@@ -248,12 +248,12 @@ public class PaymentReceivedSummaryUI extends JInternalFrame {
 		JPanel panel_3 = new JPanel();
 		panel_3.setBackground(new Color(255, 255, 204));
 		panel_3.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
-		panel_3.setBounds(0, 516, 975, 78);
+		panel_3.setBounds(0, 492, 1238, 78);
 		panel.add(panel_3);
 		panel_3.setLayout(null);
 
 		JButton buttonRefresh = new JButton("Refresh");
-		buttonRefresh.setBounds(769, 11, 100, 23);
+		buttonRefresh.setBounds(961, 26, 100, 23);
 		// 3.6 ghan code
 		buttonRefresh.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
 				.put(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.ALT_DOWN_MASK), "Clear");
@@ -273,21 +273,21 @@ public class PaymentReceivedSummaryUI extends JInternalFrame {
 		textFieldTotalWAmt.setName("txtPartyName");
 		textFieldTotalWAmt.setFont(new Font("DialogInput", Font.PLAIN, 14));
 		textFieldTotalWAmt.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
-		textFieldTotalWAmt.setBounds(292, 40, 105, 21);
+		textFieldTotalWAmt.setBounds(484, 38, 105, 21);
 		panel_3.add(textFieldTotalWAmt);
 
 		JXLabel lblWAmount = new JXLabel();
 		lblWAmount.setText("W Amount");
 		lblWAmount.setForeground(Color.BLACK);
 		lblWAmount.setFont(new Font("Trebuchet MS", Font.BOLD, 13));
-		lblWAmount.setBounds(292, 13, 66, 16);
+		lblWAmount.setBounds(484, 11, 66, 16);
 		panel_3.add(lblWAmount);
 
 		JXLabel lblBAmount = new JXLabel();
 		lblBAmount.setText("B Amount");
 		lblBAmount.setForeground(Color.BLACK);
 		lblBAmount.setFont(new Font("Trebuchet MS", Font.BOLD, 13));
-		lblBAmount.setBounds(174, 13, 66, 16);
+		lblBAmount.setBounds(366, 11, 66, 16);
 		panel_3.add(lblBAmount);
 
 		textFieldTotalBAmt = new JXTextField();
@@ -295,14 +295,14 @@ public class PaymentReceivedSummaryUI extends JInternalFrame {
 		textFieldTotalBAmt.setName("txtPartyName");
 		textFieldTotalBAmt.setFont(new Font("DialogInput", Font.PLAIN, 14));
 		textFieldTotalBAmt.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
-		textFieldTotalBAmt.setBounds(167, 40, 105, 21);
+		textFieldTotalBAmt.setBounds(359, 38, 105, 21);
 		panel_3.add(textFieldTotalBAmt);
 
 		JXLabel lblTotal = new JXLabel();
 		lblTotal.setText("Total");
 		lblTotal.setForeground(Color.BLACK);
 		lblTotal.setFont(new Font("Trebuchet MS", Font.BOLD, 13));
-		lblTotal.setBounds(456, 13, 66, 16);
+		lblTotal.setBounds(648, 11, 66, 16);
 		panel_3.add(lblTotal);
 
 		textFieldTotalAmt = new JXTextField();
@@ -310,11 +310,11 @@ public class PaymentReceivedSummaryUI extends JInternalFrame {
 		textFieldTotalAmt.setName("txtPartyName");
 		textFieldTotalAmt.setFont(new Font("DialogInput", Font.PLAIN, 14));
 		textFieldTotalAmt.setBorder(LeamonERPConstants.TEXT_FILED_BOTTOM_BORDER);
-		textFieldTotalAmt.setBounds(449, 40, 105, 21);
+		textFieldTotalAmt.setBounds(641, 38, 105, 21);
 		panel_3.add(textFieldTotalAmt);
 
 		JButton btnPrint = new JButton("Print");
-		btnPrint.setBounds(677, 11, 73, 23);
+		btnPrint.setBounds(869, 26, 73, 23);
 		// 3.6 ghan code
 		try {
 			btnPrint.setIcon(new ImageIcon(LeamonERPConstants.IMAGE_PATH_LEAMON_ERP
@@ -325,7 +325,7 @@ public class PaymentReceivedSummaryUI extends JInternalFrame {
 		// 3.6 end of ghan code
 		panel_3.add(btnPrint);
 
-		setBounds(3, 30, 980, 620);
+		setBounds(3, 30, 1244, 596);
 	}
 
 	private void search(){
