@@ -88,8 +88,22 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 			isAdjustRemove.add(Boolean.FALSE);
 			receivedBillAmount.add(Double.parseDouble(String.valueOf("0.0")));
 			if(genericModelWithSnp.getOb().get(i).getInvoiceInfoID() != null){
-				OldRemainingAmount.add(Double.parseDouble(String.valueOf(genericModelWithSnp.getOb().get(i).getInvoiceInfo().getRemainingBillAmount())));
-				OldReceivingAmount.add(Double.parseDouble(String.valueOf(genericModelWithSnp.getOb().get(i).getInvoiceInfo().getPaidBillAmount())));
+				double invoiceRemainingBillAmount = 0;
+				try{
+					invoiceRemainingBillAmount = Double.parseDouble(String.valueOf(genericModelWithSnp.getOb().get(i).getInvoiceInfo().getRemainingBillAmount()));
+				}catch(Exception exp){
+					LOGGER.error(exp);
+				}
+				OldRemainingAmount.add(invoiceRemainingBillAmount);
+				
+				double invoicePaidBillAmount = 0;
+				try{
+					invoicePaidBillAmount = Double.parseDouble(String.valueOf(genericModelWithSnp.getOb().get(i).getInvoiceInfo().getPaidBillAmount()));
+				}catch(Exception exp){
+					LOGGER.error(exp);
+				}
+				OldReceivingAmount.add(invoicePaidBillAmount);
+				
 				if(ERPEnum.TYPE_PAYMENT_WITH_BILL.name().equals(type)){
 					OldBstatus.add(i,genericModelWithSnp.getOb().get(i).getInvoiceInfo().getPaidStatus());
 				}
@@ -97,8 +111,24 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 					OldBstatus.add(i,genericModelWithSnp.getOb().get(i).getInvoiceInfo().getWpaidstatus());
 				}
 			}else if (genericModelWithSnp.getOb().get(i).getOpeningBalanceID() !=null ){
-				OldRemainingAmount.add(Double.parseDouble(String.valueOf(genericModelWithSnp.getOb().get(i).getOpenigBalanceInfo().getRemainingopeningbalanceamount())));
-				OldReceivingAmount.add(Double.parseDouble(String.valueOf(genericModelWithSnp.getOb().get(i).getOpenigBalanceInfo().getReceivedopeningbalanceamount())));
+				
+				double remainingopeningbalanceamount = 0;
+				try{
+					remainingopeningbalanceamount = Double.parseDouble(String.valueOf(genericModelWithSnp.getOb().get(i).getOpenigBalanceInfo().getRemainingopeningbalanceamount()));
+				}catch(Exception exp){
+					LOGGER.error(exp);
+				}
+				OldRemainingAmount.add(remainingopeningbalanceamount);
+				
+				
+				double receivedopeningbalanceamount = 0;
+				try{
+					receivedopeningbalanceamount = Double.parseDouble(String.valueOf(genericModelWithSnp.getOb().get(i).getOpenigBalanceInfo().getReceivedopeningbalanceamount()));
+				}catch(Exception exp){
+					LOGGER.error(exp);
+				}
+				OldReceivingAmount.add(receivedopeningbalanceamount);
+				
 				if(ERPEnum.TYPE_PAYMENT_WITH_BILL.name().equals(type)){
 					OldBstatus.add(i,genericModelWithSnp.getOb().get(i).getOpenigBalanceInfo().getStatus());
 				}
