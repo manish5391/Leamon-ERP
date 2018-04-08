@@ -310,6 +310,8 @@ public class PaymentAdjustmentDeleteUI extends JInternalFrame {
 				new GenericModelWithSnp<List<PaymentInvoiceMappingInfo>, PaymentInvoiceMappingInfo>(paymentInvoiceMappingInfosList, snos);
 		TableAdjustedPaymentDeleteModel  tableModel = new TableAdjustedPaymentDeleteModel(paymentInvoiceMappingListModel,paymentReceivedInfo.getType(),this);
 		tableAdjustments.setModel(tableModel);
+		tableAdjustments.packAll();
+		
 		/*show hide column*/
 		if(ERPEnum.TYPE_PAYMENT_WITH_BILL.name().equals(paymentReceivedInfo.getType())){
 			tableAdjustments.getColumnExt(LeamonERPConstants.TABLE_HEADER_W_AMOUNT).setVisible(false);
@@ -348,6 +350,7 @@ public class PaymentAdjustmentDeleteUI extends JInternalFrame {
 		List<PaymentInvoiceMappingInfo> paymentInvoiceMappingInfos = new ArrayList<PaymentInvoiceMappingInfo>();
 		TableAdjustedPaymentDeleteModel  tableModel = new TableAdjustedPaymentDeleteModel(paymentInvoiceMappingInfos);
 		tableAdjustments.setModel(tableModel);
+		tableAdjustments.packAll();
 		bg.clearSelection();
 	}
 
