@@ -108,7 +108,12 @@ public class TableAdjustedPaymentDeleteModel extends AbstractTableModel{
 					OldBstatus.add(i,genericModelWithSnp.getOb().get(i).getInvoiceInfo().getPaidStatus());
 				}
 				if(ERPEnum.TYPE_PAYMENT_WITHOUT_BILL.name().equals(type)){
-					OldBstatus.add(i,genericModelWithSnp.getOb().get(i).getInvoiceInfo().getWpaidstatus());
+					try{
+						OldBstatus.add(i,genericModelWithSnp.getOb().get(i).getInvoiceInfo().getWpaidstatus());
+					}catch(Exception exp){
+						LOGGER.error(exp);
+						JOptionPane.showMessageDialog(this.paymentAdjustmentDeleteUI, genericModelWithSnp.getOb().get(i).getInvoiceInfoID()+" InvoiceID is perhaps deleted please check in trash.","LeamonERP ERROR", JOptionPane.ERROR_MESSAGE);
+					}
 				}
 			}else if (genericModelWithSnp.getOb().get(i).getOpeningBalanceID() !=null ){
 				
