@@ -546,6 +546,12 @@ public class TablePaymentReceivedModel extends AbstractTableModel{
 			billAmt = Double.parseDouble(info.getRemainingBillAmount());
 		}catch(Exception e){ LOGGER.error(e); }
 
+		if(billAmt == 0){
+			JOptionPane.showMessageDialog(this.paymentUI, "Bill amount is zero.","Leamon-ERP Error",JOptionPane.ERROR_MESSAGE);
+			isBAmount.set(rowIndex, Boolean.FALSE);
+			return;
+		}
+		
 		if(Strings.isNullOrEmpty(paymentUI.getTextFieldAdjAmt().getText())){
 
 			if(billAmt > amount){
