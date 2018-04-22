@@ -439,6 +439,12 @@ public class PaymentAdjustmentDeleteUI extends JInternalFrame {
 	private void save(){
 		TableAdjustedPaymentDeleteModel model  = (TableAdjustedPaymentDeleteModel)tableAdjustments.getModel();
 		List<PaymentInvoiceMappingInfo> paymentInvoiceMappingInfos = model.getPaymentInvoiceMappingInfos();
+		
+		if(model.getIsAdjustRemove().contains(Boolean.FALSE.booleanValue())){
+			JOptionPane.showMessageDialog(this, "Please click check to remove all adjustment then save. ","Leamon-ERP Error",JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		
 		boolean errorFlag = false;
 		for(int i=0; i<paymentInvoiceMappingInfos.size(); i++){
 			InvoiceInfo invoiceInfo = null;
