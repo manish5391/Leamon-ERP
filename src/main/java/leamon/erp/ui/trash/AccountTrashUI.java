@@ -1,4 +1,4 @@
-package leamon.erp.ui;
+package leamon.erp.ui.trash;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -33,6 +33,7 @@ import org.jdesktop.swingx.JXTable;
 
 import leamon.erp.db.AccountDaoImpl;
 import leamon.erp.model.AccountInfo;
+import leamon.erp.ui.AccountListManager;
 import leamon.erp.ui.event.FocusEventHandler;
 import leamon.erp.ui.event.KeyListenerHandler;
 import leamon.erp.ui.event.ListSelectionListenerHandler;
@@ -65,7 +66,7 @@ public class AccountTrashUI extends JInternalFrame implements ActionListener {
 		getContentPane().setBackground(Color.WHITE);
 		getContentPane().setLayout(new BorderLayout(0, 0));
 
-		setTitle("Account Info List");
+		setTitle("Account Trash");
 		setResizable(true);
 		setMaximizable(true);
 		setIconifiable(true);

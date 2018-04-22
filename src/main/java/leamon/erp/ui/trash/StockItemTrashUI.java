@@ -1,4 +1,4 @@
-package leamon.erp.ui;
+package leamon.erp.ui.trash;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -33,6 +33,7 @@ import org.jdesktop.swingx.JXTable;
 
 import leamon.erp.db.StockDaoImpl;
 import leamon.erp.model.StockItem;
+import leamon.erp.ui.StockItemListManager;
 import leamon.erp.ui.event.FocusEventHandler;
 import leamon.erp.ui.event.KeyListenerHandler;
 import leamon.erp.ui.event.MouseClickHandler;
@@ -144,21 +145,26 @@ public class StockItemTrashUI extends JInternalFrame implements ActionListener {
 		textSearchField.setName(LeamonERPConstants.TEXTFIELD_NAME_SOCK_ITEM_SERACH);
 		textSearchField.addFocusListener(new FocusEventHandler(tblStockList));
 		textSearchField.addKeyListener(new KeyListenerHandler());
-
 		GroupLayout gl_panel = new GroupLayout(panel);
-		gl_panel.setHorizontalGroup(gl_panel.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel.createSequentialGroup().addContainerGap().addComponent(btnRefresh).addGap(36)
-						.addComponent(btnRestore).addGap(36).addComponent(btnDelete).addGap(36)
-						.addComponent(textSearchField, GroupLayout.PREFERRED_SIZE, 243, GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
-		gl_panel.setVerticalGroup(gl_panel.createParallelGroup(Alignment.LEADING)
+		gl_panel.setHorizontalGroup(
+			gl_panel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panel.createSequentialGroup()
-						.addGroup(gl_panel.createParallelGroup(Alignment.LEADING).addComponent(btnRefresh)
-								.addComponent(btnRestore).addComponent(btnDelete)
-								.addComponent(textSearchField, GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)
-								.addGroup(gl_panel.createSequentialGroup().addContainerGap()))
-						.addContainerGap()));
+					.addGap(10)
+					.addComponent(btnRefresh)
+					.addGap(36)
+					.addComponent(btnRestore)
+					.addGap(36)
+					.addComponent(btnDelete)
+					.addGap(36)
+					.addComponent(textSearchField, GroupLayout.PREFERRED_SIZE, 243, GroupLayout.PREFERRED_SIZE))
+		);
+		gl_panel.setVerticalGroup(
+			gl_panel.createParallelGroup(Alignment.LEADING)
+				.addComponent(btnRefresh)
+				.addComponent(btnRestore)
+				.addComponent(btnDelete)
+				.addComponent(textSearchField, GroupLayout.PREFERRED_SIZE, 49, GroupLayout.PREFERRED_SIZE)
+		);
 		panel.setLayout(gl_panel);
 
 		getContentPane().setLayout(groupLayout);
