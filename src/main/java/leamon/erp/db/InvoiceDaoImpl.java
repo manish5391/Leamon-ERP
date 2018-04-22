@@ -8,8 +8,10 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.log4j.Logger;
 
 import leamon.erp.db.mapper.InvoiceMapper;
+import leamon.erp.db.mapper.StockMapper;
 import leamon.erp.db.util.MyBatsUtil;
 import leamon.erp.model.InvoiceInfo;
+import leamon.erp.model.StockItem;
 import lombok.Getter;
 
 @Getter
@@ -267,5 +269,30 @@ public class InvoiceDaoImpl  implements LeamonERPDao<InvoiceInfo>{
 		return InvoiceInfos;
 	}
 	// 3.8 end of ghan code
-
+	
+	public List<InvoiceInfo> getItemDisabledOnlyListWithInvoiceItemListAndAccountInfo() {
+		LOGGER.info("InvoiceDaoImpl[getItemDisabledOnlyListWithInvoiceItemListAndAccountInfo] inside.");
+		SqlSession session= MyBatsUtil.getSqlSessionFactory().openSession();
+		InvoiceMapper invoiceInfoMapper= session.getMapper(InvoiceMapper.class);
+		List<InvoiceInfo> InvoiceInfos = invoiceInfoMapper.getAllDisabledWithChildAndAccount();
+		session.close();
+		LOGGER.info("InvoiceDaoImpl[getItemDisabledOnlyListWithInvoiceItemListAndAccountInfo] end.");
+		return InvoiceInfos;
+	}
+	
+	public void updateByID(InvoiceInfo item) throws Exception {
+		LOGGER.info("InvoiceDaoImpl[updateByID] inside.");
+		SqlSession session = MyBatsUtil.getSqlSessionFactory().openSession();
+		InvoiceMapper invoiceItemMapper = session.getMapper(InvoiceMapper.class);
+		try {
+			invoiceItemMapper.updateByID(item.getId());
+			session.commit();
+		} catch (Exception exp) {
+			session.rollback();
+			throw exp;
+		} finally {
+			session.close();
+		}
+		LOGGER.info("InvoiceDaoImpl[updateByID] end.");
+	}
 }

@@ -81,6 +81,11 @@ public interface InvoiceMapper {
 			+ " AND #{endDate, jdbcType=DATE } AND PARTYINFOID = #{partyInfoID} ORDER BY LASTUPDATEDDATE";
 	/*-----------End-------------------------*/
 	
+	/*Release 4.1*/
+	final String getAllDisabled = "SELECT * FROM INVOICE_BILL WHERE ISENABLE = FALSE ORDER BY ID";
+	final String updateByID = "UPDATE INVOICE_BILL SET ISENABLE = TRUE WHERE ID = #{id}";
+	/*End*/
+	
 	@Select(getAll)
 	   @Results(value = {
 	      @Result(property = "id", column = "ID"),
@@ -606,4 +611,48 @@ public interface InvoiceMapper {
 	public List<InvoiceInfo> getAllByStartDateAndPartyName(@Param("startDate") Date startDate, @Param("id") int id) throws Exception;
 	//3.8 end of ghan code
 
+	/*added to get account info as well*/
+	@Select(getAllDisabled)
+	   @Results(value = {
+	      @Result(property = "id", column = "ID"),
+	      @Result(property = "partyinfoID", column = "PARTYINFOID"),
+	      @Result(property = "invoicNum", column = "INVOICENUM"),
+	      @Result(property = "invoicDate", column = "INVOICEDATE"),
+	      @Result(property = "billNo", column = "BILL_NO"),
+	      @Result(property = "orderBookedBy", column = "ORDERBOOKBY"),
+	      @Result(property = "transport", column = "TRANSPORT"),
+	      @Result(property = "pktNumber", column = "PACKETNUM"),
+	      @Result(property = "billAmount", column = "BILLAMOUNT"), //GSTAMOUNT
+	      @Result(property = "gstValue", column = "GSTAMOUNT"), //BILLAMOUNT
+	      @Result(property = "grBiltyNumber", column = "GRNUMBER"), //BILLAMOUNT
+	      
+	      @Result(property = "col1Name", column = "COL1NAME"), 
+	      @Result(property = "col2Name", column = "COL2NAME"), 
+	      @Result(property = "col1Val", column = "COL1VAL"), 
+	      @Result(property = "col2Val", column = "COL2VAL"), 
+	      @Result(property = "col1Operator", column = "COL1OPERATOR"), 
+	      @Result(property = "col2Operator", column = "COL2OPERATOR"), 
+	      @Result(property = "withoutBillAmount", column = "WITHOUTBILLAMOUNT"), //WITHOUTBILLAMOUNT
+	      
+	      /*Release 3.6*/
+	      @Result(property = "remainingBillAmount", column = "REMAININGBILLAMOUNT"), //WITHOUTBILLAMOUNT
+	      @Result(property = "remainingWithoutBillAmount", column = "REMAININGWITHOUTBILLAMOUNT"), //WITHOUTBILLAMOUNT
+	      @Result(property = "paidBillAmount", column = "PAIDBILLAMOUNT"), //WITHOUTBILLAMOUNT
+	      @Result(property = "paidWithoutBillAmount", column = "PAIDWITHOUTBILLAMOUNT"), //WITHOUTBILLAMOUNT
+	      @Result(property = "paidStatus", column = "PAIDSTATUS"), //WITHOUTBILLAMOUNT
+	      @Result(property = "wpaidstatus", column = "WPAIDSTATUS"), //WITHOUTBILLAMOUNT
+	      /*End*/
+	      
+	      @Result(property = "createdDate", column = "CREATEDDATE"),
+	      @Result(property = "lastUpdated", column = "LASTUPDATEDDATE"),
+	      @Result(property = "isEnable", column = "ISENABLE"),
+	      @Result(property = "items", javaType=List.class, column = "ID"
+	      , many=@Many(select="getAllInvoiceItems")),
+	      @Result(property = "accountInfo", javaType=AccountInfo.class, column = "PARTYINFOID"
+	      , one =@One(select="getAccountInfo"))
+	})
+	public List<InvoiceInfo> getAllDisabledWithChildAndAccount();
+	
+	@Update(updateByID)
+	void updateByID(int id) throws Exception;
 }

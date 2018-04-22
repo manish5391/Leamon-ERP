@@ -45,6 +45,9 @@ import leamon.erp.db.StockDaoImpl;
 import leamon.erp.model.LeamonProperty;
 import leamon.erp.model.StateCityInfo;
 import leamon.erp.ui.custom.BGImagePanel;
+import leamon.erp.ui.trash.AccountTrashUI;
+import leamon.erp.ui.trash.StockItemTrashUI;
+import leamon.erp.ui.trash.WinvoiceTrash;
 import leamon.erp.util.LeamonERPConstants;
 
 public class LeamonERP extends JFrame {
@@ -86,6 +89,10 @@ public class LeamonERP extends JFrame {
 	
 	/*3.9 Release*/
 	public static PaymentAdjustmentDeleteUI paymentAdjustmentDeleteUI;
+	/*End*/
+	
+	/*4.1 Release*/
+	public static WinvoiceTrash wInvoiceTrashUI;
 	/*End*/
 	
 	public static  List<String> cityCache;
@@ -743,6 +750,11 @@ public class LeamonERP extends JFrame {
 		}
 		mntmTrash.add(mntmAccountTrash);
 		mntmAccountTrash.addActionListener(e -> mntmAccountTrashClick(e));
+		
+		JMenuItem mntmInvoiceTrash = new JMenuItem("Invoice Trash");
+		mntmTrash.add(mntmInvoiceTrash);
+		mntmInvoiceTrash.addActionListener(e -> mntmInvoiceTrashClick(e));
+		
 		// 3.7 end of ghan code
 		try{
 		StockDaoImpl.getInstance().prepareStockIntelliSense();
@@ -778,7 +790,7 @@ public class LeamonERP extends JFrame {
 
 		accountInfoUI = new AccountInfoUI();
 		invoiceUI = new InvoiceUI();
-		invoiceUILegal =new InvoiceUILegal();
+		//invoiceUILegal =new InvoiceUILegal();
 		paymentUI = new PaymentUI();
 		paymentReceivedUI = new PaymentReceivedSummaryUI();
 		stockItemQuantityUI = new StockItemQuantityUI();
@@ -791,6 +803,8 @@ public class LeamonERP extends JFrame {
 		paymentUiManager = new PaymentUiManager();
 		openingBalanceManagerUI = new  OpeningBalanceManagerUI();
 		paymentAdjustmentDeleteUI = new PaymentAdjustmentDeleteUI();
+		
+		wInvoiceTrashUI = new WinvoiceTrash();
 		}
 
 	public void initComponents(){
@@ -1523,6 +1537,23 @@ public class LeamonERP extends JFrame {
 			paymentUiManager.clear();
 		}
 		SwingUtilities.updateComponentTreeUI(paymentUiManager);
+	}
+	
+	private void mntmInvoiceTrashClick(ActionEvent e){
+
+		if(wInvoiceTrashUI.isVisible()){
+			try {
+				wInvoiceTrashUI.setSelected(true);
+			} catch (PropertyVetoException e1) {
+				LOGGER.error(e1.toString());
+			}
+			wInvoiceTrashUI.moveToFront();
+		}else{
+			desktopPane.add(wInvoiceTrashUI);
+			wInvoiceTrashUI.setVisible(true);
+		}
+		SwingUtilities.updateComponentTreeUI(wInvoiceTrashUI);
+	
 	}
 
 	private void hyperlinkBInvoiceManagerClick(ActionEvent e) {
