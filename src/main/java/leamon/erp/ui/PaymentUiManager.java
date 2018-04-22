@@ -1142,7 +1142,12 @@ public class PaymentUiManager extends JInternalFrame {
 			}
 			LeamonERP.paymentAdjustmentDeleteUI.moveToFront();
 		}else{
+			try{
 			LeamonERP.desktopPane.add(LeamonERP.paymentAdjustmentDeleteUI);
+			}catch(Exception exp){
+				LOGGER.error(exp);
+				LeamonERP.desktopPane.add(LeamonERP.paymentAdjustmentDeleteUI);
+			}
 			LeamonERP.paymentAdjustmentDeleteUI.clear();
 			LeamonERP.paymentAdjustmentDeleteUI.setPaymentInfo(paymentReceivedInfo, paymentInvoiceMappingInfos);
 			LeamonERP.paymentAdjustmentDeleteUI.setVisible(true);
