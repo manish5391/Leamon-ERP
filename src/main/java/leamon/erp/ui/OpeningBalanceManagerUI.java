@@ -55,7 +55,9 @@ public class OpeningBalanceManagerUI extends JInternalFrame {
 	private JComboBox comboBox;
 	private JXTable table;
 	private LeamonAutoAccountInfoTextFieldSuggestor<List<AccountInfo>, AccountInfo> leamonAutoAccountIDTextFieldSuggestor;
-
+	
+	private int tableRowHeight = 0;
+	
 	public OpeningBalanceManagerUI() {
 		getContentPane().setBackground(new Color(255, 255, 255));
 		setTitle("Opening Balance Manager");
@@ -129,22 +131,32 @@ public class OpeningBalanceManagerUI extends JInternalFrame {
 		JXButton buttonAddNew = new JXButton();
 		buttonAddNew.setText("+");
 		buttonAddNew.setBounds(10, 11, 56, 24);
+		buttonAddNew.addActionListener(e -> buttonAddNewClick(e));
 		panel_1.add(buttonAddNew);
 
 		JXButton buttonEdit = new JXButton();
 		buttonEdit.setText("-");
 		buttonEdit.setBounds(76, 11, 56, 24);
+		buttonEdit.addActionListener(e -> buttonEditClick(e));
 		panel_1.add(buttonEdit);
 
 		JXButton btnDelete = new JXButton();
 		btnDelete.setText("X");
 		btnDelete.setBounds(142, 11, 56, 24);
+		btnDelete.addActionListener(e -> btnDeleteClick(e));
 		panel_1.add(btnDelete);
 
 		JXButton btnRefresh = new JXButton();
 		btnRefresh.setText("R");
 		btnRefresh.setBounds(208, 11, 56, 24);
+		btnRefresh.addActionListener(e -> btnRefreshClick(e));
 		panel_1.add(btnRefresh);
+		
+		JXButton btnC = new JXButton();
+		btnC.setText("C");
+		btnC.setBounds(274, 11, 56, 24);
+		btnC.addActionListener(e -> btnCClick(e));
+		panel_1.add(btnC);
 
 		JPanel panel_2 = new JPanel();
 		panel_2.setBounds(0, 86, 916, 422);
@@ -156,7 +168,9 @@ public class OpeningBalanceManagerUI extends JInternalFrame {
 		panel_2.add(scrollPane);
 
 		table = new JXTable();
+		tableRowHeight = table.getRowHeight();
 		scrollPane.setViewportView(table);
+		LOGGER.debug("Row Height "+ tableRowHeight);
 	}
 
 	private void buttonSearchClick(ActionEvent e) {
@@ -226,7 +240,7 @@ public class OpeningBalanceManagerUI extends JInternalFrame {
 
 			OpeningBalanceManagerModel balanceModel = new OpeningBalanceManagerModel(infoModel);
 			table.setModel(balanceModel);
-			table.setRowHeight(table.getRowHeight() + 20);
+			//table.setRowHeight(table.getRowHeight() + 20);
 			table.setAutoCreateRowSorter(true);
 			table.setName("Opening Balance Manager");
 			table.setColumnControlVisible(true);
@@ -284,7 +298,7 @@ public class OpeningBalanceManagerUI extends JInternalFrame {
 
 			OpeningBalanceManagerModel balanceModel = new OpeningBalanceManagerModel(infoModel);
 			table.setModel(balanceModel);
-			table.setRowHeight(table.getRowHeight() + 20);
+			setRowHeight();
 			table.setAutoCreateRowSorter(true);
 			table.setName("Opening Balance Manager");
 			table.setColumnControlVisible(true);
@@ -328,7 +342,7 @@ public class OpeningBalanceManagerUI extends JInternalFrame {
 
 			OpeningBalanceManagerModel balanceModel = new OpeningBalanceManagerModel(infoModel);
 			table.setModel(balanceModel);
-			table.setRowHeight(table.getRowHeight() + 20);
+			setRowHeight();
 			table.setAutoCreateRowSorter(true);
 			table.setName("Opening Balance Manager");
 			table.setColumnControlVisible(true);
@@ -369,7 +383,7 @@ public class OpeningBalanceManagerUI extends JInternalFrame {
 
 			OpeningBalanceManagerModel balanceModel = new OpeningBalanceManagerModel(infoModel);
 			table.setModel(balanceModel);
-			table.setRowHeight(table.getRowHeight() + 20);
+			setRowHeight();
 			table.setAutoCreateRowSorter(true);
 			table.setName("Opening Balance Manager");
 			table.setColumnControlVisible(true);
@@ -410,7 +424,7 @@ public class OpeningBalanceManagerUI extends JInternalFrame {
 
 			OpeningBalanceManagerModel balanceModel = new OpeningBalanceManagerModel(infoModel);
 			table.setModel(balanceModel);
-			table.setRowHeight(table.getRowHeight() + 20);
+			setRowHeight();
 			table.setAutoCreateRowSorter(true);
 			table.setName("Opening Balance Manager");
 			table.setColumnControlVisible(true);
@@ -418,5 +432,75 @@ public class OpeningBalanceManagerUI extends JInternalFrame {
 		}catch(Exception e) {
 			LOGGER.error(e);
 		}
+	}
+	
+	private void btnRefreshClick(ActionEvent e){
+		List<OpeningBalanceInfo> openingBalanceInfos = null;
+		try {
+			openingBalanceInfos = OpeningBalanceDaoImpl.getInstance().getItemList();
+		} catch (Exception e1) {
+			LOGGER.error(e1);
+			openingBalanceInfos = new ArrayList<OpeningBalanceInfo>();
+		}
+
+		List<OpeningBalanceManagerInfoModel> infoModel = new ArrayList<>();
+		int sNo = 1;
+		for (OpeningBalanceInfo balanceInfo : openingBalanceInfos) {
+			OpeningBalanceManagerInfoModel model = new OpeningBalanceManagerInfoModel();
+			model.setSNo(sNo);
+			model.setPartyName(balanceInfo.getAccountInfo().getName());
+			model.setBillNumber(balanceInfo.getBillnumber());
+			model.setBillDate(balanceInfo.getBilldate());
+			if(balanceInfo.getType().equalsIgnoreCase(LeamonERPConstants.INVOICE_TYPE_WITHOUT_BILL)) {
+				model.setType("W-Without Bill");
+			}else {
+				model.setType("B-With Bill");
+			}
+			model.setOpeningBalanceAmount(balanceInfo.getOpeningbalanceamount());
+			model.setReceivedAmount(balanceInfo.getReceivedopeningbalanceamount());
+			model.setRemainingAmount(balanceInfo.getRemainingopeningbalanceamount());
+			infoModel.add(model);
+			sNo++;
+		}
+
+		OpeningBalanceManagerModel balanceModel = new OpeningBalanceManagerModel(infoModel);
+		table.setModel(balanceModel);
+		setRowHeight();
+		table.setAutoCreateRowSorter(true);
+		table.setName("Opening Balance Manager");
+		table.setColumnControlVisible(true);
+		table.packAll();
+	}
+	
+	private void buttonAddNewClick(ActionEvent e){
+		
+	}
+	
+	private void buttonEditClick(ActionEvent e){
+		
+	}
+	
+	private void btnDeleteClick(ActionEvent e){
+		
+	}
+	
+	private void btnCClick(ActionEvent e){
+		List<OpeningBalanceManagerInfoModel> infoModel = new ArrayList<>();
+		OpeningBalanceManagerModel balanceModel = new OpeningBalanceManagerModel(infoModel);
+		table.setModel(balanceModel);
+		setRowHeight();
+		table.setAutoCreateRowSorter(true);
+		table.setName("Opening Balance Manager");
+		table.setColumnControlVisible(true);
+		table.packAll();
+		
+		datePickerStartDate.setDate(null);
+		datePickerEndDate.setDate(null);
+		textFieldPartyName.setText(LeamonERPConstants.EMPTY_STR);
+		comboBox.setSelectedIndex(0);
+	}
+	
+	public void setRowHeight(){
+		table.setRowHeight(tableRowHeight + 20);
 	}
 }
