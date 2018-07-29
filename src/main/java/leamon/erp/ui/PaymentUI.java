@@ -644,11 +644,12 @@ public class PaymentUI extends JInternalFrame {
 			return false;
 		}
 		
-		if(((TablePaymentReceivedModel)table.getModel()).getInvoiceInfos() == null 
+		/*commentd in leamon  release 4.2*/
+		/*if(((TablePaymentReceivedModel)table.getModel()).getInvoiceInfos() == null 
 				|| ((TablePaymentReceivedModel)table.getModel()).getInvoiceInfos().isEmpty()){
 			JOptionPane.showMessageDialog(this, "No record in table", "Leamon-ERP Error Message", JOptionPane.ERROR_MESSAGE);
 			return false;
-		}
+		}*/
 		
 		
 		return true;

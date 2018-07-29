@@ -790,7 +790,7 @@ public class LeamonERP extends JFrame {
 
 		accountInfoUI = new AccountInfoUI();
 		invoiceUI = new InvoiceUI();
-		//invoiceUILegal =new InvoiceUILegal();
+		invoiceUILegal =new InvoiceUILegal();
 		paymentUI = new PaymentUI();
 		paymentReceivedUI = new PaymentReceivedSummaryUI();
 		stockItemQuantityUI = new StockItemQuantityUI();
